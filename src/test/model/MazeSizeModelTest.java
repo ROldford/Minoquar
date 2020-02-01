@@ -7,55 +7,43 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MazeSizeModelTest {
     // fields
-    private MazeSizeModel mazeSizeModel;
+    private MazeSizeModel xs;
+    private MazeSizeModel sm;
+    private MazeSizeModel md;
+    private MazeSizeModel lg;
+    private MazeSizeModel xl;
 
     // before each
     @BeforeEach
     public void beforeEach() {
-        this.mazeSizeModel = new MazeSizeModel();
+        this.xs = new MazeSizeModel(MazeSizeModel.MazeSize.EXTRA_SMALL);
+        this.sm = new MazeSizeModel(MazeSizeModel.MazeSize.SMALL);
+        this.md = new MazeSizeModel(MazeSizeModel.MazeSize.MEDIUM);
+        this.lg = new MazeSizeModel(MazeSizeModel.MazeSize.LARGE);
+        this.xl = new MazeSizeModel(MazeSizeModel.MazeSize.EXTRA_LARGE);
     }
 
     // tests
     @Test
     public void testGetSideLength() {
-        assertEquals(
-                4*2+17,
-                mazeSizeModel.getSideLength(MazeSizeModel.MazeSize.EXTRA_SMALL));
-        assertEquals(
-                4*3+17,
-                mazeSizeModel.getSideLength(MazeSizeModel.MazeSize.SMALL));
-        assertEquals(
-                4*4+17,
-                mazeSizeModel.getSideLength(MazeSizeModel.MazeSize.MEDIUM));
-        assertEquals(
-                4*5+17,
-                mazeSizeModel.getSideLength(MazeSizeModel.MazeSize.LARGE));
-        assertEquals(
-                4*6+17,
-                mazeSizeModel.getSideLength(MazeSizeModel.MazeSize.EXTRA_LARGE));
+        assertEquals(4*2+17, xs.getSideLength());
+        assertEquals(4*3+17, sm.getSideLength());
+        assertEquals(4*4+17, md.getSideLength());
+        assertEquals(4*5+17, lg.getSideLength());
+        assertEquals(4*6+17, xl.getSideLength());
     }
 
     @Test
     public void testGetAlignPatternPosition() {
-        PositionModel xs = mazeSizeModel.getAlignPatternPosition(
-                MazeSizeModel.MazeSize.EXTRA_SMALL);
-        PositionModel sm = mazeSizeModel.getAlignPatternPosition(
-                MazeSizeModel.MazeSize.SMALL);
-        PositionModel md = mazeSizeModel.getAlignPatternPosition(
-                MazeSizeModel.MazeSize.MEDIUM);
-        PositionModel lg = mazeSizeModel.getAlignPatternPosition(
-                MazeSizeModel.MazeSize.LARGE);
-        PositionModel xl = mazeSizeModel.getAlignPatternPosition(
-                MazeSizeModel.MazeSize.EXTRA_LARGE);
-        assertEquals(18, xs.getX());
-        assertEquals(18, xs.getY());
-        assertEquals(22, sm.getX());
-        assertEquals(22, sm.getY());
-        assertEquals(26, md.getX());
-        assertEquals(26, md.getY());
-        assertEquals(30, lg.getX());
-        assertEquals(30, lg.getY());
-        assertEquals(34, xl.getX());
-        assertEquals(34, xl.getY());
+        assertEquals(18, xs.getAlignPatternPosition().getX());
+        assertEquals(18, xs.getAlignPatternPosition().getY());
+        assertEquals(22, sm.getAlignPatternPosition().getX());
+        assertEquals(22, sm.getAlignPatternPosition().getY());
+        assertEquals(26, md.getAlignPatternPosition().getX());
+        assertEquals(26, md.getAlignPatternPosition().getY());
+        assertEquals(30, lg.getAlignPatternPosition().getX());
+        assertEquals(30, lg.getAlignPatternPosition().getY());
+        assertEquals(34, xl.getAlignPatternPosition().getX());
+        assertEquals(34, xl.getAlignPatternPosition().getY());
     }
 }
