@@ -46,4 +46,13 @@ class MazeSizeModelTest {
         assertEquals(34, xl.getAlignPatternPosition().getX());
         assertEquals(34, xl.getAlignPatternPosition().getY());
     }
+
+    @Test
+    public void testGetMazeSizeName() {
+        assertTrue(xs.getMazeSizeName().equals(MazeSizeModel.NAME_XS));
+        assertTrue(sm.getMazeSizeName().equals(MazeSizeModel.NAME_SM));
+        assertTrue(md.getMazeSizeName().equals(MazeSizeModel.NAME_MD));
+        assertTrue(lg.getMazeSizeName().equals(MazeSizeModel.NAME_LG));
+        assertTrue(xl.getMazeSizeName().equals(MazeSizeModel.NAME_XL));
+    }
 }
