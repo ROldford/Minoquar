@@ -34,6 +34,6 @@ public class MazeSizeModel {
     // EFFECTS: return position of alignment pattern center
     public PositionModel getAlignPatternPosition() {
         int coordinate = 4 * mazeSizeMap.get(mazeSize) + 10;
-        return new PositionModel(coordinate, coordinate);
+        return PositionModel.createNewInstance(coordinate, coordinate);
     }
 }
