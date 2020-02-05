@@ -35,4 +35,12 @@ public class MazeModel {
     private boolean areSquaresIdentical(List<MazeLayoutModel.MazeSquare> squares) {
         return squares.isEmpty() || Collections.frequency(squares, squares.get(0)) == squares.size();  //stub
     }
+
+    public String getSize() {
+        return mazeLayout.getMazeSize();
+    }
+
+    public int getSideLength() {
+        return mazeLayout.getMazeSideLength();
+    }
 }
