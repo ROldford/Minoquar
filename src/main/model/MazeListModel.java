@@ -12,11 +12,6 @@ public class MazeListModel {
         this.mazes = new ArrayList<>();
     }
 
-    // EFFECTS: returns entire list of mazes
-    public List<MazeModel> getMazes() {
-        return mazes; //stub
-    }
-
     // EFFECTS: creates a new random maze with given name and size and adds it to end of list
     public void createRandomMaze(String name, MazeSizeModel.MazeSize size) {
         mazes.add(new MazeModel(name, size));
@@ -25,5 +20,10 @@ public class MazeListModel {
     // EFFECTS: returns the maze at given list index
     public MazeModel readMaze(int index) {
         return mazes.get(index); //stub
+    }
+
+    // EFFECTS: return number of mazes in list
+    public int size() {
+        return mazes.size();
     }
 }

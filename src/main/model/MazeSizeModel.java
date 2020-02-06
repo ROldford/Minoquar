@@ -5,7 +5,7 @@ import java.util.EnumMap;
 public class MazeSizeModel {
     // MazeSizes correspond to QR Code Versions 2-6
     // TODO: re-implement so that only enums need to be used, methods are class-based, not instance-based
-    enum MazeSize {
+    public enum MazeSize {
         EXTRA_SMALL,
         SMALL,
         MEDIUM,
