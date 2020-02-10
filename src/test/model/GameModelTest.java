@@ -55,4 +55,10 @@ public class GameModelTest {
         assertFalse(game.moveHero(new PositionModel(4, 1)));
     }
 
+    @Test
+    public void testGetHeroPosition() {
+        assertEquals(7, game.getHeroPosition().getX());
+        assertEquals(0, game.getHeroPosition().getY());
+    }
+
 }

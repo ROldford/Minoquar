@@ -3,9 +3,7 @@
 
 package ui;
 
-import model.MazeListModel;
-import model.MazeModel;
-import model.MazeSizeModel;
+import model.*;
 
 import java.util.Collections;
 import java.util.Scanner;
@@ -15,7 +13,7 @@ public class MenuUI {
     private MazeListModel mazeList;
     private int mazeListPage;
 
-    // EFFECTS: runs the game app
+    // EFFECTS: runs the app menu UI
     public MenuUI() {
         runApp();
     }
@@ -47,6 +45,7 @@ public class MenuUI {
     // MODIFIES: this
     // EFFECTS: initializes input scanner and maze list
     private void init() {
+        // TODO: try moving this to constructor later
         input = new Scanner(System.in);
         mazeList = new MazeListModel();
     }
@@ -162,15 +161,16 @@ public class MenuUI {
             System.out.printf("\nNow playing Maze %d%n", mazeNumber);
             startGame(maze);
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             System.out.println("That maze doesn't exist");
         }
     }
 
     // EFFECTS: starts game using given maze
     private void startGame(MazeModel maze) {
-        // TODO: implememnt fully when GameModel and HeroModel are done
+        // TODO: implement fully when GameModel and HeroModel are done
         System.out.printf("\tName: %s%n", maze.getName());
+        new GameUI(new GameModel(maze, new PositionModel(7, 0)));
 //        System.out.printf("\tSize: %s(%dx%d)%n", maze.getSizeName(), maze.getSideLength(), maze.getSideLength());
     }
 

@@ -53,4 +53,9 @@ public class GameModel {
         newString.setCharAt(index, newChar);
         return newString.toString();
     }
+
+    // EFFECTS: returns current position of hero in maze
+    public PositionModel getHeroPosition() {
+        return hero.getPosition();
+    }
 }

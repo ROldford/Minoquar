@@ -22,13 +22,13 @@ implement the more difficult parts of a digital game, such as physics, collision
 **User Stories For This Deliverable:**
 - [ ] As a user, I want to be able to add a new random QR code maze to a list of mazes.
     - [X] Able to add mazes
-    - [ ] Mazes have static QR features
+    - [X] Mazes have static QR features
     - [ ] Mazes are random at all other parts
-- [ ] As a user, I want to select a maze and start a game.
+- [X] As a user, I want to select a maze and start a game.
     - [X] Maze selection
-    - [ ] Game start
-- [ ] As a user, I want to move the character according to these movement rules.
-    - [ ] Move along corridors (white squares)
-    - [ ] Stop at walls (black squares)
-    - [ ] Tunnel through walls (can move through black squares to white square on other side)
+    - [X] Game start
+- [X] As a user, I want to move the character according to these movement rules.
+    - [X] Move along corridors (white squares)
+    - [X] Stop at walls (black squares)
+    - [X] Tunnel through walls (can move through black squares to white square on other side)
 - [ ] As a user, I want to end the game by reaching the treasure (found in the bottom-right QR recognition pattern)
