@@ -24,7 +24,6 @@ public class GameModel {
     // EFFECTS: return list of strings to display the current game state
     public List<String> display() {
         List<String> display = new ArrayList<>(mazeDisplay);
-        // TODO: Extract this into new helper method
         display = overlayGameElement(TREASURE_CHAR, treasure, display);
         display = overlayGameElement(HeroModel.HERO_CHAR, hero.getPosition(), display);
         return display;

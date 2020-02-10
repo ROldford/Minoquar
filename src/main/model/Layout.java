@@ -74,13 +74,16 @@ public class Layout {
         for (int y = 0; y < height; y++) {
             StringBuilder row = new StringBuilder();
             for (int x = 0; x < width; x++) {
-                // TODO: replace ifs with switch
-                if (getSquare(new PositionModel(x, y)) == MazeSquare.WALL) {
-                    row.append(WALL_CHAR);
-                } else if (getSquare(new PositionModel(x, y)) == MazeSquare.PASSAGE) {
-                    row.append(PASSAGE_CHAR);
-                } else {
-                    row.append(EMPTY_CHAR);
+                switch (getSquare(new PositionModel(x, y))) {
+                    case WALL:
+                        row.append(WALL_CHAR);
+                        break;
+                    case PASSAGE:
+                        row.append(PASSAGE_CHAR);
+                        break;
+                    default:
+                        row.append(EMPTY_CHAR);
+                        break;
                 }
             }
             displayList.add(row.toString());
