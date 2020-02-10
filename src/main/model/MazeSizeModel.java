@@ -61,7 +61,7 @@ public class MazeSizeModel {
     // EFFECTS: return positions of each recognition pattern's top left corner
     //          pattern order: top left, top right, bottom left
     public static List<PositionModel> getFinderPatternPositions(MazeSize size) {
-        return new ArrayList<PositionModel>(Arrays.asList(
+        return new ArrayList<>(Arrays.asList(
                 new PositionModel(0, 0),
                 new PositionModel(4 * getVersion(size) + 10, 0),
                 new PositionModel(0, 4 * getVersion(size) + 10)

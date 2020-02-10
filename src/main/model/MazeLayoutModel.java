@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 // responsible for creating maze-specific layout (i.e. with static QR elements)
@@ -20,14 +21,14 @@ public class MazeLayoutModel extends Layout {
             new ArrayList<>(Arrays.asList(P, P, P, P, P, P, P, P)));
     public static final Layout FINDER_MARGIN_HORIZONTAL = new Layout(7, 1,
             new ArrayList<>(Arrays.asList(P, P, P, P, P, P, P)));
-    public static final List<MazeSquare> TIMING_PATTERN_UNIT = new ArrayList<>(Arrays.asList(P, W));
     public static final Layout ALIGNMENT_PATTERN = new Layout(5, 5, new ArrayList<>(Arrays.asList(
             W, W, W, W, W,
             W, P, P, P, W,
             W, P, W, P, W,
             W, P, P, P, W,
             W, W, W, W, W)));
-    public static final Layout DARK_MODULE = new Layout(1, 1, new ArrayList<>(Arrays.asList(W)));
+    public static final Layout DARK_MODULE = new Layout(1, 1,
+            new ArrayList<>(Collections.singletonList(W)));
     public static final double PERCENT_WALL = 0.4;
 
     private MazeSizeModel.MazeSize size;

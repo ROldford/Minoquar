@@ -28,7 +28,7 @@ public class MazeLayoutModelTest {
     public void testInit() {
         List<Integer> expectedSideLengths = new ArrayList<>(Arrays.asList(
                 4*2+17, 4*3+17, 4*4+17, 4*5+17, 4*6+17));
-        List<String> expectedSizes = new ArrayList<>(Arrays.asList(
+        List<String> expectedSizeNames = new ArrayList<>(Arrays.asList(
                 MazeSizeModel.NAME_XS,
                 MazeSizeModel.NAME_SM,
                 MazeSizeModel.NAME_MD,
@@ -36,20 +36,16 @@ public class MazeLayoutModelTest {
                 MazeSizeModel.NAME_XL));
         iterateSimultaneously(
                 expectedSideLengths, layouts,
-                (Integer sideLength, MazeLayoutModel layout) -> {
-                    assertEquals(sideLength, layout.getSideLength());
-                });
+                (Integer sideLength, MazeLayoutModel layout) -> assertEquals(sideLength, layout.getSideLength()));
         iterateSimultaneously(
-                expectedSizes, layouts,
-                (String size, MazeLayoutModel layout) -> {
-                    assertTrue(layout.getSizeName().equals(size));
-                });
+                expectedSizeNames, layouts,
+                (String sizeName, MazeLayoutModel layout) -> assertEquals(sizeName, layout.getSizeName()));
     }
 
     @Test
     public void testHasRecognitionPatternsAndMargins() {
         for (MazeLayoutModel layout : layouts) {
-            Integer corner = layout.getSideLength() - 1;
+            int corner = layout.getSideLength() - 1;
             // I'm only testing the corner, one square diagonal inwards, and the margin. THIS IS INTENTIONAL.
             // I'm not going to test every damn square!
             assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new PositionModel(0, 0)));
@@ -67,7 +63,7 @@ public class MazeLayoutModelTest {
     @Test
     public void testHasAlignmentPattern() {
         for (MazeLayoutModel layout : layouts) {
-            Integer alignCorner = layout.getSideLength() - 9;
+            int alignCorner = layout.getSideLength() - 9;
             assertEquals(
                     MazeLayoutModel.MazeSquare.WALL,
                     layout.getSquare(new PositionModel(alignCorner, alignCorner)));
@@ -130,11 +126,11 @@ public class MazeLayoutModelTest {
     public void testDisplay() {
         for (MazeLayoutModel layout : layouts) {
             List<String> display = layout.display();
-            assertTrue(display.get(0).substring(0, 8).equals("▓▓▓▓▓▓▓ "));
-            assertTrue(display.get(1).substring(0, 8).equals("▓     ▓ "));
-            assertTrue(display.get(2).substring(0, 8).equals("▓ ▓▓▓ ▓ "));
-            assertFalse(display.get(0).substring(8, 9).equals("X"));
-            assertFalse(display.get(2).substring(8, 9).equals("X"));
+            assertEquals("▓▓▓▓▓▓▓ ", display.get(0).substring(0, 8));
+            assertEquals("▓     ▓ ", display.get(1).substring(0, 8));
+            assertEquals("▓ ▓▓▓ ▓ ", display.get(2).substring(0, 8));
+            assertNotEquals("X", display.get(0).substring(8, 9));
+            assertNotEquals("X", display.get(2).substring(8, 9));
             for (String row : display) {
                 System.out.println(row);
             }

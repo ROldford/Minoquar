@@ -168,10 +168,7 @@ public class MenuUI {
 
     // EFFECTS: starts game using given maze
     private void startGame(MazeModel maze) {
-        // TODO: implement fully when GameModel and HeroModel are done
-        System.out.printf("\tName: %s%n", maze.getName());
         new GameUI(new GameModel(maze, new PositionModel(7, 0)));
-//        System.out.printf("\tSize: %s(%dx%d)%n", maze.getSizeName(), maze.getSideLength(), maze.getSideLength());
     }
 
 }

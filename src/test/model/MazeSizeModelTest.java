@@ -35,9 +35,8 @@ class MazeSizeModelTest {
                 MazeSizeModel.NAME_XL));
         iterateSimultaneously(
                 expectedSizeNames, sizes,
-                (String expected, MazeSizeModel.MazeSize size) -> {
-                    assertTrue(MazeSizeModel.getMazeSizeName(size).equals(expected));
-                });
+                (String expected, MazeSizeModel.MazeSize size) -> assertEquals(
+                        expected, MazeSizeModel.getMazeSizeName(size)));
     }
 
     @Test
@@ -46,9 +45,8 @@ class MazeSizeModelTest {
                 4*2+17, 4*3+17, 4*4+17, 4*5+17, 4*6+17));
         iterateSimultaneously(
                 expectedSideLengths, sizes,
-                (Integer sideLength, MazeSizeModel.MazeSize size) -> {
-                    assertEquals(sideLength, MazeSizeModel.getSideLength(size));
-                });
+                (Integer sideLength, MazeSizeModel.MazeSize size) -> assertEquals(
+                        sideLength, MazeSizeModel.getSideLength(size)));
     }
 
     @Test
@@ -122,9 +120,8 @@ class MazeSizeModelTest {
         ));
         iterateSimultaneously(
                 expectedValues, sizes,
-                (Integer expected, MazeSizeModel.MazeSize size) -> {
-                    assertEquals(expected, MazeSizeModel.getTimingPatternLength(size));
-                });
+                (Integer expected, MazeSizeModel.MazeSize size) -> assertEquals(
+                        expected, MazeSizeModel.getTimingPatternLength(size)));
     }
 
     @Test

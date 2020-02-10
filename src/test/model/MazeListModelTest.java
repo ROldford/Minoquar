@@ -3,9 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MazeListModelTest {
     MazeListModel mazeList;
@@ -28,7 +26,7 @@ public class MazeListModelTest {
         mazeList.createRandomMaze(TEST_NAME, TEST_SIZE);
         assertEquals(1, mazeList.size());
         MazeModel maze = mazeList.readMaze(0);
-        assertTrue(maze.getName().equals(TEST_NAME));
+        assertEquals(TEST_NAME, maze.getName());
         assertEquals(testSizeName, maze.getSizeName());
     }
 

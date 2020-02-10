@@ -8,7 +8,7 @@ public class MazeBoardModel {
 
     private MazeLayoutModel mazeLayout;
 
-    // EFFECTS: Construct random board (only PASSAGEs) of given size
+    // EFFECTS: Construct random board (only PASSAGE) of given size
     public MazeBoardModel(MazeSizeModel.MazeSize size) {
         this.mazeLayout = MazeLayoutModel.createRandomMaze(size);
     }
@@ -29,7 +29,7 @@ public class MazeBoardModel {
     }
 
     // REQUIRES: start and end are within maze size
-    //           start and end are on same orthagonal line
+    //           start and end are on same orthogonal line
     //           start and end are not same position
     // EFFECTS: returns list of squares between start and end (exclusive)
     public List<MazeLayoutModel.MazeSquare> getSquaresBetween(PositionModel start, PositionModel end) {

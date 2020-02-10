@@ -21,7 +21,7 @@ public class MazeModel {
     }
 
     // REQUIRES: start and end are within maze size
-    //           start and end are on same orthagonal line
+    //           start and end are on same orthogonal line
     //           start and end are not same position
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
     public boolean isMoveValid(PositionModel start, PositionModel end) {

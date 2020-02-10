@@ -3,13 +3,12 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MazeModelTest {
     static final String TEST_NAME = "Test Maze";
-    static final MazeSizeModel.MazeSize TEST_SIZE = MazeSizeModel.MazeSize.MEDIUM;;
+    static final MazeSizeModel.MazeSize TEST_SIZE = MazeSizeModel.MazeSize.MEDIUM;
     MazeModel maze;
 
     @BeforeEach
@@ -19,8 +18,8 @@ public class MazeModelTest {
 
     @Test
     public void testInit() {
-        assertTrue(maze.getName().equals(TEST_NAME));
-        assertTrue(maze.getSizeName().equals(MazeSizeModel.getMazeSizeName(TEST_SIZE)));
+        assertEquals(TEST_NAME, maze.getName());
+        assertEquals(MazeSizeModel.getMazeSizeName(TEST_SIZE), maze.getSizeName());
         assertEquals(MazeSizeModel.getSideLength(TEST_SIZE), maze.getSideLength());
         assertTrue(maze.isMoveValid(
                 new PositionModel(1, 1),

@@ -1,16 +1,12 @@
 package model;
 
-import javafx.geometry.Pos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LayoutTest {
     Layout singleSquare;
@@ -28,7 +24,7 @@ public class LayoutTest {
         this.p = Layout.MazeSquare.PASSAGE;
         this.w = Layout.MazeSquare.WALL;
         this.singleSquare = new Layout(1, 1,
-                new ArrayList<>(Arrays.asList(w)));
+                new ArrayList<>(Collections.singletonList(w)));
         this.timingHorizontal = new Layout(5, 1,
                 new ArrayList<>(Arrays.asList(
                         w, p, w, p, w
@@ -76,14 +72,10 @@ public class LayoutTest {
                 1, 1, 5, 7, 5, 3, 3));
         iterateSimultaneously(
                 widths, layouts,
-                (Integer width, Layout layout) -> {
-                    assertEquals(width, layout.getWidth());
-                });
+                (Integer width, Layout layout) -> assertEquals(width, layout.getWidth()));
         iterateSimultaneously(
                 heights, layouts,
-                (Integer height, Layout layout) -> {
-                    assertEquals(height, layout.getHeight());
-                });
+                (Integer height, Layout layout) -> assertEquals(height, layout.getHeight()));
     }
 
     @Test
@@ -124,20 +116,19 @@ public class LayoutTest {
         fiveByThreeEmpty.overwrite(startPosition, twoByTwoPattern);
         iterateSimultaneously(
                 patternList, patternPositions,
-                (Layout.MazeSquare patternSquare, PositionModel position) -> {
-                    assertEquals(patternSquare, fiveByThreeEmpty.getSquare(position));
-                });
+                (Layout.MazeSquare patternSquare, PositionModel position) -> assertEquals(
+                        patternSquare, fiveByThreeEmpty.getSquare(position)));
     }
 
     @Test
     public void testDisplay() {
         List<String> alignDisplay = alignmentPattern.display();
-        assertTrue(alignDisplay.get(0).substring(0,5).equals("▓▓▓▓▓"));
-        assertTrue(alignDisplay.get(1).substring(0,5).equals("▓   ▓"));
-        assertTrue(alignDisplay.get(2).substring(0,5).equals("▓ ▓ ▓"));
+        assertEquals("▓▓▓▓▓", alignDisplay.get(0).substring(0,5));
+        assertEquals("▓   ▓", alignDisplay.get(1).substring(0,5));
+        assertEquals("▓ ▓ ▓", alignDisplay.get(2).substring(0,5));
         List<String> emptyDisplay = fiveByThreeEmpty.display();
         for (String row : emptyDisplay) {
-            assertTrue(row.equals("XXXXX"));
+            assertEquals("XXXXX", row);
         }
     }
 

@@ -20,14 +20,14 @@ public class GameModelTest {
     @Test
     public void testInit() {
         List<String> display = game.display();
-        assertTrue(display.get(0).substring(0, 8).equals("▓▓▓▓▓▓▓☺"));
-        assertTrue(display.get(1).substring(0, 8).equals("▓     ▓ "));
-        assertTrue(display.get(2).substring(0, 8).equals("▓ ▓▓▓ ▓ "));
-        assertFalse(display.get(0).substring(8, 9).equals("X"));
+        assertEquals("▓▓▓▓▓▓▓☺", display.get(0).substring(0, 8));
+        assertEquals("▓     ▓ ", display.get(1).substring(0, 8));
+        assertEquals("▓ ▓▓▓ ▓ ", display.get(2).substring(0, 8));
+        assertNotEquals("X", display.get(0).substring(8, 9));
         // TODO: add test for treasure display
         PositionModel alignCorner = MazeSizeModel.getAlignPatternPosition(MazeSizeModel.MazeSize.EXTRA_SMALL);
-        assertTrue(display.get(alignCorner.getY()+1).substring(
-                alignCorner.getX(), alignCorner.getX()+5).equals("▓O  ▓"));
+        assertEquals("▓O  ▓", display.get(alignCorner.getY()+1).substring(
+                alignCorner.getX(), alignCorner.getX()+5));
         for (String row : display) {
             System.out.println(row);
         }

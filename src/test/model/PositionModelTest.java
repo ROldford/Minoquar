@@ -40,18 +40,17 @@ public class PositionModelTest {
                 new PositionModel(14, 5)
         ));
         List<PositionModel> expectedPositions = new ArrayList<>(Arrays.asList(
-                new PositionModel(posX + 0, posY + 0),
-                new PositionModel(posX + 0, posY + 7),
-                new PositionModel(posX + 0, posY + -7),
-                new PositionModel(posX + 7, posY + 0),
-                new PositionModel(posX + -7, posY + 0),
+                new PositionModel(posX, posY),
+                new PositionModel(posX, posY + 7),
+                new PositionModel(posX, posY + -7),
+                new PositionModel(posX + 7, posY),
+                new PositionModel(posX + -7, posY),
                 new PositionModel(posX + 14, posY + 5)
         ));
         iterateSimultaneously(
                 expectedPositions, deltas,
-                (PositionModel expected, PositionModel delta) -> {
-                    assertTrue(samePosition(expected, position.add(delta)));
-                });
+                (PositionModel expected, PositionModel delta) -> assertTrue(
+                        samePosition(expected, position.add(delta))));
     }
 
     private boolean samePosition(PositionModel a, PositionModel b) {

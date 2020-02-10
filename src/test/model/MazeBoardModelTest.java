@@ -13,12 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MazeBoardModelTest {
     List<MazeBoardModel> boards;
-    // TODO: delete these
-    MazeBoardModel xs;
-    MazeBoardModel sm;
-    MazeBoardModel md;
-    MazeBoardModel lg;
-    MazeBoardModel xl;
 
     @BeforeEach
     public void beforeEach() {
@@ -34,7 +28,7 @@ public class MazeBoardModelTest {
     public void testInit() {
         List<Integer> expectedSideLengths = new ArrayList<>(Arrays.asList(
                 4*2+17, 4*3+17, 4*4+17, 4*5+17, 4*6+17));
-        List<String> expectedSizes = new ArrayList<>(Arrays.asList(
+        List<String> expectedSizeNames = new ArrayList<>(Arrays.asList(
                 MazeSizeModel.NAME_XS,
                 MazeSizeModel.NAME_SM,
                 MazeSizeModel.NAME_MD,
@@ -42,14 +36,10 @@ public class MazeBoardModelTest {
                 MazeSizeModel.NAME_XL));
         iterateSimultaneously(
                 expectedSideLengths, boards,
-                (Integer sideLength, MazeBoardModel board) -> {
-                    assertEquals(sideLength, board.getSideLength());
-                });
+                (Integer sideLength, MazeBoardModel board) -> assertEquals(sideLength, board.getSideLength()));
         iterateSimultaneously(
-                expectedSizes, boards,
-                (String size, MazeBoardModel board) -> {
-                    assertTrue(board.getSizeName().equals(size));
-                });
+                expectedSizeNames, boards,
+                (String sizeName, MazeBoardModel board) -> assertEquals(sizeName, board.getSizeName()));
     }
 
     @Test
