@@ -45,12 +45,12 @@ public class MazeBoardModelTest {
     @Test
     public void testGetSquaresBetweenAllPassages() {
         PositionModel topLeft = new PositionModel(1, 1);
-        PositionModel topRight = new PositionModel(1, 5);
-        PositionModel bottomLeft = new PositionModel(5, 1);
-        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
+        PositionModel topRight = new PositionModel(5, 1);
+        PositionModel bottomLeft = new PositionModel(1, 5);
         List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(topRight, topLeft);
-        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(topLeft, bottomLeft);
-        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
+        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
+        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
+        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topLeft, bottomLeft);
         List<List<MazeLayoutModel.MazeSquare>> testLists = new ArrayList<>(Arrays.asList(right, left, up, down));
         for (List<MazeLayoutModel.MazeSquare> testList: testLists) {
             assertEquals(3, testList.size());
@@ -60,7 +60,43 @@ public class MazeBoardModelTest {
         }
     }
 
-    // TODO: Make more tests for all wall sections (in recognizer) and both types (in timing pattern)
+    @Test
+    public void testGetSquaresBetweenAllWalls() {
+        PositionModel topLeft = new PositionModel(0, 0);
+        PositionModel topRight = new PositionModel(6, 0);
+        PositionModel bottomLeft = new PositionModel(0, 6);
+        List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(topRight, topLeft);
+        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
+        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
+        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topLeft, bottomLeft);
+        List<List<MazeLayoutModel.MazeSquare>> testLists = new ArrayList<>(Arrays.asList(right, left, up, down));
+        for (List<MazeLayoutModel.MazeSquare> testList: testLists) {
+            assertEquals(5, testList.size());
+            for (MazeLayoutModel.MazeSquare square: testList) {
+                assertEquals(MazeLayoutModel.MazeSquare.WALL, square);
+            }
+        }
+    }
+
+    @Test
+    public void testGetSquaresBetweenBothTypes() {
+        PositionModel leftSide = new PositionModel(8, 6);
+        PositionModel rightSide = new PositionModel(11, 6);
+        PositionModel topSide = new PositionModel(6, 8);
+        PositionModel bottomSide = new PositionModel(6, 11);
+        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(leftSide, rightSide);
+        List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(rightSide, leftSide);
+        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomSide, topSide);
+        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topSide, bottomSide);
+        List<Layout.MazeSquare> passageFirst = new ArrayList<>(Arrays.asList(
+                Layout.MazeSquare.PASSAGE, Layout.MazeSquare.WALL));
+        List<Layout.MazeSquare> wallFirst = new ArrayList<>(Arrays.asList(
+                Layout.MazeSquare.WALL, Layout.MazeSquare.PASSAGE));
+        assertEquals(passageFirst, right);
+        assertEquals(wallFirst, left);
+        assertEquals(passageFirst, down);
+        assertEquals(wallFirst, up);
+    }
 
     private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
         Iterator<T1> i1 = c1.iterator();
