@@ -8,14 +8,13 @@ public class MazeModelTest {
     public void testInit() {
         String testName = "Test Maze";
         MazeSizeModel.MazeSize testSize = MazeSizeModel.MazeSize.MEDIUM;
-        MazeSizeModel testSizeModel = new MazeSizeModel(testSize);
         MazeModel maze = new MazeModel(testName, testSize);
         assertTrue(maze.getName().equals(testName));
-        assertTrue(maze.getSize().equals(testSizeModel.getMazeSizeName()));
-        assertEquals(testSizeModel.getSideLength(), maze.getSideLength());
+        assertTrue(maze.getSizeName().equals(MazeSizeModel.getMazeSizeName(testSize)));
+        assertEquals(MazeSizeModel.getSideLength(testSize), maze.getSideLength());
         assertTrue(maze.isMoveValid(
-                PositionModel.createNewInstance(1, 1),
-                PositionModel.createNewInstance(1, 2)));
+                new PositionModel(1, 1),
+                new PositionModel(1, 2)));
     }
 
 }

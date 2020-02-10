@@ -135,6 +135,7 @@ public class MinoquarApp {
     // EFFECTS: displays menu of maze sizes to user, and processes user input
     private String inputMazeSize() {
         System.out.println("\nChoose maze size");
+        // TODO: Add command codes for sizes to MazeSize
         System.out.printf("\txs -> %s%n", MazeSizeModel.NAME_XS);
         System.out.printf("\tsm -> %s%n", MazeSizeModel.NAME_SM);
         System.out.printf("\tmd -> %s%n", MazeSizeModel.NAME_MD);
@@ -170,7 +171,7 @@ public class MinoquarApp {
     private void startGame(MazeModel maze) {
         // TODO: implememnt fully when GameModel and HeroModel are done
         System.out.printf("\tName: %s%n", maze.getName());
-        System.out.printf("\tSize: %s(%dx%d)%n", maze.getSize(), maze.getSideLength(), maze.getSideLength());
+//        System.out.printf("\tSize: %s(%dx%d)%n", maze.getSizeName(), maze.getSideLength(), maze.getSideLength());
     }
 
 }

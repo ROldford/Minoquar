@@ -5,13 +5,13 @@ import java.util.*;
 // represents game as maze level, stores layout and other maze data
 // allows verification of legal moves
 public class MazeModel {
-    private MazeLayoutModel mazeLayout;
+    private MazeBoardModel mazeBoard;
     private String name;
 
     // EFFECTS: Constructs random maze with given name and size
     public MazeModel(String name, MazeSizeModel.MazeSize size) {
         this.name = name;
-        this.mazeLayout = MazeLayoutModel.createRandomMaze(size);
+        this.mazeBoard = new MazeBoardModel(size);
     }
 
     // EFFECTS: returns name of maze
@@ -24,10 +24,10 @@ public class MazeModel {
     //           start and end are not same position
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
     public boolean isMoveValid(PositionModel start, PositionModel end) {
-        if (mazeLayout.getSquare(end) == MazeLayoutModel.MazeSquare.WALL) {
+        if (mazeBoard.getSquare(end) == MazeLayoutModel.MazeSquare.WALL) {
             return false;
         } else {
-            return areSquaresIdentical(mazeLayout.getSquaresBetween(start, end));
+            return areSquaresIdentical(mazeBoard.getSquaresBetween(start, end));
         }
     }
 
@@ -36,11 +36,11 @@ public class MazeModel {
         return squares.isEmpty() || Collections.frequency(squares, squares.get(0)) == squares.size();  //stub
     }
 
-    public String getSize() {
-        return mazeLayout.getMazeSize();
+    public String getSizeName() {
+        return mazeBoard.getSizeName();
     }
 
     public int getSideLength() {
-        return mazeLayout.getMazeSideLength();
+        return mazeBoard.getSideLength();
     }
 }

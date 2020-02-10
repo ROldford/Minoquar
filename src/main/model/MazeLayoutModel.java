@@ -1,74 +1,137 @@
 package model;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 
-// stores maze layout, allows querying of maze locations
-public class MazeLayoutModel {
-    private AbstractMap<String, MazeSquare> mazeLayout;
-    private MazeSizeModel mazeSize;
+// responsible for creating maze-specific layout (i.e. with static QR elements)
+public class MazeLayoutModel extends Layout {
+    private static final MazeSquare W = MazeSquare.WALL;
+    private static final MazeSquare P = MazeSquare.PASSAGE;
+    public static final Layout FINDER_PATTERN = new Layout(7, 7, new ArrayList<>(Arrays.asList(
+            W, W, W, W, W, W, W,
+            W, P, P, P, P, P, W,
+            W, P, W, W, W, P, W,
+            W, P, W, W, W, P, W,
+            W, P, W, W, W, P, W,
+            W, P, P, P, P, P, W,
+            W, W, W, W, W, W, W)));
+    public static final Layout FINDER_MARGIN_VERTICAL = new Layout(1, 8,
+            new ArrayList<>(Arrays.asList(P, P, P, P, P, P, P, P)));
+    public static final Layout FINDER_MARGIN_HORIZONTAL = new Layout(7, 1,
+            new ArrayList<>(Arrays.asList(P, P, P, P, P, P, P)));
+    public static final List<MazeSquare> TIMING_PATTERN_UNIT = new ArrayList<>(Arrays.asList(P, W));
+    public static final Layout ALIGNMENT_PATTERN = new Layout(5, 5, new ArrayList<>(Arrays.asList(
+            W, W, W, W, W,
+            W, P, P, P, W,
+            W, P, W, P, W,
+            W, P, P, P, W,
+            W, W, W, W, W)));
+    public static final Layout DARK_MODULE = new Layout(1, 1, new ArrayList<>(Arrays.asList(W)));
 
-    // EFFECTS: Construct blank maze layout (only PASSAGEs) of given size
-    private MazeLayoutModel(MazeSizeModel.MazeSize size) {
-        this.mazeSize = new MazeSizeModel(size);
-        this.mazeLayout = new HashMap<>();
-        int sideLength = mazeSize.getSideLength();
-        for (int i = 0; i < sideLength; i++) {
-            for (int j = 0; j < sideLength; j++) {
-                mazeLayout.put(
-                        PositionModel.createNewInstance(i, j).toString(),
-                        MazeSquare.PASSAGE);
-            }
-        }
+    private MazeSizeModel.MazeSize size;
+
+    // EFFECTS: Construct empty maze layout (only EMPTY squares) of given size
+    private MazeLayoutModel(MazeSizeModel.MazeSize mazeSize) {
+        super(MazeSizeModel.getSideLength(mazeSize), MazeSizeModel.getSideLength(mazeSize));
+        this.size = mazeSize;
     }
 
+    // MODIFIES: this
     // EFFECTS: create random maze layout of given size
-    public static MazeLayoutModel createRandomMaze(MazeSizeModel.MazeSize size) {
-        MazeLayoutModel randomMaze = new MazeLayoutModel(size);
-        // randomMaze.addQRCodeElements();
+    public static MazeLayoutModel createRandomMaze(MazeSizeModel.MazeSize mazeSize) {
+        MazeLayoutModel randomMaze = new MazeLayoutModel(mazeSize);
+        randomMaze.addQRCodeElements();
         return randomMaze;
     }
 
-    public MazeSquare getSquare(PositionModel position) {
-        return mazeLayout.get(position.toString());
+    // MODIFIES: this
+    // EFFECTS: adds static QR code elements to maze layout (finder/alignment/timing patterns)
+    private void addQRCodeElements() {
+        addFinderPatterns();
+        addFinderMargins();
+        addAlignmentPattern();
+        addTimingPatterns();
+        addDarkModule();
+        // randomizeRemainingSquares();
     }
 
-    // EFFECTS: return name of this maze's size
-    public String getMazeSize() {
-        return mazeSize.getMazeSizeName();
+    // MODIFIES: this
+    // EFFECTS: adds finder patterns to maze layout at top-left, top-right, and bottom-left corners
+    private void addFinderPatterns() {
+        List<PositionModel> finderStartPositions = MazeSizeModel.getFinderPatternPositions(size);
+        for (PositionModel position : finderStartPositions) {
+            addFinderPattern(position);
+        }
     }
 
-    // EFFECTS: return side length of maze
-    public int getMazeSideLength() {
-        return mazeSize.getSideLength();
+    // MODIFIES: this
+    // EFFECTS: adds finder patterns to maze layout at given position (starting at top-left corner)
+    private void addFinderPattern(PositionModel corner) {
+        overwrite(corner, FINDER_PATTERN);
     }
 
-    // REQUIRES: start and end are within maze size
-    //           start and end are on same orthagonal line
-    //           start and end are not same position
-    // EFFECTS: returns list of squares between start and end (exclusive)
-    public List<MazeSquare> getSquaresBetween(PositionModel start, PositionModel end) {
-        List<MazeSquare> betweenList = new ArrayList<>();
-        int deltaX = end.getX() - start.getX();
-        int deltaY = end.getY() - start.getY();
-        if (deltaX == 0) {
-            int sign = Integer.signum(deltaY);
-            for (int i = start.getY() + sign; Math.abs(i - end.getY()) > 0; i += sign) {
-                betweenList.add(getSquare(PositionModel.createNewInstance(start.getX(), i)));
-            }
-        } else {
-            int sign = Integer.signum(deltaX);
-            for (int i = start.getX() + sign; Math.abs(i - end.getX()) > 0; i += sign) {
-                betweenList.add(getSquare(PositionModel.createNewInstance(i, start.getY())));
+    // MODIFIES: this
+    // EFFECTS: adds margins around finder patterns in maze layout
+    private void addFinderMargins() {
+        List<PositionModel> marginStartPositions = MazeSizeModel.getFinderMarginPositions(size);
+        for (int i = 0; i < marginStartPositions.size(); i++) {
+            // even index is vertical margin, odd is horizontal margin
+            if (i % 2 == 0) {
+                overwrite(marginStartPositions.get(i), FINDER_MARGIN_VERTICAL);
+            } else {
+                overwrite(marginStartPositions.get(i), FINDER_MARGIN_HORIZONTAL);
             }
         }
-        return betweenList;
     }
 
-    enum MazeSquare {
-        WALL,
-        PASSAGE
+    // MODIFIES: this
+    // EFFECTS: adds alignment pattern to maze layout at appropriate location for maze size
+    private void addAlignmentPattern() {
+        overwrite(MazeSizeModel.getAlignPatternPosition(size), ALIGNMENT_PATTERN);
     }
+
+    // MODIFIES: this
+    // EFFECTS: adds timing patterns to maze layout between finder patterns
+    private void addTimingPatterns() {
+        int length = MazeSizeModel.getTimingPatternLength(size);
+        List<PositionModel> positions = MazeSizeModel.getTimingPatternPositions();
+        // build preset for timing pattern
+        List<MazeSquare> pattern = buildTimingPattern(length);
+        overwrite(positions.get(0), new Layout(1, length, pattern));
+        overwrite(positions.get(1), new Layout(length, 1, pattern));
+    }
+
+    // REQUIRES: length is odd
+    // EFFECTS: returns list of squares matching QR code timing patterns
+    //          alternating between wall and passage, starts and ends with wall
+    private List<MazeSquare> buildTimingPattern(int length) {
+        List<MazeSquare> pattern = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            // TODO: extract expression to check if even out as util method
+            if (i % 2 == 0) {
+                pattern.add(MazeSquare.WALL);
+            } else {
+                pattern.add(MazeSquare.PASSAGE);
+            }
+        }
+        return pattern;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds one "dark square" (WALL) to maze layout near bottom-left finder pattern
+    private void addDarkModule() {
+        overwrite(MazeSizeModel.getDarkModulePosition(size), DARK_MODULE);
+    }
+
+    // EFFECTS: returns side length of this layout
+    public int getSideLength() {
+        return MazeSizeModel.getSideLength(size);
+    }
+
+    // EFFECTS: returns name of this layout's size
+    public String getSizeName() {
+        return MazeSizeModel.getMazeSizeName(size);
+    }
+
 }

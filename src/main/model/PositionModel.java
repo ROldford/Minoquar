@@ -9,26 +9,23 @@ public final class PositionModel {
     //      origin is top left square of puzzle
     //      x coordinates increase going to the right
     //      y coordinates increase going down
-    // made private to ensure PositionModel immutability
-    private PositionModel(int x, int y) {
+    public PositionModel(int x, int y) {
         this.posX = x;
         this.posY = y;
     }
 
-    public static PositionModel createNewInstance(int x, int y) {
-        return new PositionModel(x, y);
-    }
-
+    // EFFECTS: return x coordinate
     public final int getX() {
         return posX;
     }
 
+    // EFFECTS: return y coordinate
     public final int getY() {
         return posY;
     }
 
-    @Override
-    public final String toString() {
-        return "(" + posX + ", " + posY + ")";
+    // EFFECTS: return new PositionModel offset from this position by the x and y of delta
+    public PositionModel add(PositionModel delta) {
+        return new PositionModel(posX + delta.getX(), posY + delta.getY());
     }
 }

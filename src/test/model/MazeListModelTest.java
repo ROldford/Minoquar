@@ -24,12 +24,12 @@ public class MazeListModelTest {
 
     @Test
     public void testCreateRandomMaze() {
-        String testSizeName = new MazeSizeModel(TEST_SIZE).getMazeSizeName();
+        String testSizeName = MazeSizeModel.getMazeSizeName(TEST_SIZE);
         mazeList.createRandomMaze(TEST_NAME, TEST_SIZE);
         assertEquals(1, mazeList.size());
         MazeModel maze = mazeList.readMaze(0);
         assertTrue(maze.getName().equals(TEST_NAME));
-        assertEquals(testSizeName, maze.getSize());
+        assertEquals(testSizeName, maze.getSizeName());
     }
 
 }

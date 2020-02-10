@@ -1,6 +1,5 @@
 package model;
 
-import javafx.geometry.Pos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,25 +13,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MazeLayoutModelTest {
     List<MazeLayoutModel> layouts;
-    MazeLayoutModel xs;
-    MazeLayoutModel sm;
-    MazeLayoutModel md;
-    MazeLayoutModel lg;
-    MazeLayoutModel xl;
 
     @BeforeEach
     public void beforeEach() {
         layouts = new ArrayList<>();
-        xs = MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_SMALL);
-        sm = MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.SMALL);
-        md = MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.MEDIUM);
-        lg = MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.LARGE);
-        xl = MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_LARGE);
-        layouts.add(xs);
-        layouts.add(sm);
-        layouts.add(md);
-        layouts.add(lg);
-        layouts.add(xl);
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_SMALL));
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.SMALL));
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.MEDIUM));
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.LARGE));
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_LARGE));
     }
 
     @Test
@@ -48,40 +37,92 @@ public class MazeLayoutModelTest {
         iterateSimultaneously(
                 expectedSideLengths, layouts,
                 (Integer sideLength, MazeLayoutModel layout) -> {
-                    assertEquals(sideLength, layout.getMazeSideLength());
+                    assertEquals(sideLength, layout.getSideLength());
                 });
         iterateSimultaneously(
                 expectedSizes, layouts,
                 (String size, MazeLayoutModel layout) -> {
-                    assertTrue(layout.getMazeSize().equals(size));
+                    assertTrue(layout.getSizeName().equals(size));
                 });
     }
 
     @Test
-    public void testGetSquare() {
-        PositionModel position = PositionModel.createNewInstance(1, 1);
+    public void testHasRecognitionPatternsAndMargins() {
         for (MazeLayoutModel layout : layouts) {
-            assertEquals(
-                    MazeLayoutModel.MazeSquare.PASSAGE,
-                    layout.getSquare(position));
+            Integer corner = layout.getSideLength() - 1;
+            // I'm only testing the corner, one square diagonal inwards, and the margin. THIS IS INTENTIONAL.
+            // I'm not going to test every damn square!
+            assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new PositionModel(0, 0)));
+            assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(1, 1)));
+            assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(7, 7)));
+            assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new PositionModel(corner, 0)));
+            assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(corner - 1, 1)));
+            assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(corner - 7, 7)));
+            assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new PositionModel(0, corner)));
+            assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(1, corner - 1)));
+            assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(7, corner - 7)));
         }
     }
 
     @Test
-    public void testGetSquaresBetween() {
-        PositionModel topLeft = PositionModel.createNewInstance(1, 1);
-        PositionModel topRight = PositionModel.createNewInstance(1, 5);
-        PositionModel bottomLeft = PositionModel.createNewInstance(5, 1);
-        List<MazeLayoutModel.MazeSquare> right = layouts.get(0).getSquaresBetween(topLeft, topRight);
-        List<MazeLayoutModel.MazeSquare> left = layouts.get(0).getSquaresBetween(topRight, topLeft);
-        List<MazeLayoutModel.MazeSquare> up = layouts.get(0).getSquaresBetween(topLeft, bottomLeft);
-        List<MazeLayoutModel.MazeSquare> down = layouts.get(0).getSquaresBetween(bottomLeft, topLeft);
-        List<List<MazeLayoutModel.MazeSquare>> testLists = new ArrayList<>(Arrays.asList(right, left, up, down));
-        for (List<MazeLayoutModel.MazeSquare> testList: testLists) {
-            assertEquals(3, testList.size());
-            for (MazeLayoutModel.MazeSquare square: testList) {
-                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, square);
+    public void testHasAlignmentPattern() {
+        for (MazeLayoutModel layout : layouts) {
+            Integer alignCorner = layout.getSideLength() - 9;
+            assertEquals(
+                    MazeLayoutModel.MazeSquare.WALL,
+                    layout.getSquare(new PositionModel(alignCorner, alignCorner)));
+            assertEquals(
+                    MazeLayoutModel.MazeSquare.PASSAGE,
+                    layout.getSquare(new PositionModel(alignCorner + 1, alignCorner + 1)));
+            assertEquals(
+                    MazeLayoutModel.MazeSquare.WALL,
+                    layout.getSquare(new PositionModel(alignCorner + 2, alignCorner + 2)));
+        }
+    }
+
+    @Test
+    public void testHasTimingPatterns() {
+        for (MazeLayoutModel layout : layouts) {
+            int timingPosition = 6;
+            int timingStart = 8;
+            int timingEnd = layout.getSideLength() - 9;
+            for (int i = timingStart; i <= timingEnd; i++) {
+                MazeLayoutModel.MazeSquare expected;
+                if (i % 2 == 0) {
+                    expected = MazeLayoutModel.MazeSquare.WALL;
+
+                } else {
+                    expected = MazeLayoutModel.MazeSquare.PASSAGE;
+                }
+                // check horizontal pattern
+                assertEquals(
+                        expected,
+                        layout.getSquare(new PositionModel(i, timingPosition)));
+                // check vertical pattern
+                assertEquals(
+                        expected,
+                        layout.getSquare(new PositionModel(timingPosition, i)));
             }
+        }
+    }
+
+    @Test
+    public void testHasDarkModule() {
+        int darkModX = 8;
+        for (MazeLayoutModel layout : layouts) {
+            assertEquals(
+                    MazeLayoutModel.MazeSquare.WALL,
+                    layout.getSquare(new PositionModel(darkModX, layout.getSideLength() - 8)));
+        }
+    }
+
+    @Test
+    public void testGetSquare() {
+        PositionModel position = new PositionModel(1, 1);
+        for (MazeLayoutModel layout : layouts) {
+            assertEquals(
+                    MazeLayoutModel.MazeSquare.PASSAGE,
+                    layout.getSquare(position));
         }
     }
 
@@ -92,4 +133,5 @@ public class MazeLayoutModelTest {
             consumer.accept(i1.next(), i2.next());
         }
     }
+
 }
