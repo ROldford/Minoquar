@@ -10,13 +10,13 @@ import model.MazeSizeModel;
 import java.util.Collections;
 import java.util.Scanner;
 
-public class MinoquarApp {
+public class MenuUI {
     private Scanner input;
     private MazeListModel mazeList;
     private int mazeListPage;
 
     // EFFECTS: runs the game app
-    public MinoquarApp() {
+    public MenuUI() {
         runApp();
     }
 

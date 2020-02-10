@@ -1,7 +1,7 @@
 package ui;
 
-public class Main {
+public class Minoquar {
     public static void main(String[] args) {
-        new MinoquarApp();
+        new MenuUI();
     }
 }
