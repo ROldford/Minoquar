@@ -109,6 +109,10 @@ public class MazeSizeModel {
         return new PositionModel(8, 4 * getVersion(size) + 9); //stub
     }
 
+    public static PositionModel getTreasurePosition(MazeSize size) {
+        return getAlignPatternPosition(size).add(new PositionModel(1, 1));
+    }
+
     // TODO: implement getStartPositions()
 
     // EFFECTS: returns QR version number of maze size

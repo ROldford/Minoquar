@@ -139,7 +139,17 @@ public class MazeLayoutModelTest {
                 System.out.println(row);
             }
         }
+    }
 
+    @Test
+    public void testGetTreasurePosition() {
+        List<Integer> expectedPositions = new ArrayList<>(Arrays.asList(17, 21, 25, 29, 33));
+        iterateSimultaneously(
+                expectedPositions, layouts,
+                (Integer expected, MazeLayoutModel layout) -> {
+                    assertEquals(expected, layout.getTreasurePosition().getX());
+                    assertEquals(expected, layout.getTreasurePosition().getY());
+                });
     }
 
     private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {

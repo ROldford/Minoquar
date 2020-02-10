@@ -27,6 +27,16 @@ public class GameUI {
             displayGame();
             displayHeroPosition();
             getHeroMove();
+            keepGoing = checkForWin();
+        }
+    }
+
+    private boolean checkForWin() {
+        if (game.checkForWin()) {
+            System.out.println("You win!");
+            return false;
+        } else {
+            return true;
         }
     }
 

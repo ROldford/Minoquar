@@ -24,6 +24,10 @@ public class GameModelTest {
         assertTrue(display.get(1).substring(0, 8).equals("▓     ▓ "));
         assertTrue(display.get(2).substring(0, 8).equals("▓ ▓▓▓ ▓ "));
         assertFalse(display.get(0).substring(8, 9).equals("X"));
+        // TODO: add test for treasure display
+        PositionModel alignCorner = MazeSizeModel.getAlignPatternPosition(MazeSizeModel.MazeSize.EXTRA_SMALL);
+        assertTrue(display.get(alignCorner.getY()+1).substring(
+                alignCorner.getX(), alignCorner.getX()+5).equals("▓O  ▓"));
         for (String row : display) {
             System.out.println(row);
         }
@@ -59,6 +63,16 @@ public class GameModelTest {
     public void testGetHeroPosition() {
         assertEquals(7, game.getHeroPosition().getX());
         assertEquals(0, game.getHeroPosition().getY());
+    }
+
+    @Test
+    public void testCheckForWin() {
+        assertFalse(game.checkForWin());
+        MazeSizeModel.MazeSize size = MazeSizeModel.MazeSize.EXTRA_SMALL;
+        GameModel wonGame = new GameModel(
+                new MazeModel("already won", size),
+                MazeSizeModel.getTreasurePosition(size));
+        assertTrue(wonGame.checkForWin());
     }
 
 }

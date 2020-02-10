@@ -145,6 +145,17 @@ class MazeSizeModelTest {
                 });
     }
 
+    @Test
+    public void testGetTreasurePosition() {
+        List<Integer> expectedPositions = new ArrayList<>(Arrays.asList(17, 21, 25, 29, 33));
+        iterateSimultaneously(
+                expectedPositions, sizes,
+                (Integer expected, MazeSizeModel.MazeSize size) -> {
+                    assertEquals(expected, MazeSizeModel.getTreasurePosition(size).getX());
+                    assertEquals(expected, MazeSizeModel.getTreasurePosition(size).getY());
+                });
+    }
+
     // TODO: extract to a utils class
     // TODO: document where I found this on StackOverflow
     private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {

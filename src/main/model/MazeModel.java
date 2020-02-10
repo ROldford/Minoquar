@@ -51,4 +51,10 @@ public class MazeModel {
     public int getSideLength() {
         return mazeBoard.getSideLength();
     }
+
+    // EFFECTS: returns position of treasure in maze layout
+    //          located in top right corner passage of alignment pattern
+    public PositionModel getTreasurePosition() {
+        return mazeBoard.getTreasurePosition();
+    }
 }

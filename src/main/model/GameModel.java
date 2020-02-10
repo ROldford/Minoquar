@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameModel {
+    public static final char TREASURE_CHAR = "O".charAt(0);
+
     private MazeModel maze;
-    // TODO: Should this be static or final to make it set-once read-only?
+    // TODO: Should mazeDisplay be static or final to make it set-once read-only?
     private List<String> mazeDisplay;
     private HeroModel hero;
+    private PositionModel treasure;
 
     // REQUIRES: hero's start position must be valid for given maze (based on maze size)
     // EFFECTS: construct new game with given maze and hero start position
@@ -15,24 +18,25 @@ public class GameModel {
         this.maze = maze;
         this.mazeDisplay = maze.displayMaze();
         this.hero = new HeroModel(start);
+        this.treasure = maze.getTreasurePosition();
     }
 
     // EFFECTS: return list of strings to display the current game state
     public List<String> display() {
-        List<String> display = new ArrayList<>();
+        List<String> display = new ArrayList<>(mazeDisplay);
         // TODO: Extract this into new helper method
-        for (int i = 0; i < mazeDisplay.size(); i++) {
-            if (hero.getPosition().getY() == i) {
-                String newRow = replaceCharAtIndex(
-                        mazeDisplay.get(i),
-                        hero.getPosition().getX(),
-                        hero.HERO_CHAR);
-                display.add(newRow);
-            } else {
-                display.add(mazeDisplay.get(i));
-            }
-        }
-        return display; //stub
+        display = overlayGameElement(TREASURE_CHAR, treasure, display);
+        display = overlayGameElement(HeroModel.HERO_CHAR, hero.getPosition(), display);
+        return display;
+    }
+
+    // EFFECTS: return new display list of strings with game element character overlaid at given position
+    private List<String> overlayGameElement(char ch, PositionModel position, List<String> display) {
+        List<String> overlaid = new ArrayList<>(display);
+        String row = overlaid.get(position.getY());
+        row = replaceCharAtIndex(row, position.getX(), ch);
+        overlaid.set(position.getY(), row);
+        return overlaid;
     }
 
     // EFFECTS: if move is valid, move hero to end location and return true
@@ -44,6 +48,11 @@ public class GameModel {
         } else {
             return false;
         }
+    }
+
+    // EFFECTS: returns true if hero has captured the treasure, false if not
+    public boolean checkForWin() {
+        return (hero.getPosition().getX() == treasure.getX() && hero.getPosition().getY() == treasure.getY());
     }
 
     // EFFECTS: makes new string where character at index is replaced with new character

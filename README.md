@@ -31,4 +31,4 @@ implement the more difficult parts of a digital game, such as physics, collision
     - [X] Move along corridors (white squares)
     - [X] Stop at walls (black squares)
     - [X] Tunnel through walls (can move through black squares to white square on other side)
-- [ ] As a user, I want to end the game by reaching the treasure (found in the bottom-right QR recognition pattern)
+- [X] As a user, I want to end the game by reaching the treasure (found in the bottom-right QR recognition pattern)

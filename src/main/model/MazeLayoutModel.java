@@ -136,6 +136,9 @@ public class MazeLayoutModel extends Layout {
         overwrite(MazeSizeModel.getDarkModulePosition(size), DARK_MODULE);
     }
 
+    // MODIFIES: this
+    // EFFECTS: fills remaining EMPTY squares in maze layout with WALL or PASSAGE
+    //          random chance of either, based on PERCENT_WALL
     private void fillRemainingSquares() {
         for (int i = 0; i < layout.size(); i++) {
             if (layout.get(i) == MazeSquare.EMPTY) {
@@ -148,4 +151,9 @@ public class MazeLayoutModel extends Layout {
         }
     }
 
+    // EFFECTS: returns position of treasure in maze layout
+    //          located in top right corner passage of alignment pattern
+    public PositionModel getTreasurePosition() {
+        return MazeSizeModel.getTreasurePosition(size);
+    }
 }
