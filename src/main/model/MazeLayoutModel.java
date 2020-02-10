@@ -28,6 +28,7 @@ public class MazeLayoutModel extends Layout {
             W, P, P, P, W,
             W, W, W, W, W)));
     public static final Layout DARK_MODULE = new Layout(1, 1, new ArrayList<>(Arrays.asList(W)));
+    public static final double PERCENT_WALL = 0.4;
 
     private MazeSizeModel.MazeSize size;
 
@@ -138,8 +139,11 @@ public class MazeLayoutModel extends Layout {
     private void fillRemainingSquares() {
         for (int i = 0; i < layout.size(); i++) {
             if (layout.get(i) == MazeSquare.EMPTY) {
-                // TODO: add random PASSAGE or WALL
-                layout.set(i, MazeSquare.PASSAGE);
+                if (Math.random() < PERCENT_WALL) {
+                    layout.set(i, MazeSquare.WALL);
+                } else {
+                    layout.set(i, MazeSquare.PASSAGE);
+                }
             }
         }
     }

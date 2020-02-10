@@ -20,10 +20,10 @@ implement the more difficult parts of a digital game, such as physics, collision
 
 ## Project Progress
 **User Stories For This Deliverable:**
-- [ ] As a user, I want to be able to add a new random QR code maze to a list of mazes.
+- [X] As a user, I want to be able to add a new random QR code maze to a list of mazes.
     - [X] Able to add mazes
     - [X] Mazes have static QR features
-    - [ ] Mazes are random at all other parts
+    - [X] Mazes are random at all other parts
 - [X] As a user, I want to select a maze and start a game.
     - [X] Maze selection
     - [X] Game start
