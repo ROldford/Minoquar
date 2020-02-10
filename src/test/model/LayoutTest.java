@@ -135,6 +135,10 @@ public class LayoutTest {
         assertTrue(alignDisplay.get(0).substring(0,5).equals("▓▓▓▓▓"));
         assertTrue(alignDisplay.get(1).substring(0,5).equals("▓   ▓"));
         assertTrue(alignDisplay.get(2).substring(0,5).equals("▓ ▓ ▓"));
+        List<String> emptyDisplay = fiveByThreeEmpty.display();
+        for (String row : emptyDisplay) {
+            assertTrue(row.equals("XXXXX"));
+        }
     }
 
     private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
