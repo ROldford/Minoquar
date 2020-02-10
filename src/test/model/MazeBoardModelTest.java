@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MazeBoardModelTest {
     List<MazeBoardModel> boards;
+    // TODO: delete these
     MazeBoardModel xs;
     MazeBoardModel sm;
     MazeBoardModel md;
