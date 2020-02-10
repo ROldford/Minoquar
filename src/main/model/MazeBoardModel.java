@@ -49,4 +49,9 @@ public class MazeBoardModel {
         }
         return betweenList;
     }
+
+    // EFFECTS: return list of strings to display the current maze board
+    public List<String> display() {
+        return mazeLayout.display();
+    }
 }

@@ -109,6 +109,8 @@ public class MazeSizeModel {
         return new PositionModel(8, 4 * getVersion(size) + 9); //stub
     }
 
+    // TODO: implement getStartPositions()
+
     // EFFECTS: returns QR version number of maze size
     private static int getVersion(MazeSize size) {
         return VERSION_MAP.get(size);

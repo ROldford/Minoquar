@@ -5,6 +5,7 @@ import java.util.*;
 // represents game as maze level, stores layout and other maze data
 // allows verification of legal moves
 public class MazeModel {
+
     private MazeBoardModel mazeBoard;
     private String name;
 
@@ -36,10 +37,17 @@ public class MazeModel {
         return squares.isEmpty() || Collections.frequency(squares, squares.get(0)) == squares.size();  //stub
     }
 
+    // EFFECTS: return list of strings to display the current maze
+    public List<String> displayMaze() {
+        return mazeBoard.display();
+    }
+
+    // EFFECTS: returns name of maze's size
     public String getSizeName() {
         return mazeBoard.getSizeName();
     }
 
+    // EFFECTS: returns length of maze's sides
     public int getSideLength() {
         return mazeBoard.getSideLength();
     }

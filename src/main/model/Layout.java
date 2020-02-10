@@ -5,6 +5,10 @@ import java.util.List;
 
 // stores grid layout of given dimensions, can return state of square, and add other layouts on top of itself
 public class Layout {
+    public static final char WALL_CHAR = "▓".charAt(0);
+    public static final char PASSAGE_CHAR = " ".charAt(0);
+    public static final char EMPTY_CHAR = "X".charAt(0);
+
     int width;
     int height;
     List<MazeSquare> layout;
@@ -62,6 +66,26 @@ public class Layout {
                         other.getSquare(new PositionModel(x, y)));
             }
         }
+    }
+
+    // EFFECTS: return list of strings to display the current layout
+    public List<String> display() {
+        List<String> displayList = new ArrayList<>();
+        for (int y = 0; y < height; y++) {
+            StringBuilder row = new StringBuilder();
+            for (int x = 0; x < width; x++) {
+                // TODO: replace ifs with switch
+                if (getSquare(new PositionModel(x, y)) == MazeSquare.WALL) {
+                    row.append(WALL_CHAR);
+                } else if (getSquare(new PositionModel(x, y)) == MazeSquare.PASSAGE) {
+                    row.append(PASSAGE_CHAR);
+                } else {
+                    row.append(EMPTY_CHAR);
+                }
+            }
+            displayList.add(row.toString());
+        }
+        return displayList;
     }
 
     enum MazeSquare {

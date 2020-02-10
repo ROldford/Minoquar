@@ -42,7 +42,19 @@ public class MazeLayoutModel extends Layout {
     public static MazeLayoutModel createRandomMaze(MazeSizeModel.MazeSize mazeSize) {
         MazeLayoutModel randomMaze = new MazeLayoutModel(mazeSize);
         randomMaze.addQRCodeElements();
+        randomMaze.fillRemainingSquares();
+        // randomMaze.randomizeRemainingSquares();
         return randomMaze;
+    }
+
+    // EFFECTS: returns side length of this layout
+    public int getSideLength() {
+        return MazeSizeModel.getSideLength(size);
+    }
+
+    // EFFECTS: returns name of this layout's size
+    public String getSizeName() {
+        return MazeSizeModel.getMazeSizeName(size);
     }
 
     // MODIFIES: this
@@ -53,7 +65,6 @@ public class MazeLayoutModel extends Layout {
         addAlignmentPattern();
         addTimingPatterns();
         addDarkModule();
-        // randomizeRemainingSquares();
     }
 
     // MODIFIES: this
@@ -108,7 +119,7 @@ public class MazeLayoutModel extends Layout {
     private List<MazeSquare> buildTimingPattern(int length) {
         List<MazeSquare> pattern = new ArrayList<>();
         for (int i = 0; i < length; i++) {
-            // TODO: extract expression to check if even out as util method
+            // TODO: extract isEven expression out as util method
             if (i % 2 == 0) {
                 pattern.add(MazeSquare.WALL);
             } else {
@@ -124,14 +135,13 @@ public class MazeLayoutModel extends Layout {
         overwrite(MazeSizeModel.getDarkModulePosition(size), DARK_MODULE);
     }
 
-    // EFFECTS: returns side length of this layout
-    public int getSideLength() {
-        return MazeSizeModel.getSideLength(size);
-    }
-
-    // EFFECTS: returns name of this layout's size
-    public String getSizeName() {
-        return MazeSizeModel.getMazeSizeName(size);
+    private void fillRemainingSquares() {
+        for (int i = 0; i < layout.size(); i++) {
+            if (layout.get(i) == MazeSquare.EMPTY) {
+                // TODO: add random PASSAGE or WALL
+                layout.set(i, MazeSquare.PASSAGE);
+            }
+        }
     }
 
 }

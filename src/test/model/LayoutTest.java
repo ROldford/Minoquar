@@ -129,6 +129,14 @@ public class LayoutTest {
                 });
     }
 
+    @Test
+    public void testDisplay() {
+        List<String> alignDisplay = alignmentPattern.display();
+        assertTrue(alignDisplay.get(0).substring(0,5).equals("▓▓▓▓▓"));
+        assertTrue(alignDisplay.get(1).substring(0,5).equals("▓   ▓"));
+        assertTrue(alignDisplay.get(2).substring(0,5).equals("▓ ▓ ▓"));
+    }
+
     private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
         Iterator<T1> i1 = c1.iterator();
         Iterator<T2> i2 = c2.iterator();

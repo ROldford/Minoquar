@@ -2,6 +2,7 @@ package model;
 
 // represents the current position and state of Hero in a game
 public class HeroModel {
+    public static final char HERO_CHAR = "☺".charAt(0);
     private PositionModel position;
 
     // REQUIREMENTS: start position must be on PASSAGE square

@@ -126,6 +126,22 @@ public class MazeLayoutModelTest {
         }
     }
 
+    @Test
+    public void testDisplay() {
+        for (MazeLayoutModel layout : layouts) {
+            List<String> display = layout.display();
+            assertTrue(display.get(0).substring(0, 8).equals("▓▓▓▓▓▓▓ "));
+            assertTrue(display.get(1).substring(0, 8).equals("▓     ▓ "));
+            assertTrue(display.get(2).substring(0, 8).equals("▓ ▓▓▓ ▓ "));
+            assertFalse(display.get(0).substring(8, 9).equals("X"));
+            assertFalse(display.get(2).substring(8, 9).equals("X"));
+            for (String row : display) {
+                System.out.println(row);
+            }
+        }
+
+    }
+
     private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
         Iterator<T1> i1 = c1.iterator();
         Iterator<T2> i2 = c2.iterator();
