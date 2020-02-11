@@ -8,7 +8,7 @@ import java.util.List;
 // Gives details about each maze size, which correspond to QR Code Versions 2-6,
 // including positions of static QR code elements found in the maze
 //      - finder patterns (and margins), alignment pattern, timing patterns, dark module
-public class MazeSizeModel {
+public final class MazeSizeModel {
     public enum MazeSize {
         EXTRA_SMALL,
         SMALL,
