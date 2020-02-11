@@ -4,9 +4,7 @@ import java.util.Iterator;
 import java.util.function.BiConsumer;
 
 public final class Utilities {
-    private Utilities() {
-        throw new UnsupportedOperationException();
-    }
+    private Utilities() {}
 
     // EFFECTS: iterates through two Iterable collections of the same size simultaneously
     //          Biconsumer takes in a lambda, allowing actions to be taken on the corresponding items from each list
