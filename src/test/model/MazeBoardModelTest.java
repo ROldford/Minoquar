@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,10 +35,10 @@ public class MazeBoardModelTest {
                 MazeSizeModel.NAME_MD,
                 MazeSizeModel.NAME_LG,
                 MazeSizeModel.NAME_XL));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedSideLengths, boards,
                 (Integer sideLength, MazeBoardModel board) -> assertEquals(sideLength, board.getSideLength()));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedSizeNames, boards,
                 (String sizeName, MazeBoardModel board) -> assertEquals(sizeName, board.getSizeName()));
     }
@@ -98,11 +99,4 @@ public class MazeBoardModelTest {
         assertEquals(wallFirst, up);
     }
 
-    private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
-        Iterator<T1> i1 = c1.iterator();
-        Iterator<T2> i2 = c2.iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-            consumer.accept(i1.next(), i2.next());
-        }
-    }
 }

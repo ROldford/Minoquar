@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +48,7 @@ public class PositionModelTest {
                 new PositionModel(posX + -7, posY),
                 new PositionModel(posX + 14, posY + 5)
         ));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedPositions, deltas,
                 (PositionModel expected, PositionModel delta) -> assertTrue(
                         samePosition(expected, position.add(delta))));
@@ -55,13 +56,5 @@ public class PositionModelTest {
 
     private boolean samePosition(PositionModel a, PositionModel b) {
         return (a.getX() == b.getX() && a.getY() == b.getY());
-    }
-
-    private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
-        Iterator<T1> i1 = c1.iterator();
-        Iterator<T2> i2 = c2.iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-            consumer.accept(i1.next(), i2.next());
-        }
     }
 }

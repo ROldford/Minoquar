@@ -1,5 +1,7 @@
 package model;
 
+import utils.Utilities;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -90,7 +92,7 @@ public class MazeLayoutModel extends Layout {
         List<PositionModel> marginStartPositions = MazeSizeModel.getFinderMarginPositions(size);
         for (int i = 0; i < marginStartPositions.size(); i++) {
             // even index is vertical margin, odd is horizontal margin
-            if (i % 2 == 0) {
+            if (Utilities.isEven(i)) {
                 overwrite(marginStartPositions.get(i), FINDER_MARGIN_VERTICAL);
             } else {
                 overwrite(marginStartPositions.get(i), FINDER_MARGIN_HORIZONTAL);
@@ -121,8 +123,7 @@ public class MazeLayoutModel extends Layout {
     private List<MazeSquare> buildTimingPattern(int length) {
         List<MazeSquare> pattern = new ArrayList<>();
         for (int i = 0; i < length; i++) {
-            // TODO: extract isEven expression out as util method
-            if (i % 2 == 0) {
+            if (Utilities.isEven(i)) {
                 pattern.add(MazeSquare.WALL);
             } else {
                 pattern.add(MazeSquare.PASSAGE);

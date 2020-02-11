@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +34,7 @@ class MazeSizeModelTest {
                 MazeSizeModel.NAME_MD,
                 MazeSizeModel.NAME_LG,
                 MazeSizeModel.NAME_XL));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedSizeNames, sizes,
                 (String expected, MazeSizeModel.MazeSize size) -> assertEquals(
                         expected, MazeSizeModel.getMazeSizeName(size)));
@@ -43,7 +44,7 @@ class MazeSizeModelTest {
     public void testGetSideLength() {
         List<Integer> expectedSideLengths = new ArrayList<>(Arrays.asList(
                 4*2+17, 4*3+17, 4*4+17, 4*5+17, 4*6+17));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedSideLengths, sizes,
                 (Integer sideLength, MazeSizeModel.MazeSize size) -> assertEquals(
                         sideLength, MazeSizeModel.getSideLength(size)));
@@ -53,7 +54,7 @@ class MazeSizeModelTest {
     public void testGetFinderPatternPositions() {
         List<Integer> expectedNonZeroPositions = new ArrayList<>(Arrays.asList(
                 4*2+10, 4*3+10, 4*4+10, 4*5+10, 4*6+10));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedNonZeroPositions, sizes,
                 (Integer expected, MazeSizeModel.MazeSize size) -> {
                     List<PositionModel> positions = MazeSizeModel.getFinderPatternPositions(size);
@@ -79,11 +80,11 @@ class MazeSizeModelTest {
             expectedThisSize.add(new PositionModel(0, 4 * i + 9));
             expectedAllSizes.add(expectedThisSize);
         }
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 sizes, expectedAllSizes,
                 (MazeSizeModel.MazeSize size, List<PositionModel> expectedPositions) -> {
                     List<PositionModel> actualPositions = MazeSizeModel.getFinderMarginPositions(size);
-                    iterateSimultaneously(
+                    Utilities.iterateSimultaneously(
                             expectedPositions, actualPositions,
                             (PositionModel expected, PositionModel actual) -> {
                                 assertEquals(expected.getX(), actual.getX());
@@ -95,7 +96,7 @@ class MazeSizeModelTest {
     @Test
     public void testGetAlignPatternPosition() {
         List<Integer> expectedPositions = new ArrayList<>(Arrays.asList(16, 20, 24, 28, 32));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedPositions, sizes,
                 (Integer expected, MazeSizeModel.MazeSize size) -> {
                     assertEquals(expected, MazeSizeModel.getAlignPatternPosition(size).getX());
@@ -118,7 +119,7 @@ class MazeSizeModelTest {
         List<Integer> expectedValues = new ArrayList<>(Arrays.asList(
                 4*2+1, 4*3+1, 4*4+1, 4*5+1, 4*6+1
         ));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedValues, sizes,
                 (Integer expected, MazeSizeModel.MazeSize size) -> assertEquals(
                         expected, MazeSizeModel.getTimingPatternLength(size)));
@@ -133,7 +134,7 @@ class MazeSizeModelTest {
                 new PositionModel(8, 4*5+9),
                 new PositionModel(8, 4*6+9)
         ));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedPositions, sizes,
                 (PositionModel expected, MazeSizeModel.MazeSize size) -> {
                     PositionModel actual = MazeSizeModel.getDarkModulePosition(size);
@@ -145,21 +146,11 @@ class MazeSizeModelTest {
     @Test
     public void testGetTreasurePosition() {
         List<Integer> expectedPositions = new ArrayList<>(Arrays.asList(17, 21, 25, 29, 33));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedPositions, sizes,
                 (Integer expected, MazeSizeModel.MazeSize size) -> {
                     assertEquals(expected, MazeSizeModel.getTreasurePosition(size).getX());
                     assertEquals(expected, MazeSizeModel.getTreasurePosition(size).getY());
                 });
-    }
-
-    // TODO: extract to a utils class
-    // TODO: document where I found this on StackOverflow
-    private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
-        Iterator<T1> i1 = c1.iterator();
-        Iterator<T2> i2 = c2.iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-            consumer.accept(i1.next(), i2.next());
-        }
     }
 }

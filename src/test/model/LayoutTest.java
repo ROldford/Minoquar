@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Utilities;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -70,10 +71,10 @@ public class LayoutTest {
                 1, 5, 1, 7, 5, 5, 5));
         List<Integer> heights = new ArrayList<>(Arrays.asList(
                 1, 1, 5, 7, 5, 3, 3));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 widths, layouts,
                 (Integer width, Layout layout) -> assertEquals(width, layout.getWidth()));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 heights, layouts,
                 (Integer height, Layout layout) -> assertEquals(height, layout.getHeight()));
     }
@@ -82,7 +83,7 @@ public class LayoutTest {
     public void testGetSquare() {
         assertEquals(w, singleSquare.getSquare(new PositionModel(0, 0)));
         for (int i = 0; i < 5; i++) {
-            if (i % 2 == 0) {
+            if (Utilities.isEven(i)) {
                 assertEquals(w, alignmentPattern.getSquare(new PositionModel(i, i)));
                 assertEquals(w, timingHorizontal.getSquare(new PositionModel(i, 0)));
                 assertEquals(w, timingVertical.getSquare(new PositionModel(0, i)));
@@ -114,7 +115,7 @@ public class LayoutTest {
         ));
         Layout twoByTwoPattern = new Layout(2, 2, patternList);
         fiveByThreeEmpty.overwrite(startPosition, twoByTwoPattern);
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 patternList, patternPositions,
                 (Layout.MazeSquare patternSquare, PositionModel position) -> assertEquals(
                         patternSquare, fiveByThreeEmpty.getSquare(position)));
@@ -129,14 +130,6 @@ public class LayoutTest {
         List<String> emptyDisplay = fiveByThreeEmpty.display();
         for (String row : emptyDisplay) {
             assertEquals("XXXXX", row);
-        }
-    }
-
-    private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
-        Iterator<T1> i1 = c1.iterator();
-        Iterator<T2> i2 = c2.iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-            consumer.accept(i1.next(), i2.next());
         }
     }
 

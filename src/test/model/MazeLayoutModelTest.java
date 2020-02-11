@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,10 +35,10 @@ public class MazeLayoutModelTest {
                 MazeSizeModel.NAME_MD,
                 MazeSizeModel.NAME_LG,
                 MazeSizeModel.NAME_XL));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedSideLengths, layouts,
                 (Integer sideLength, MazeLayoutModel layout) -> assertEquals(sideLength, layout.getSideLength()));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedSizeNames, layouts,
                 (String sizeName, MazeLayoutModel layout) -> assertEquals(sizeName, layout.getSizeName()));
     }
@@ -84,7 +85,7 @@ public class MazeLayoutModelTest {
             int timingEnd = layout.getSideLength() - 9;
             for (int i = timingStart; i <= timingEnd; i++) {
                 MazeLayoutModel.MazeSquare expected;
-                if (i % 2 == 0) {
+                if (Utilities.isEven(i)) {
                     expected = MazeLayoutModel.MazeSquare.WALL;
 
                 } else {
@@ -140,20 +141,12 @@ public class MazeLayoutModelTest {
     @Test
     public void testGetTreasurePosition() {
         List<Integer> expectedPositions = new ArrayList<>(Arrays.asList(17, 21, 25, 29, 33));
-        iterateSimultaneously(
+        Utilities.iterateSimultaneously(
                 expectedPositions, layouts,
                 (Integer expected, MazeLayoutModel layout) -> {
                     assertEquals(expected, layout.getTreasurePosition().getX());
                     assertEquals(expected, layout.getTreasurePosition().getY());
                 });
-    }
-
-    private static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
-        Iterator<T1> i1 = c1.iterator();
-        Iterator<T2> i2 = c2.iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-            consumer.accept(i1.next(), i2.next());
-        }
     }
 
 }
