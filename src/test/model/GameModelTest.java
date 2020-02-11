@@ -68,10 +68,15 @@ public class GameModelTest {
     public void testCheckForWin() {
         assertFalse(game.checkForWin());
         MazeSizeModel.MazeSize size = MazeSizeModel.MazeSize.EXTRA_SMALL;
-        GameModel wonGame = new GameModel(
-                new MazeModel("already won", size),
-                MazeSizeModel.getTreasurePosition(size));
+        PositionModel treasurePosition = MazeSizeModel.getTreasurePosition(size);
+        PositionModel belowTreasure = treasurePosition.add(new PositionModel(0, 2));
+        PositionModel rightOfTreasure = treasurePosition.add(new PositionModel(2, 0));
+        GameModel wonGame = new GameModel(new MazeModel("already won", size), treasurePosition);
         assertTrue(wonGame.checkForWin());
+        GameModel sameX = new GameModel(new MazeModel("same x", size), belowTreasure);
+        assertFalse(sameX.checkForWin());
+        GameModel sameY = new GameModel(new MazeModel("same y", size), rightOfTreasure);
+        assertFalse(sameY.checkForWin());
     }
 
 }
