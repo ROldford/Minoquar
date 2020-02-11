@@ -18,6 +18,8 @@ public class GameUI {
         runGame(game);
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays game and processes user input
     private void runGame(GameModel game) {
         boolean keepGoing = true;
 
@@ -31,15 +33,7 @@ public class GameUI {
         }
     }
 
-    private boolean checkForWin() {
-        if (game.checkForWin()) {
-            System.out.println("You win!");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
+    // EFFECTS: displays current game state to user
     private void displayGame() {
         List<String> display = game.display();
         for (String row : display) {
@@ -47,16 +41,21 @@ public class GameUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: initializes input scanner and game model
     private void init(GameModel game) {
         this.input = new Scanner(System.in);
         this.game = game;
     }
 
+    // EFFECTS: displays current hero position in text to user
     private void displayHeroPosition() {
         PositionModel heroPosition = game.getHeroPosition();
         System.out.printf("Hero is at row %d, column %d%n", heroPosition.getY(), heroPosition.getX());
     }
 
+    // MODIFIES: this.input, game
+    // EFFECTS: processes game move
     private void getHeroMove() {
         boolean validMove = false;
         do {
@@ -70,6 +69,18 @@ public class GameUI {
                 System.out.println("That's not a valid move. Try again!");
             }
         } while (!validMove);
+    }
+
+    // EFFECTS: checks if game has been won
+    //          if so, displays win message
+    //          also returns boolean to determine if input loop should stop
+    private boolean checkForWin() {
+        if (game.checkForWin()) {
+            System.out.println("You win!");
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

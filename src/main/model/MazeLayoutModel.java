@@ -47,7 +47,6 @@ public class MazeLayoutModel extends Layout {
         MazeLayoutModel randomMaze = new MazeLayoutModel(mazeSize);
         randomMaze.addQRCodeElements();
         randomMaze.fillRemainingSquares();
-        // randomMaze.randomizeRemainingSquares();
         return randomMaze;
     }
 

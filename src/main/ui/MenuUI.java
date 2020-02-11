@@ -19,7 +19,7 @@ public class MenuUI {
     }
 
     // MODIFIES: this
-    // EFFECTS: processes user input
+    // EFFECTS: displays menus and processes user input
     private void runApp() {
         boolean keepGoing = true;
         String command;
@@ -102,7 +102,7 @@ public class MenuUI {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this.mazeListPage
     // EFFECTS: adds a new random maze to maze list
     private void createMaze() {
         String size = inputMazeSize();
@@ -130,7 +130,7 @@ public class MenuUI {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this.input
     // EFFECTS: displays menu of maze sizes to user, and processes user input
     private String inputMazeSize() {
         System.out.println("\nChoose maze size");
@@ -144,13 +144,14 @@ public class MenuUI {
         return input.next().toLowerCase();
     }
 
-    // MODIFIES: this
+    // MODIFIES: this.input
     // EFFECTS: requests maze name, and processes user input
     private String inputMazeName() {
         System.out.println("Name this maze:");
         return input.next().toLowerCase();
     }
 
+    // MODIFIES: this.input
     // EFFECTS: displays maze list, processes user input, and starts game with chosen maze
     private void chooseMaze() {
         displayMazeList(mazeListPage);

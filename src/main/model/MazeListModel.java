@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MazeListModel {
-    //fields
     List<MazeModel> mazes;
 
     // EFFECTS: construct new list of mazes
@@ -12,6 +11,7 @@ public class MazeListModel {
         this.mazes = new ArrayList<>();
     }
 
+    // MODIFIES: this
     // EFFECTS: creates a new random maze with given name and size and adds it to end of list
     public void createRandomMaze(String name, MazeSizeModel.MazeSize size) {
         mazes.add(new MazeModel(name, size));
