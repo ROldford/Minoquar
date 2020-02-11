@@ -5,7 +5,6 @@ import java.util.*;
 // represents game as maze level, stores layout and other maze data
 // allows verification of legal moves
 public class MazeModel {
-
     private MazeBoardModel mazeBoard;
     private String name;
 

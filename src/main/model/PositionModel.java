@@ -1,8 +1,8 @@
 package model;
 
 public final class PositionModel {
-    private final int posX;
-    private final int posY;
+    private int posX;
+    private int posY;
 
     // REQUIRES: both x and y >= 0
     // EFFECTS: construct PositionModel with given x, y coordinates
@@ -15,12 +15,12 @@ public final class PositionModel {
     }
 
     // EFFECTS: return x coordinate
-    public final int getX() {
+    public int getX() {
         return posX;
     }
 
     // EFFECTS: return y coordinate
-    public final int getY() {
+    public int getY() {
         return posY;
     }
 
