@@ -22,6 +22,12 @@ public class MazeListModel {
         return mazes.get(index); //stub
     }
 
+    // MODIFIES: this
+    // EFFECTS: deletes the maze at given list index
+    public void deleteMaze(int index) {
+        mazes.remove(index);
+    }
+
     // EFFECTS: return number of mazes in list
     public int size() {
         return mazes.size();

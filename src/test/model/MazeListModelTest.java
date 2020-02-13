@@ -30,4 +30,17 @@ public class MazeListModelTest {
         assertEquals(testSizeName, maze.getSizeName());
     }
 
+    @Test
+    public void testDeleteMaze() {
+        mazeList.createRandomMaze("maze 0", TEST_SIZE);
+        mazeList.createRandomMaze("maze 1", TEST_SIZE);
+        mazeList.createRandomMaze("maze 2", TEST_SIZE);
+        mazeList.deleteMaze(1);
+        assertEquals(2, mazeList.size());
+        MazeModel first = mazeList.readMaze(0);
+        MazeModel second = mazeList.readMaze(1);
+        assertEquals("maze 0", first.getName());
+        assertEquals("maze 2", second.getName());
+    }
+
 }

@@ -71,6 +71,7 @@ public class MenuUI {
         System.out.println("\tprev -> Show the 5 previous mazes");
         System.out.println("\tnext -> Show the 5 next mazes");
         System.out.println("\tadd -> Add a new random maze");
+        System.out.println("\tdel -> Delete a maze");
         System.out.println("\tgame -> Start a game");
         System.out.println("q -> quit Minoquar");
     }
@@ -94,6 +95,9 @@ public class MenuUI {
             case "add":
                 createMaze();
                 break;
+            case "del":
+                deleteMaze();
+                break;
             case "game":
                 chooseMaze();
                 break;
@@ -102,7 +106,7 @@ public class MenuUI {
         }
     }
 
-    // MODIFIES: this.mazeListPage
+    // MODIFIES: this
     // EFFECTS: adds a new random maze to maze list
     private void createMaze() {
         String size = inputMazeSize();
@@ -151,6 +155,21 @@ public class MenuUI {
         return input.next().toLowerCase();
     }
 
+    // MODIFIES: this
+    // EFFECTS: deletes a maze from maze list
+    private void deleteMaze() {
+        displayMazeList(mazeListPage);
+        System.out.println("\nType a maze's number to delete it");
+        int mazeNumber = input.nextInt();
+        try {
+            System.out.printf("\nDeleting Maze %d%n", mazeNumber);
+            mazeList.deleteMaze(getListIndexFromDisplayIndex(mazeNumber));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("That maze doesn't exist");
+        }
+    }
+
     // MODIFIES: this.input
     // EFFECTS: displays maze list, processes user input, and starts game with chosen maze
     private void chooseMaze() {
@@ -158,7 +177,7 @@ public class MenuUI {
         System.out.println("\nType a maze's number to choose it");
         int mazeNumber = input.nextInt();
         try {
-            MazeModel maze = mazeList.readMaze(mazeListPage * 5 + mazeNumber - 1);
+            MazeModel maze = mazeList.readMaze(getListIndexFromDisplayIndex(mazeNumber));
             System.out.printf("\nNow playing Maze %d%n", mazeNumber);
             startGame(maze);
         } catch (Exception e) {
@@ -170,6 +189,12 @@ public class MenuUI {
     // EFFECTS: starts game using given maze
     private void startGame(MazeModel maze) {
         new GameUI(new GameModel(maze, new PositionModel(7, 0)));
+    }
+
+
+    // EFFECTS: returns maze's index in list given it's number in display
+    private int getListIndexFromDisplayIndex(int displayIndex) {
+        return mazeListPage * 5 + displayIndex - 1;
     }
 
 }

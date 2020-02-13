@@ -22,19 +22,19 @@ implement the more difficult parts of a digital game, such as physics, collision
 **User Stories For This Deliverable:**
 
 *Required Stories*
-- [] As a user, I want to be able to delete a maze from the maze list.
-- [] As a user, when I modify the maze list (add or delete), I want the list to be saved to file.
-- [] As a user, when I start the app, I want the saved maze list to be read from file.
+- [X] As a user, I want to be able to delete a maze from the maze list.
+- [ ] As a user, when I modify the maze list (add or delete), I want the list to be saved to file.
+- [ ] As a user, when I start the app, I want the saved maze list to be read from file.
 
 *Other Stories*
-- [] As a user, I want an enemy minotaur to take a turn after I do.
-    - [] Minotaur starts in the center square of the maze (or the closest passage).
-    - [] Minotaur moves following the game's minotaur movement rules.
-        - [] If the minotaur is orthagonal to the hero, the minotaur moves as far as possible towards the hero.
-            - [] The minotaur will only stop short if it can end its' move at the hero's position.
-        - [] If not, the minotaur will check the horizontal and vertical distance to the hero, and choose the direction with the smaller distance.
-    - [] Minotaur is visible on screen.
-- [] As a user, I want to lose the game if the minotaur catches the hero (ends move on the hero's position)
+- [ ] As a user, I want an enemy minotaur to take a turn after I do.
+    - [ ] Minotaur starts in the center square of the maze (or the closest passage).
+    - [ ] Minotaur moves following the game's minotaur movement rules.
+        - [ ] If the minotaur is orthogonal to the hero, the minotaur moves as far as possible towards the hero.
+            - [ ] The minotaur will only stop short if it can end its' move at the hero's position.
+        - [ ] If not, the minotaur will check the horizontal and vertical distance to the hero, and choose the direction with the smaller distance.
+    - [ ] Minotaur is visible on screen.
+- [ ] As a user, I want to lose the game if the minotaur catches the hero (ends move on the hero's position)
 
 **Phase 1 User Stories:**
 - [X] As a user, I want to be able to add a new random QR code maze to a list of mazes.
