@@ -81,16 +81,10 @@ public class MenuUI {
     private void processCommand(String command) {
         switch (command) {
             case "prev":
-                mazeListPage -= 1;
-                if (mazeListPage < 0) {
-                    mazeListPage = mazeList.size() / 5;
-                }
+                updateMazeListPage("prev");
                 break;
             case "next":
-                mazeListPage += 1;
-                if (mazeListPage * 5 > mazeList.size()) {
-                    mazeListPage = 0;
-                }
+                updateMazeListPage("next");
                 break;
             case "add":
                 createMaze();
@@ -103,6 +97,24 @@ public class MenuUI {
                 break;
             default:
                 System.out.println("I didn't understand that");
+        }
+    }
+
+    private void updateMazeListPage(String direction) {
+        switch (direction) {
+            case "prev":
+                mazeListPage -= 1;
+                if (mazeListPage < 0) {
+                    mazeListPage = mazeList.size() / 5;
+                }
+                break;
+            case "next":
+                mazeListPage += 1;
+                if (mazeListPage * 5 > mazeList.size()) {
+                    mazeListPage = 0;
+                }
+            default:
+                System.out.println("updateMazeListPage got a bad input!");
         }
     }
 
