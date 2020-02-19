@@ -6,14 +6,13 @@ import utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.BiConsumer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MazeSizeModelTest {
     private List<MazeSizeModel.MazeSize> sizes;
+    private List<String> sizeCodes;
 
     // before each
     @BeforeEach
@@ -24,6 +23,9 @@ class MazeSizeModelTest {
         sizes.add(MazeSizeModel.MazeSize.MEDIUM);
         sizes.add(MazeSizeModel.MazeSize.LARGE);
         sizes.add(MazeSizeModel.MazeSize.EXTRA_LARGE);
+        sizeCodes = new ArrayList<>(Arrays.asList(
+                "xs", "sm", "md", "lg", "xl", "no"
+        ));
     }
 
     @Test
@@ -48,6 +50,30 @@ class MazeSizeModelTest {
                 expectedSideLengths, sizes,
                 (Integer sideLength, MazeSizeModel.MazeSize size) -> assertEquals(
                         sideLength, MazeSizeModel.getSideLength(size)));
+    }
+
+    @Test
+    public void testGetSizeCode() {
+        Utilities.iterateSimultaneously(
+                sizeCodes, sizes,
+                (String sizeCode, MazeSizeModel.MazeSize size) -> assertEquals(
+                        sizeCode, MazeSizeModel.getSizeCode(size)));
+    }
+
+    @Test
+    public void testGetSizeForSizeCode() {
+        List<MazeSizeModel.MazeSize> expectedSizes = new ArrayList<>(Arrays.asList(
+                MazeSizeModel.MazeSize.EXTRA_SMALL,
+                MazeSizeModel.MazeSize.SMALL,
+                MazeSizeModel.MazeSize.MEDIUM,
+                MazeSizeModel.MazeSize.LARGE,
+                MazeSizeModel.MazeSize.EXTRA_LARGE,
+                null
+        ));
+        Utilities.iterateSimultaneously(
+                expectedSizes, sizeCodes,
+                (MazeSizeModel.MazeSize expectedSize, String sizeCode) -> assertEquals(
+                        expectedSize, MazeSizeModel.getSizeForSizeCode(sizeCode)));
     }
 
     @Test

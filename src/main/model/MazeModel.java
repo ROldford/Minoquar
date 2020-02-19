@@ -14,6 +14,12 @@ public class MazeModel {
         this.mazeBoard = new MazeBoardModel(size);
     }
 
+    //EFFECTS: Constructs maze with given name, size and layout data
+    public MazeModel(String name, MazeSizeModel.MazeSize size, List<String> savedLayout) {
+        this.name = name;
+        this.mazeBoard = new MazeBoardModel(size, savedLayout);
+    }
+
     // EFFECTS: returns name of maze
     public String getName() {
         return name;

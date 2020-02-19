@@ -13,6 +13,11 @@ public class MazeBoardModel {
         this.mazeLayout = MazeLayoutModel.createRandomMaze(size);
     }
 
+    //EFFECTS: Constructs maze with given size and layout data
+    public MazeBoardModel(MazeSizeModel.MazeSize size, List<String> savedLayout) {
+        this.mazeLayout = MazeLayoutModel.createMazeFromMazeContent(size, savedLayout);
+    }
+
     // EFFECTS: return state of board square at given position
     public MazeLayoutModel.MazeSquare getSquare(PositionModel position) {
         return mazeLayout.getSquare(position);

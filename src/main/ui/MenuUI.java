@@ -4,11 +4,15 @@
 package ui;
 
 import model.*;
+import persistence.Reader;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Scanner;
 
 public class MenuUI {
+    private static final String MAZE_SAVE_FILE = "./data/mazeSaveFile.txt";
     private Scanner input;
     private MazeListModel mazeList;
     private int mazeListPage;
@@ -24,8 +28,9 @@ public class MenuUI {
         boolean keepGoing = true;
         String command;
         mazeListPage = 0;
+        input = new Scanner(System.in);
 
-        init();
+        loadMazes();
 
         while (keepGoing) {
             // Based on https://stackoverflow.com/a/6857936
@@ -44,10 +49,14 @@ public class MenuUI {
 
     // MODIFIES: this
     // EFFECTS: initializes input scanner and maze list
-    private void init() {
+    private void loadMazes() {
         // TODO: try moving this to constructor later
-        input = new Scanner(System.in);
-        mazeList = new MazeListModel();
+        try {
+            mazeList = Reader.readMazeList(new File(MAZE_SAVE_FILE));
+        } catch (IOException e) {
+            System.out.println("Could not read save file");
+            mazeList = new MazeListModel();
+        }
     }
 
     // EFFECTS: displays maze list to user, 1 page of 5 mazes at a time

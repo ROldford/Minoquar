@@ -6,9 +6,14 @@ import java.util.List;
 public class MazeListModel {
     List<MazeModel> mazes;
 
-    // EFFECTS: construct new list of mazes
+    // EFFECTS: construct new blank list of mazes
     public MazeListModel() {
         this.mazes = new ArrayList<>();
+    }
+
+    // EFFECTS: construct new MazeListModel from given list of mazes
+    public MazeListModel(List<MazeModel> mazeModels) {
+        this.mazes = mazeModels;
     }
 
     // MODIFIES: this

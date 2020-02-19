@@ -11,6 +11,8 @@ import java.util.List;
 public class MazeLayoutModel extends Layout {
     private static final MazeSquare W = MazeSquare.WALL;
     private static final MazeSquare P = MazeSquare.PASSAGE;
+    public static final char SAVE_FILE_WALL = "X".charAt(0);
+    public static final char SAVE_FILE_PASSAGE = ".".charAt(0);
     public static final Layout FINDER_PATTERN = new Layout(7, 7, new ArrayList<>(Arrays.asList(
             W, W, W, W, W, W, W,
             W, P, P, P, P, P, W,
@@ -43,11 +45,41 @@ public class MazeLayoutModel extends Layout {
 
     // MODIFIES: this
     // EFFECTS: create random maze layout of given size
-    public static MazeLayoutModel createRandomMaze(MazeSizeModel.MazeSize mazeSize) {
-        MazeLayoutModel randomMaze = new MazeLayoutModel(mazeSize);
+    public static MazeLayoutModel createRandomMaze(MazeSizeModel.MazeSize size) {
+        MazeLayoutModel randomMaze = new MazeLayoutModel(size);
         randomMaze.addQRCodeElements();
         randomMaze.fillRemainingSquares();
         return randomMaze;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: create maze layout of given size from maze content list
+    public static MazeLayoutModel createMazeFromMazeContent(MazeSizeModel.MazeSize size, List<String> savedLayout) {
+        MazeLayoutModel newMaze = new MazeLayoutModel(size);
+        Layout mazeLayout = new Layout(
+                MazeSizeModel.getSideLength(size),
+                MazeSizeModel.getSideLength(size),
+                parseSavedLayout(savedLayout));
+        newMaze.overwrite(new PositionModel(0, 0), mazeLayout);
+        return newMaze;
+    }
+
+    // EFFECTS: converts saved layout (in list of string format) to maze layout format
+    private static List<MazeSquare> parseSavedLayout(List<String> savedLayout) {
+        List<MazeSquare> layoutData = new ArrayList<>();
+        for (String row : savedLayout) {
+            for (char ch : row.toCharArray()) {
+                if (ch == SAVE_FILE_WALL) {
+                    layoutData.add(MazeSquare.WALL);
+                } else if (ch == SAVE_FILE_PASSAGE) {
+                    layoutData.add(MazeSquare.PASSAGE);
+                } else {
+                    // TODO: add exception throw here later
+                    layoutData.add(MazeSquare.EMPTY);
+                }
+            }
+        }
+        return layoutData;
     }
 
     // EFFECTS: returns side length of this layout

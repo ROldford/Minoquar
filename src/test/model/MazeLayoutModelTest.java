@@ -4,11 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Utilities;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,6 +42,39 @@ public class MazeLayoutModelTest {
         Utilities.iterateSimultaneously(
                 expectedSizeNames, layouts,
                 (String sizeName, MazeLayoutModel layout) -> assertEquals(sizeName, layout.getSizeName()));
+    }
+
+    @Test
+    public void testInitFromSavedData() {
+        List<String> testData = generateTestData();
+        MazeLayoutModel testMazeLayout = MazeLayoutModel.createMazeFromMazeContent(
+                MazeSizeModel.MazeSize.EXTRA_SMALL, testData);
+        assertEquals(25, testMazeLayout.getSideLength());
+        assertEquals(MazeSizeModel.NAME_XS, testMazeLayout.getSizeName());
+        for (int x = 0; x < 25; x++) {
+            for (int y = 0; y < 25; y++) {
+                char savedSquare = testData.get(y).charAt(x);
+                Layout.MazeSquare testSquare = testMazeLayout.getSquare(new PositionModel(x, y));
+                if (savedSquare == MazeLayoutModel.SAVE_FILE_WALL) {
+                    assertEquals(Layout.MazeSquare.WALL, testSquare);
+                } else if (savedSquare == MazeLayoutModel.SAVE_FILE_PASSAGE) {
+                    assertEquals(Layout.MazeSquare.PASSAGE, testSquare);
+                } else {
+                    fail("There's a saved square that's not a valid character");
+                }
+            }
+        }
+    }
+
+    private List<String> generateTestData() {
+        File file = new File("./data/test/testMazeLayout.txt");
+        List<String> testData = new ArrayList<>();
+        try {
+            testData = Files.readAllLines(file.toPath());
+        } catch (IOException e) {
+            fail("IOException: check that test data file exists with correct name and formatting");
+        }
+        return testData;
     }
 
     @Test

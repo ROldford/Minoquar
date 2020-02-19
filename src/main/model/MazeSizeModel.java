@@ -1,9 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 
 // Gives details about each maze size, which correspond to QR Code Versions 2-6,
 // including positions of static QR code elements found in the maze
@@ -27,6 +24,7 @@ public final class MazeSizeModel {
 
     private static final EnumMap<MazeSize, Integer> VERSION_MAP = setSizeVersionMap();
     private static final EnumMap<MazeSize, String> NAME_MAP = setSizeNameMap();
+    private static final EnumMap<MazeSize, String> CODE_MAP = setSizeCodeMap();
 
     // EFFECTS: sets up map between MazeSize and QR code version
     private static EnumMap<MazeSize, Integer> setSizeVersionMap() {
@@ -50,6 +48,17 @@ public final class MazeSizeModel {
         return map;
     }
 
+    // EFFECTS: sets up map between MazeSize and size code
+    private static EnumMap<MazeSize, String> setSizeCodeMap() {
+        EnumMap<MazeSize, String> map = new EnumMap<>(MazeSize.class);
+        map.put(MazeSize.EXTRA_SMALL, "xs");
+        map.put(MazeSize.SMALL, "sm");
+        map.put(MazeSize.MEDIUM, "md");
+        map.put(MazeSize.LARGE, "lg");
+        map.put(MazeSize.EXTRA_LARGE, "xl");
+        return map;
+    }
+
     // EFFECTS: return name of maze size
     public static String getMazeSizeName(MazeSize size) {
         return NAME_MAP.get(size);
@@ -58,6 +67,22 @@ public final class MazeSizeModel {
     // EFFECTS: return side length of maze
     public static int getSideLength(MazeSize size) {
         return 4 * VERSION_MAP.get(size) + 17;
+    }
+
+    // EFFECTS: return size code string for given maze size
+    public static String getSizeCode(MazeSize size) {
+        return CODE_MAP.get(size);
+    }
+
+    // EFFECTS: return MazeSize for given size code, or null if not a valid code
+    public static MazeSize getSizeForSizeCode(String sizeCode) {
+        Set<Map.Entry<MazeSize, String>> entrySet = CODE_MAP.entrySet();
+        for (Map.Entry<MazeSize, String> entry : entrySet) {
+            if (entry.getValue().equals(sizeCode)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     // EFFECTS: return positions of each recognition pattern's top left corner
