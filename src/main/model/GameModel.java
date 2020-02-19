@@ -21,21 +21,9 @@ public class GameModel {
         this.treasure = maze.getTreasurePosition();
     }
 
-    // EFFECTS: return list of strings to display the current game state
-    public List<String> display() {
-        List<String> display = new ArrayList<>(mazeDisplay);
-        display = overlayGameElement(TREASURE_CHAR, treasure, display);
-        display = overlayGameElement(HeroModel.HERO_CHAR, hero.getPosition(), display);
-        return display;
-    }
-
-    // EFFECTS: return new display list of strings with game element character overlaid at given position
-    private List<String> overlayGameElement(char ch, PositionModel position, List<String> display) {
-        List<String> overlaid = new ArrayList<>(display);
-        String row = overlaid.get(position.getY());
-        row = replaceCharAtIndex(row, position.getX(), ch);
-        overlaid.set(position.getY(), row);
-        return overlaid;
+    // EFFECTS: returns current position of hero in maze
+    public PositionModel getHeroPosition() {
+        return hero.getPosition();
     }
 
     // EFFECTS: if move is valid, move hero to end location and return true
@@ -54,16 +42,28 @@ public class GameModel {
         return (hero.getPosition().getX() == treasure.getX() && hero.getPosition().getY() == treasure.getY());
     }
 
+    // EFFECTS: return list of strings to display the current game state
+    public List<String> display() {
+        List<String> display = new ArrayList<>(mazeDisplay);
+        display = overlayGameElement(TREASURE_CHAR, treasure, display);
+        display = overlayGameElement(HeroModel.HERO_CHAR, hero.getPosition(), display);
+        return display;
+    }
+
+    // EFFECTS: return new display list of strings with game element character overlaid at given position
+    private List<String> overlayGameElement(char ch, PositionModel position, List<String> display) {
+        List<String> overlaid = new ArrayList<>(display);
+        String row = overlaid.get(position.getY());
+        row = replaceCharAtIndex(row, position.getX(), ch);
+        overlaid.set(position.getY(), row);
+        return overlaid;
+    }
+
     // EFFECTS: makes new string where character at index is replaced with new character
     // Based on code at https://www.baeldung.com/java-replace-character-at-index
     private String replaceCharAtIndex(String str, int index, char newChar) {
         StringBuilder newString = new StringBuilder(str);
         newString.setCharAt(index, newChar);
         return newString.toString();
-    }
-
-    // EFFECTS: returns current position of hero in maze
-    public PositionModel getHeroPosition() {
-        return hero.getPosition();
     }
 }

@@ -20,6 +20,11 @@ public class MazeListModel implements Saveable {
         this.mazes = mazeModels;
     }
 
+    // EFFECTS: return number of mazes in list
+    public int size() {
+        return mazes.size();
+    }
+
     // MODIFIES: this
     // EFFECTS: creates a new random maze with given name and size and adds it to end of list
     public void createRandomMaze(String name, MazeSizeModel.MazeSize size) {
@@ -35,11 +40,6 @@ public class MazeListModel implements Saveable {
     // EFFECTS: deletes the maze at given list index
     public void deleteMaze(int index) {
         mazes.remove(index);
-    }
-
-    // EFFECTS: return number of mazes in list
-    public int size() {
-        return mazes.size();
     }
 
     @Override

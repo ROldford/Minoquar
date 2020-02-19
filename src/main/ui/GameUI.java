@@ -33,19 +33,19 @@ public class GameUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: initializes input scanner and game model
+    private void init(GameModel game) {
+        this.input = new Scanner(System.in);
+        this.game = game;
+    }
+
     // EFFECTS: displays current game state to user
     private void displayGame() {
         List<String> display = game.display();
         for (String row : display) {
             System.out.println(row);
         }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: initializes input scanner and game model
-    private void init(GameModel game) {
-        this.input = new Scanner(System.in);
-        this.game = game;
     }
 
     // EFFECTS: displays current hero position in text to user

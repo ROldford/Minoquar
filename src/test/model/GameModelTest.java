@@ -33,6 +33,12 @@ public class GameModelTest {
     }
 
     @Test
+    public void testGetHeroPosition() {
+        assertEquals(7, game.getHeroPosition().getX());
+        assertEquals(0, game.getHeroPosition().getY());
+    }
+
+    @Test
     public void testMoveHeroValid() {
         // one space passage move
         assertTrue(game.moveHero(new PositionModel(7, 1)));
@@ -56,12 +62,6 @@ public class GameModelTest {
         game.moveHero(new PositionModel(7, 1));
         // tunnel move west, but over passage
         assertFalse(game.moveHero(new PositionModel(4, 1)));
-    }
-
-    @Test
-    public void testGetHeroPosition() {
-        assertEquals(7, game.getHeroPosition().getX());
-        assertEquals(0, game.getHeroPosition().getY());
     }
 
     @Test

@@ -48,39 +48,6 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testInitFromSavedData() {
-        List<String> testData = generateTestData();
-        MazeLayoutModel testMazeLayout = MazeLayoutModel.createMazeFromMazeContent(
-                MazeSizeModel.MazeSize.EXTRA_SMALL, testData);
-        assertEquals(25, MazeSizeModel.getSideLength(testMazeLayout.getSize()));
-        assertEquals(MazeSizeModel.NAME_XS, MazeSizeModel.getSizeName(testMazeLayout.getSize()));
-        for (int x = 0; x < 25; x++) {
-            for (int y = 0; y < 25; y++) {
-                char savedSquare = testData.get(y).charAt(x);
-                Layout.MazeSquare testSquare = testMazeLayout.getSquare(new PositionModel(x, y));
-                if (savedSquare == Reader.SAVE_FILE_WALL) {
-                    assertEquals(Layout.MazeSquare.WALL, testSquare);
-                } else if (savedSquare == Reader.SAVE_FILE_PASSAGE) {
-                    assertEquals(Layout.MazeSquare.PASSAGE, testSquare);
-                } else {
-                    fail("There's a saved square that's not a valid character");
-                }
-            }
-        }
-    }
-
-    private List<String> generateTestData() {
-        File file = new File("./data/test/testMazeLayout.txt");
-        List<String> testData = new ArrayList<>();
-        try {
-            testData = Files.readAllLines(file.toPath());
-        } catch (IOException e) {
-            fail("IOException: check that test data file exists with correct name and formatting");
-        }
-        return testData;
-    }
-
-    @Test
     public void testHasRecognitionPatternsAndMargins() {
         for (MazeLayoutModel layout : layouts) {
             int corner = MazeSizeModel.getSideLength(layout.getSize()) - 1;
@@ -199,6 +166,39 @@ public class MazeLayoutModelTest {
                         assertEquals(expected, row.length());
                     }
                 });
+    }
+
+    @Test
+    public void testInitFromSavedData() {
+        List<String> testData = generateTestData();
+        MazeLayoutModel testMazeLayout = MazeLayoutModel.createMazeFromMazeContent(
+                MazeSizeModel.MazeSize.EXTRA_SMALL, testData);
+        assertEquals(25, MazeSizeModel.getSideLength(testMazeLayout.getSize()));
+        assertEquals(MazeSizeModel.NAME_XS, MazeSizeModel.getSizeName(testMazeLayout.getSize()));
+        for (int x = 0; x < 25; x++) {
+            for (int y = 0; y < 25; y++) {
+                char savedSquare = testData.get(y).charAt(x);
+                Layout.MazeSquare testSquare = testMazeLayout.getSquare(new PositionModel(x, y));
+                if (savedSquare == Reader.SAVE_FILE_WALL) {
+                    assertEquals(Layout.MazeSquare.WALL, testSquare);
+                } else if (savedSquare == Reader.SAVE_FILE_PASSAGE) {
+                    assertEquals(Layout.MazeSquare.PASSAGE, testSquare);
+                } else {
+                    fail("There's a saved square that's not a valid character");
+                }
+            }
+        }
+    }
+
+    private List<String> generateTestData() {
+        File file = new File("./data/test/testMazeLayout.txt");
+        List<String> testData = new ArrayList<>();
+        try {
+            testData = Files.readAllLines(file.toPath());
+        } catch (IOException e) {
+            fail("IOException: check that test data file exists with correct name and formatting");
+        }
+        return testData;
     }
 
 }

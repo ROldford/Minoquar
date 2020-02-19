@@ -18,14 +18,14 @@ public class MazeBoardModel {
         this.mazeLayout = MazeLayoutModel.createMazeFromMazeContent(size, savedLayout);
     }
 
-    // EFFECTS: return state of board square at given position
-    public MazeLayoutModel.MazeSquare getSquare(PositionModel position) {
-        return mazeLayout.getSquare(position);
-    }
-
     // EFFECTS: return this maze board's size
     public MazeSizeModel.MazeSize getSize() {
         return mazeLayout.getSize();
+    }
+
+    // EFFECTS: return state of board square at given position
+    public MazeLayoutModel.MazeSquare getSquare(PositionModel position) {
+        return mazeLayout.getSquare(position);
     }
 
     // REQUIRES: start and end are within maze size
@@ -50,15 +50,15 @@ public class MazeBoardModel {
         return betweenList;
     }
 
-    // EFFECTS: return list of strings to display the current maze board
-    public List<String> display() {
-        return mazeLayout.display();
-    }
-
     // EFFECTS: returns position of treasure in maze layout
     //          located in top right corner passage of alignment pattern
     public PositionModel getTreasurePosition() {
         return mazeLayout.getTreasurePosition();
+    }
+
+    // EFFECTS: return list of strings to display the current maze board
+    public List<String> display() {
+        return mazeLayout.display();
     }
 
     // EFFECTS: returns maze board's data in save file format (see Reader)

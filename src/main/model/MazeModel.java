@@ -25,6 +25,16 @@ public class MazeModel {
         return name;
     }
 
+    // EFFECTS: returns name of maze's size
+    public String getSizeName() {
+        return MazeSizeModel.getSizeName(mazeBoard.getSize());
+    }
+
+    // EFFECTS: returns length of maze's sides
+    public int getSideLength() {
+        return MazeSizeModel.getSideLength(mazeBoard.getSize());
+    }
+
     // REQUIRES: start and end are within maze size
     //           start and end are on same orthogonal line
     //           start and end are not same position
@@ -37,35 +47,15 @@ public class MazeModel {
         }
     }
 
-    // EFFECTS: returns true if all squares in list are the same type
-    private boolean areSquaresIdentical(List<MazeLayoutModel.MazeSquare> squares) {
-        return squares.isEmpty() || Collections.frequency(squares, squares.get(0)) == squares.size();  //stub
+    // EFFECTS: returns position of treasure in maze layout
+    //          located in top right corner passage of alignment pattern
+    public PositionModel getTreasurePosition() {
+        return mazeBoard.getTreasurePosition();
     }
 
     // EFFECTS: return list of strings to display the current maze
     public List<String> displayMaze() {
         return mazeBoard.display();
-    }
-
-    // EFFECTS: returns name of maze's size
-    public String getSizeName() {
-        return MazeSizeModel.getSizeName(mazeBoard.getSize());
-    }
-
-    // EFFECTS: returns length of maze's sides
-    public int getSideLength() {
-        return MazeSizeModel.getSideLength(mazeBoard.getSize());
-    }
-
-    // EFFECTS: returns maze's size code
-    private String getSizeCode() {
-        return MazeSizeModel.getSizeCode(mazeBoard.getSize());
-    }
-
-    // EFFECTS: returns position of treasure in maze layout
-    //          located in top right corner passage of alignment pattern
-    public PositionModel getTreasurePosition() {
-        return mazeBoard.getTreasurePosition();
     }
 
     // EFFECTS: returns maze's data in save file format (see Reader)
@@ -75,6 +65,16 @@ public class MazeModel {
         saveData.add(getSizeCode());
         saveData.addAll(mazeBoard.getSaveData());
         return saveData;
+    }
+
+    // EFFECTS: returns true if all squares in list are the same type
+    private boolean areSquaresIdentical(List<MazeLayoutModel.MazeSquare> squares) {
+        return squares.isEmpty() || Collections.frequency(squares, squares.get(0)) == squares.size();  //stub
+    }
+
+    // EFFECTS: returns maze's size code
+    private String getSizeCode() {
+        return MazeSizeModel.getSizeCode(mazeBoard.getSize());
     }
 
 

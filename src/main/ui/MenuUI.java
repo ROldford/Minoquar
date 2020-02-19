@@ -71,20 +71,6 @@ public class MenuUI {
         }
     }
 
-    // EFFECTS: saves maze list state to SAVE_FILE
-    private void saveMazes() {
-        try {
-            Writer writer = new Writer(new File(SAVE_FILE));
-            writer.write(mazeList);
-            writer.close();
-            System.out.printf("Mazes saved to file %s%n", SAVE_FILE);
-        } catch (FileNotFoundException e) {
-            System.out.printf("Unable to save mazes to file%s%n. Check if file exists.", SAVE_FILE);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-
     // EFFECTS: displays maze list to user, 1 page of 5 mazes at a time
     private void displayMazeList(int mazeListPage) {
         if (mazeList.size() == 0) {
@@ -236,6 +222,20 @@ public class MenuUI {
     // EFFECTS: starts game using given maze
     private void startGame(MazeModel maze) {
         new GameUI(new GameModel(maze, new PositionModel(7, 0)));
+    }
+
+    // EFFECTS: saves maze list state to SAVE_FILE
+    private void saveMazes() {
+        try {
+            Writer writer = new Writer(new File(SAVE_FILE));
+            writer.write(mazeList);
+            writer.close();
+            System.out.printf("Mazes saved to file %s%n", SAVE_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.printf("Unable to save mazes to file%s%n. Check if file exists.", SAVE_FILE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
 

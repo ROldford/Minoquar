@@ -5,6 +5,13 @@ import java.util.List;
 
 // stores grid layout of given dimensions, can return state of square, and add other layouts on top of itself
 public class Layout {
+
+    enum MazeSquare {
+        WALL,
+        PASSAGE,
+        EMPTY
+    }
+
     public static final char WALL_CHAR = "▓".charAt(0);
     public static final char PASSAGE_CHAR = " ".charAt(0);
     public static final char EMPTY_CHAR = "X".charAt(0);
@@ -37,13 +44,6 @@ public class Layout {
         return layout.get(positionToListIndex(position, width));
     }
 
-    // REQUIRES: position is not outside of layout
-    // EFFECTS: converts positions to index number for "flattened" 2D grid list of given width
-    // Example: positionToListIndex( (2, 4), 5) -> 14
-    protected int positionToListIndex(PositionModel position, int width) {
-        return position.getY() * width + position.getX(); //stub
-    }
-
     // EFFECTS: return width of maze
     public int getWidth() {
         return width;
@@ -52,20 +52,6 @@ public class Layout {
     // EFFECTS: return width of maze
     public int getHeight() {
         return height;
-    }
-
-    // REQUIRES: other layout does not fall outside of this pattern's dimensions
-    //           any squares being added to are EMPTY
-    // MODIFIES: this
-    // EFFECTS: overwrites other layout on top of EMPTY squares on this layout
-    public void overwrite(PositionModel cornerPosition, Layout other) {
-        for (int x = 0; x < other.getWidth(); x++) {
-            for (int y = 0; y < other.getHeight(); y++) {
-                layout.set(
-                        positionToListIndex(cornerPosition.add(new PositionModel(x, y)), width),
-                        other.getSquare(new PositionModel(x, y)));
-            }
-        }
     }
 
     // EFFECTS: return list of strings to display the current layout
@@ -91,9 +77,24 @@ public class Layout {
         return displayList;
     }
 
-    enum MazeSquare {
-        WALL,
-        PASSAGE,
-        EMPTY
+    // REQUIRES: other layout does not fall outside of this pattern's dimensions
+    //           any squares being added to are EMPTY
+    // MODIFIES: this
+    // EFFECTS: overwrites other layout on top of EMPTY squares on this layout
+    public void overwrite(PositionModel cornerPosition, Layout other) {
+        for (int x = 0; x < other.getWidth(); x++) {
+            for (int y = 0; y < other.getHeight(); y++) {
+                layout.set(
+                        positionToListIndex(cornerPosition.add(new PositionModel(x, y)), width),
+                        other.getSquare(new PositionModel(x, y)));
+            }
+        }
+    }
+
+    // REQUIRES: position is not outside of layout
+    // EFFECTS: converts positions to index number for "flattened" 2D grid list of given width
+    // Example: positionToListIndex( (2, 4), 5) -> 14
+    protected int positionToListIndex(PositionModel position, int width) {
+        return position.getY() * width + position.getX(); //stub
     }
 }
