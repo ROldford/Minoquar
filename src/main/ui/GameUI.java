@@ -59,6 +59,7 @@ public class GameUI {
     private void getHeroMove() {
         boolean validMove = false;
         do {
+            // TODO: update this to parse q as quit (helper method, return -1 as quit)
             System.out.println("Your move! Which row?");
             int inY = input.nextInt();
             System.out.println("Which column?");
