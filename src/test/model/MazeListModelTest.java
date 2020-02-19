@@ -22,7 +22,7 @@ public class MazeListModelTest {
 
     @Test
     public void testCreateRandomMaze() {
-        String testSizeName = MazeSizeModel.getMazeSizeName(TEST_SIZE);
+        String testSizeName = MazeSizeModel.getSizeName(TEST_SIZE);
         mazeList.createRandomMaze(TEST_NAME, TEST_SIZE);
         assertEquals(1, mazeList.size());
         MazeModel maze = mazeList.readMaze(0);

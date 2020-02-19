@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UtiltitiesTest {
+public class UtilitiesTest {
     @Test
     public void testIterateSimultaneouslySameSizeLists() {
         List<String> strings = new ArrayList<>(Arrays.asList("one", "two", "three"));

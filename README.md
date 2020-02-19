@@ -23,7 +23,7 @@ implement the more difficult parts of a digital game, such as physics, collision
 
 *Required Stories*
 - [X] As a user, I want to be able to delete a maze from the maze list.
-- [ ] As a user, when I modify the maze list (add or delete), I want the list to be saved to file.
+- [X] As a user, when I modify the maze list (add or delete), I want the list to be saved to file.
 - [X] As a user, when I start the app, I want the saved maze list to be read from file.
 
 *Other Stories*

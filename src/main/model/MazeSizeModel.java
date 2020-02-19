@@ -60,7 +60,7 @@ public final class MazeSizeModel {
     }
 
     // EFFECTS: return name of maze size
-    public static String getMazeSizeName(MazeSize size) {
+    public static String getSizeName(MazeSize size) {
         return NAME_MAP.get(size);
     }
 

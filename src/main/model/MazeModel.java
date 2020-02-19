@@ -49,12 +49,17 @@ public class MazeModel {
 
     // EFFECTS: returns name of maze's size
     public String getSizeName() {
-        return mazeBoard.getSizeName();
+        return MazeSizeModel.getSizeName(mazeBoard.getSize());
     }
 
     // EFFECTS: returns length of maze's sides
     public int getSideLength() {
-        return mazeBoard.getSideLength();
+        return MazeSizeModel.getSideLength(mazeBoard.getSize());
+    }
+
+    // EFFECTS: returns maze's size code
+    private String getSizeCode() {
+        return MazeSizeModel.getSizeCode(mazeBoard.getSize());
     }
 
     // EFFECTS: returns position of treasure in maze layout
@@ -62,4 +67,15 @@ public class MazeModel {
     public PositionModel getTreasurePosition() {
         return mazeBoard.getTreasurePosition();
     }
+
+    // EFFECTS: returns maze's data in save file format (see Reader)
+    public List<String> getSaveData() {
+        List<String> saveData = new ArrayList<>();
+        saveData.add(name);
+        saveData.add(getSizeCode());
+        saveData.addAll(mazeBoard.getSaveData());
+        return saveData;
+    }
+
+
 }

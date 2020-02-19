@@ -5,14 +5,18 @@ package ui;
 
 import model.*;
 import persistence.Reader;
+import persistence.Writer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.Scanner;
 
 public class MenuUI {
-    private static final String MAZE_SAVE_FILE = "./data/mazeSaveFile.txt";
+    private static final String SAVE_FILE = "./data/mazeSaveFile.txt";
+    private static final String DEFAULT_SAVE_FILE = "./data/defaults/mazeDefaultData.txt";
     private Scanner input;
     private MazeListModel mazeList;
     private int mazeListPage;
@@ -40,6 +44,7 @@ public class MenuUI {
             command = input.next().toLowerCase();
 
             if (command.equals("q")) {
+                saveMazes();
                 keepGoing = false;
             } else {
                 processCommand(command);
@@ -52,10 +57,31 @@ public class MenuUI {
     private void loadMazes() {
         // TODO: try moving this to constructor later
         try {
-            mazeList = Reader.readMazeList(new File(MAZE_SAVE_FILE));
+            mazeList = Reader.readMazeList(new File(SAVE_FILE));
         } catch (IOException e) {
             System.out.println("Could not read save file");
-            mazeList = new MazeListModel();
+            System.out.println("Trying default maze list");
+            try {
+                mazeList = Reader.readMazeList(new File(DEFAULT_SAVE_FILE));
+            } catch (IOException defaultE) {
+                System.out.println("Could not read default save file");
+                System.out.println("Creating blank maze list");
+                mazeList = new MazeListModel();
+            }
+        }
+    }
+
+    // EFFECTS: saves maze list state to SAVE_FILE
+    private void saveMazes() {
+        try {
+            Writer writer = new Writer(new File(SAVE_FILE));
+            writer.write(mazeList);
+            writer.close();
+            System.out.printf("Mazes saved to file %s%n", SAVE_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.printf("Unable to save mazes to file%s%n. Check if file exists.", SAVE_FILE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 

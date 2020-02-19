@@ -23,14 +23,9 @@ public class MazeBoardModel {
         return mazeLayout.getSquare(position);
     }
 
-    // EFFECTS: return name of this maze's size
-    public String getSizeName() {
-        return mazeLayout.getSizeName();
-    }
-
-    // EFFECTS: return side length of maze
-    public int getSideLength() {
-        return mazeLayout.getSideLength();
+    // EFFECTS: return this maze board's size
+    public MazeSizeModel.MazeSize getSize() {
+        return mazeLayout.getSize();
     }
 
     // REQUIRES: start and end are within maze size
@@ -64,5 +59,10 @@ public class MazeBoardModel {
     //          located in top right corner passage of alignment pattern
     public PositionModel getTreasurePosition() {
         return mazeLayout.getTreasurePosition();
+    }
+
+    // EFFECTS: returns maze board's data in save file format (see Reader)
+    public List<String> getSaveData() {
+        return mazeLayout.getSaveData();
     }
 }

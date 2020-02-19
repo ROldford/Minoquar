@@ -53,7 +53,7 @@ public class ReaderTest {
     private void testMaze(MazeModel maze, String expectedName, MazeSizeModel.MazeSize expectedSize) {
         assertEquals(expectedName, maze.getName());
         int oneSideLength = MazeSizeModel.getSideLength(expectedSize);
-        assertEquals(MazeSizeModel.getMazeSizeName(expectedSize), maze.getSizeName());
+        assertEquals(MazeSizeModel.getSizeName(expectedSize), maze.getSizeName());
         assertEquals(MazeSizeModel.getSideLength(expectedSize), oneSideLength);
         assertFalse(maze.isMoveValid(new PositionModel(7,0), new PositionModel(0,0)));
         assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(5, 1)));

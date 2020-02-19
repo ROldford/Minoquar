@@ -1,9 +1,13 @@
 package model;
 
+import persistence.Reader;
+import persistence.Saveable;
+
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MazeListModel {
+public class MazeListModel implements Saveable {
     List<MazeModel> mazes;
 
     // EFFECTS: construct new blank list of mazes
@@ -36,5 +40,16 @@ public class MazeListModel {
     // EFFECTS: return number of mazes in list
     public int size() {
         return mazes.size();
+    }
+
+    @Override
+    public void save(PrintWriter printWriter) {
+        for (MazeModel maze : mazes) {
+            printWriter.println(Reader.SEPARATOR_LINE);
+            List<String> mazeData = maze.getSaveData();
+            for (String line : mazeData) {
+                printWriter.println(line);
+            }
+        }
     }
 }

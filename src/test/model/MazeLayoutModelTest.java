@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import persistence.Reader;
 import utils.Utilities;
 
 import java.io.File;
@@ -38,10 +39,12 @@ public class MazeLayoutModelTest {
                 MazeSizeModel.NAME_XL));
         Utilities.iterateSimultaneously(
                 expectedSideLengths, layouts,
-                (Integer sideLength, MazeLayoutModel layout) -> assertEquals(sideLength, layout.getSideLength()));
+                (Integer sideLength, MazeLayoutModel layout) ->
+                        assertEquals(sideLength, MazeSizeModel.getSideLength(layout.getSize())));
         Utilities.iterateSimultaneously(
                 expectedSizeNames, layouts,
-                (String sizeName, MazeLayoutModel layout) -> assertEquals(sizeName, layout.getSizeName()));
+                (String sizeName, MazeLayoutModel layout) ->
+                        assertEquals(sizeName, MazeSizeModel.getSizeName(layout.getSize())));
     }
 
     @Test
@@ -49,15 +52,15 @@ public class MazeLayoutModelTest {
         List<String> testData = generateTestData();
         MazeLayoutModel testMazeLayout = MazeLayoutModel.createMazeFromMazeContent(
                 MazeSizeModel.MazeSize.EXTRA_SMALL, testData);
-        assertEquals(25, testMazeLayout.getSideLength());
-        assertEquals(MazeSizeModel.NAME_XS, testMazeLayout.getSizeName());
+        assertEquals(25, MazeSizeModel.getSideLength(testMazeLayout.getSize()));
+        assertEquals(MazeSizeModel.NAME_XS, MazeSizeModel.getSizeName(testMazeLayout.getSize()));
         for (int x = 0; x < 25; x++) {
             for (int y = 0; y < 25; y++) {
                 char savedSquare = testData.get(y).charAt(x);
                 Layout.MazeSquare testSquare = testMazeLayout.getSquare(new PositionModel(x, y));
-                if (savedSquare == MazeLayoutModel.SAVE_FILE_WALL) {
+                if (savedSquare == Reader.SAVE_FILE_WALL) {
                     assertEquals(Layout.MazeSquare.WALL, testSquare);
-                } else if (savedSquare == MazeLayoutModel.SAVE_FILE_PASSAGE) {
+                } else if (savedSquare == Reader.SAVE_FILE_PASSAGE) {
                     assertEquals(Layout.MazeSquare.PASSAGE, testSquare);
                 } else {
                     fail("There's a saved square that's not a valid character");
@@ -80,7 +83,7 @@ public class MazeLayoutModelTest {
     @Test
     public void testHasRecognitionPatternsAndMargins() {
         for (MazeLayoutModel layout : layouts) {
-            int corner = layout.getSideLength() - 1;
+            int corner = MazeSizeModel.getSideLength(layout.getSize()) - 1;
             // I'm only testing the corner, one square diagonal inwards, and the margin. THIS IS INTENTIONAL.
             // I'm not going to test every damn square!
             assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new PositionModel(0, 0)));
@@ -98,7 +101,7 @@ public class MazeLayoutModelTest {
     @Test
     public void testHasAlignmentPattern() {
         for (MazeLayoutModel layout : layouts) {
-            int alignCorner = layout.getSideLength() - 9;
+            int alignCorner = MazeSizeModel.getSideLength(layout.getSize()) - 9;
             assertEquals(
                     MazeLayoutModel.MazeSquare.WALL,
                     layout.getSquare(new PositionModel(alignCorner, alignCorner)));
@@ -116,7 +119,7 @@ public class MazeLayoutModelTest {
         for (MazeLayoutModel layout : layouts) {
             int timingPosition = 6;
             int timingStart = 8;
-            int timingEnd = layout.getSideLength() - 9;
+            int timingEnd = MazeSizeModel.getSideLength(layout.getSize()) - 9;
             for (int i = timingStart; i <= timingEnd; i++) {
                 MazeLayoutModel.MazeSquare expected;
                 if (Utilities.isEven(i)) {
@@ -143,7 +146,7 @@ public class MazeLayoutModelTest {
         for (MazeLayoutModel layout : layouts) {
             assertEquals(
                     MazeLayoutModel.MazeSquare.WALL,
-                    layout.getSquare(new PositionModel(darkModX, layout.getSideLength() - 8)));
+                    layout.getSquare(new PositionModel(darkModX, MazeSizeModel.getSideLength(layout.getSize()) - 8)));
         }
     }
 
@@ -180,6 +183,21 @@ public class MazeLayoutModelTest {
                 (Integer expected, MazeLayoutModel layout) -> {
                     assertEquals(expected, layout.getTreasurePosition().getX());
                     assertEquals(expected, layout.getTreasurePosition().getY());
+                });
+    }
+
+    @Test
+    public void testGetMazeData() {
+        List<Integer> expectedSideLengths = new ArrayList<>(Arrays.asList(
+                4*2+17, 4*3+17, 4*4+17, 4*5+17, 4*6+17));
+        Utilities.iterateSimultaneously(
+                expectedSideLengths, layouts,
+                (Integer expected, MazeLayoutModel layout) -> {
+                    List<String> saveData = layout.getSaveData();
+                    assertEquals(expected, saveData.size());
+                    for (String row : saveData) {
+                        assertEquals(expected, row.length());
+                    }
                 });
     }
 

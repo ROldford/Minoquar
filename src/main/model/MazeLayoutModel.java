@@ -1,5 +1,6 @@
 package model;
 
+import persistence.Reader;
 import utils.Utilities;
 
 import java.util.ArrayList;
@@ -11,8 +12,6 @@ import java.util.List;
 public class MazeLayoutModel extends Layout {
     private static final MazeSquare W = MazeSquare.WALL;
     private static final MazeSquare P = MazeSquare.PASSAGE;
-    public static final char SAVE_FILE_WALL = "X".charAt(0);
-    public static final char SAVE_FILE_PASSAGE = ".".charAt(0);
     public static final Layout FINDER_PATTERN = new Layout(7, 7, new ArrayList<>(Arrays.asList(
             W, W, W, W, W, W, W,
             W, P, P, P, P, P, W,
@@ -69,9 +68,9 @@ public class MazeLayoutModel extends Layout {
         List<MazeSquare> layoutData = new ArrayList<>();
         for (String row : savedLayout) {
             for (char ch : row.toCharArray()) {
-                if (ch == SAVE_FILE_WALL) {
+                if (ch == Reader.SAVE_FILE_WALL) {
                     layoutData.add(MazeSquare.WALL);
-                } else if (ch == SAVE_FILE_PASSAGE) {
+                } else if (ch == Reader.SAVE_FILE_PASSAGE) {
                     layoutData.add(MazeSquare.PASSAGE);
                 } else {
                     // TODO: add exception throw here later
@@ -82,14 +81,9 @@ public class MazeLayoutModel extends Layout {
         return layoutData;
     }
 
-    // EFFECTS: returns side length of this layout
-    public int getSideLength() {
-        return MazeSizeModel.getSideLength(size);
-    }
-
     // EFFECTS: returns name of this layout's size
-    public String getSizeName() {
-        return MazeSizeModel.getMazeSizeName(size);
+    public MazeSizeModel.MazeSize getSize() {
+        return size;
     }
 
     // MODIFIES: this
@@ -188,5 +182,26 @@ public class MazeLayoutModel extends Layout {
     //          located in top right corner passage of alignment pattern
     public PositionModel getTreasurePosition() {
         return MazeSizeModel.getTreasurePosition(size);
+    }
+
+    // EFFECTS: returns maze layout's data in save file format (see Reader)
+    public List<String> getSaveData() {
+        List<String> saveData = new ArrayList<>();
+        for (int y = 0; y < MazeSizeModel.getSideLength(size); y++) {
+            StringBuilder row = new StringBuilder();
+            for (int x = 0; x < MazeSizeModel.getSideLength(size); x++) {
+                MazeSquare square = getSquare(new PositionModel(x, y));
+                if (square == MazeSquare.WALL) {
+                    row.append(Reader.SAVE_FILE_WALL);
+                } else if (square == MazeSquare.PASSAGE) {
+                    row.append(Reader.SAVE_FILE_PASSAGE);
+                } else {
+                    // TODO: add exception throw later
+                    System.out.println("Invalid layout: has empty squares");
+                }
+            }
+            saveData.add(row.toString());
+        }
+        return saveData;
     }
 }

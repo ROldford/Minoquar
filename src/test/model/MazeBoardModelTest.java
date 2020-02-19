@@ -6,11 +6,9 @@ import utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.BiConsumer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MazeBoardModelTest {
     List<MazeBoardModel> boards;
@@ -37,10 +35,12 @@ public class MazeBoardModelTest {
                 MazeSizeModel.NAME_XL));
         Utilities.iterateSimultaneously(
                 expectedSideLengths, boards,
-                (Integer sideLength, MazeBoardModel board) -> assertEquals(sideLength, board.getSideLength()));
+                (Integer sideLength, MazeBoardModel board) ->
+                        assertEquals(sideLength, MazeSizeModel.getSideLength(board.getSize())));
         Utilities.iterateSimultaneously(
                 expectedSizeNames, boards,
-                (String sizeName, MazeBoardModel board) -> assertEquals(sizeName, board.getSizeName()));
+                (String sizeName, MazeBoardModel board) ->
+                        assertEquals(sizeName, MazeSizeModel.getSizeName(board.getSize())));
     }
 
     @Test

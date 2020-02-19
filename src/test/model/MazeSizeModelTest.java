@@ -39,7 +39,7 @@ class MazeSizeModelTest {
         Utilities.iterateSimultaneously(
                 expectedSizeNames, sizes,
                 (String expected, MazeSizeModel.MazeSize size) -> assertEquals(
-                        expected, MazeSizeModel.getMazeSizeName(size)));
+                        expected, MazeSizeModel.getSizeName(size)));
     }
 
     @Test
