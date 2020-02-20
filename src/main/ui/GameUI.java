@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameUI {
+    private static final String QUIT_COMMAND = MenuUI.QUIT_COMMAND;
+
     private Scanner input;
     private GameModel game;
 
@@ -28,8 +30,10 @@ public class GameUI {
         while (keepGoing) {
             displayGame();
             displayHeroPosition();
-            getHeroMove();
-            keepGoing = checkForWin();
+            keepGoing = getHeroMove();
+            if (keepGoing) {
+                keepGoing = !checkForWin();
+            }
         }
     }
 
@@ -56,31 +60,53 @@ public class GameUI {
 
     // MODIFIES: this.input, game
     // EFFECTS: processes game move
-    private void getHeroMove() {
+    //          returns true when move is completed
+    //          returns false if user wants to quit game
+    private boolean getHeroMove() {
         boolean validMove = false;
         do {
-            // TODO: update this to parse q as quit (helper method, method returns false as quit)
+            System.out.println("You can type q to quit");
             System.out.println("Your move! Which row?");
-            int inY = input.nextInt();
+            String inYStr = input.next();
+            if (inYStr.equals(QUIT_COMMAND)) {
+                return false;
+            }
             System.out.println("Which column?");
-            int inX = input.nextInt();
-            if (game.moveHero(new PositionModel(inX, inY))) {
-                validMove = true;
-            } else {
+            String inXStr = input.next();
+            if (inXStr.equals(QUIT_COMMAND)) {
+                return false;
+            }
+            try {
+                int inX = Integer.parseInt(inXStr);
+                int inY = Integer.parseInt(inYStr);
+                validMove = tryToMoveHero(new PositionModel(inX, inY));
+            } catch (NumberFormatException e) {
                 System.out.println("That's not a valid move. Try again!");
             }
         } while (!validMove);
+        return true;
+    }
+
+    // MODIFIES: game
+    // EFFECTS: attempts to move hero, returns true if successful, prints message and returns false if not
+    private boolean tryToMoveHero(PositionModel end) {
+        if (game.moveHero(end)) {
+            return true;
+        } else {
+            System.out.println("That's not a valid move. Try again!");
+            return false;
+        }
     }
 
     // EFFECTS: checks if game has been won
     //          if so, displays win message
-    //          also returns boolean to determine if input loop should stop
+    //          also returns true if hero wins, false if not
     private boolean checkForWin() {
         if (game.checkForWin()) {
             System.out.println("You win!");
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
 

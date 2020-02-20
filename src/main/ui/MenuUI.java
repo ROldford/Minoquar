@@ -17,6 +17,9 @@ import java.util.Scanner;
 public class MenuUI {
     private static final String SAVE_FILE = "./data/mazeSaveFile.txt";
     private static final String DEFAULT_SAVE_FILE = "./data/defaults/mazeDefaultData.txt";
+
+    public static final String QUIT_COMMAND = "q";
+
     private Scanner input;
     private MazeListModel mazeList;
     private int mazeListPage;
@@ -43,7 +46,7 @@ public class MenuUI {
             displayMenu();
             command = input.next().toLowerCase();
 
-            if (command.equals("q")) {
+            if (command.equals(QUIT_COMMAND)) {
                 saveMazes();
                 keepGoing = false;
             } else {
