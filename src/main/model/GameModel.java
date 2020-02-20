@@ -54,9 +54,18 @@ public class GameModel {
         // stub
     }
 
-    // EFFECTS: returns true if hero has captured the treasure, false if not
+    // EFFECTS: returns true if player has won the game, false if not
+    //          player wins if:
+    //              - hero has captured the treasure
     public boolean checkForWin() {
-        return (hero.getPosition().getX() == treasure.getX() && hero.getPosition().getY() == treasure.getY());
+        return (hero.getPosition().equivalent(treasure));
+    }
+
+    // EFFECTS: return true if player has lost the game, false if not
+    //          player loses if:
+    //              - minotaur moves onto hero's position
+    public boolean checkForLoss() {
+        return (hero.getPosition().equivalent(minotaur.getPosition()));
     }
 
     // EFFECTS: return list of strings to display the current game state

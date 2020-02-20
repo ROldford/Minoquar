@@ -34,7 +34,7 @@ implement the more difficult parts of a digital game, such as physics, collision
             - [ ] The minotaur will only stop short if it can end its' move at the hero's position.
         - [ ] If not, the minotaur will check the horizontal and vertical distance to the hero, and choose the direction with the smaller distance.
     - [X] Minotaur is visible on screen.
-- [ ] As a user, I want to lose the game if the minotaur catches the hero (ends move on the hero's position)
+- [X] As a user, I want to lose the game if the minotaur catches the hero (ends move on the hero's position)
 - [X] As a user, I want to be able to quit a game by typing "q" when it's my move.
 
 **Phase 1 User Stories:**

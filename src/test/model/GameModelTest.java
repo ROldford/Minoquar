@@ -18,6 +18,7 @@ public class GameModelTest {
 
     GameModel game;
     List<GameModel> startTestGames;
+    MazeModel emptyMaze;
 
     @BeforeEach
     public void beforeEach() {
@@ -26,6 +27,7 @@ public class GameModelTest {
                 new PositionModel(7, 0));
         try {
             MazeListModel startTestMazeList = Reader.readMazeList(new File(START_TESTS_FILE));
+            emptyMaze = startTestMazeList.readMaze(0);
             startTestGames = new ArrayList<>();
             for (int i = 0; i < startTestMazeList.size(); i++) {
                 MazeModel startTestMaze = startTestMazeList.readMaze(i);
@@ -143,4 +145,17 @@ public class GameModelTest {
         assertFalse(sameY.checkForWin());
     }
 
+    @Test
+    public void testCheckForLoss() {
+        assertFalse(game.checkForLoss());
+        PositionModel minotaurPosition = emptyMaze.getMinotaurStartPosition();
+        PositionModel belowMinotaur = minotaurPosition.add(new PositionModel(0, 2));
+        PositionModel rightOfMinotaur = minotaurPosition.add(new PositionModel(2, 0));
+        GameModel lostGame = new GameModel(emptyMaze, minotaurPosition);
+        assertTrue(lostGame.checkForLoss());
+        GameModel sameX = new GameModel(emptyMaze, belowMinotaur);
+        assertFalse(sameX.checkForLoss());
+        GameModel sameY = new GameModel(emptyMaze, rightOfMinotaur);
+        assertFalse(sameY.checkForLoss());
+    }
 }

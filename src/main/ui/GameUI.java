@@ -30,10 +30,13 @@ public class GameUI {
         while (keepGoing) {
             displayGame();
             displayHeroPosition();
-            keepGoing = getHeroMove();
-            if (keepGoing) {
-                keepGoing = !checkForWin();
+            displayMinotaurPosition();
+            boolean moveValid = getHeroMove();
+            boolean gameOver = checkForWin();
+            if (!gameOver) {
+                gameOver = checkForLoss();
             }
+            keepGoing = moveValid && !gameOver;
         }
     }
 
@@ -56,6 +59,12 @@ public class GameUI {
     private void displayHeroPosition() {
         PositionModel heroPosition = game.getHeroPosition();
         System.out.printf("Hero is at row %d, column %d%n", heroPosition.getY(), heroPosition.getX());
+    }
+
+    // EFFECTS: displays current minotaur position in text to user
+    private void displayMinotaurPosition() {
+        PositionModel minotaurPosition = game.getMinotaurPosition();
+        System.out.printf("Hero is at row %d, column %d%n", minotaurPosition.getY(), minotaurPosition.getX());
     }
 
     // MODIFIES: this.input, game
@@ -110,4 +119,15 @@ public class GameUI {
         }
     }
 
+    // EFFECTS: checks if game has been lost
+    //          if so, displays loss message
+    //          also returns true if hero loses, false if not
+    private boolean checkForLoss() {
+        if (game.checkForLoss()) {
+            System.out.println("Sorry, you lost.");
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
