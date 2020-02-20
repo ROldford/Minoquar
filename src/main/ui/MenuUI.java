@@ -11,8 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.*;
 
 public class MenuUI {
     private static final String SAVE_FILE = "./data/mazeSaveFile.txt";
@@ -174,14 +173,22 @@ public class MenuUI {
     // EFFECTS: displays menu of maze sizes to user, and processes user input
     private String inputMazeSize() {
         System.out.println("\nChoose maze size");
-        // TODO: Add command codes for sizes to MazeSize
-        System.out.printf("\txs -> %s%n", MazeSizeModel.NAME_XS);
-        System.out.printf("\tsm -> %s%n", MazeSizeModel.NAME_SM);
-        System.out.printf("\tmd -> %s%n", MazeSizeModel.NAME_MD);
-        System.out.printf("\tlg -> %s%n", MazeSizeModel.NAME_LG);
-        System.out.printf("\txl -> %s%n", MazeSizeModel.NAME_XL);
+        List<MazeSizeModel.MazeSize> sizes = new ArrayList<>(Arrays.asList(
+                MazeSizeModel.MazeSize.EXTRA_SMALL,
+                MazeSizeModel.MazeSize.SMALL,
+                MazeSizeModel.MazeSize.MEDIUM,
+                MazeSizeModel.MazeSize.LARGE,
+                MazeSizeModel.MazeSize.EXTRA_LARGE));
+        for (MazeSizeModel.MazeSize size : sizes) {
+            printMazeSizeInput(size);
+        }
         System.out.println("back -> go back to menu");
         return input.next().toLowerCase();
+    }
+
+    // EFFECTS: prints maze size selection string (format: [size code] -> [size name]
+    private void printMazeSizeInput(MazeSizeModel.MazeSize size) {
+        System.out.printf("\t%s -> %s%n", MazeSizeModel.getSizeCode(size), MazeSizeModel.getSizeName(size));
     }
 
     // MODIFIES: this.input
