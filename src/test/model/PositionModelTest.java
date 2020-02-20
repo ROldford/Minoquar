@@ -29,6 +29,14 @@ public class PositionModelTest {
     }
 
     @Test
+    public void testEquivalent() {
+        assertTrue(new PositionModel(1, 2).equivalent(new PositionModel(1, 2)));
+        assertTrue(new PositionModel(-1, -2).equivalent(new PositionModel(-1, -2)));
+        assertTrue(new PositionModel(0, 0).equivalent(new PositionModel(0, 0)));
+        assertFalse(new PositionModel(1, 2).equivalent(new PositionModel(3, 4)));
+    }
+
+    @Test
     public void testAdd() {
         List<PositionModel> deltas = new ArrayList<>(Arrays.asList(
                 new PositionModel(0, 0),

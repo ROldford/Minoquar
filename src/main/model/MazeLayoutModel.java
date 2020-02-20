@@ -3,10 +3,7 @@ package model;
 import persistence.Reader;
 import utils.Utilities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 // responsible for creating maze-specific layout (i.e. with static QR elements)
 public class MazeLayoutModel extends Layout {
@@ -72,6 +69,61 @@ public class MazeLayoutModel extends Layout {
     //          located in top right corner passage of alignment pattern
     public PositionModel getTreasurePosition() {
         return MazeSizeModel.getTreasurePosition(size);
+    }
+
+    // EFFECTS: gets minotaur start position (PASSAGE square closest to center)
+    //          uses breadth first search, starting from middle square
+    //          returns position of (-1, -1) if no valid start can be found
+    //          (This should NEVER happen!)
+    public PositionModel getMinotaurStartPosition() {
+        Queue<PositionModel> todo = new LinkedList<>();
+        todo.add(new PositionModel(MazeSizeModel.getSideLength(size) / 2, MazeSizeModel.getSideLength(size) / 2));
+        List<PositionModel> done = new ArrayList<>();
+        while (todo.size() > 0) {
+            PositionModel checking = todo.remove();
+            if (getSquare(checking) == MazeSquare.PASSAGE) {
+                return checking;
+            } else {
+                done.add(checking);
+                List<PositionModel> neighbors = findNeighbourPositions(checking);
+                for (PositionModel position : neighbors) {
+                    if (!todo.contains(position) && !done.contains(position)) {
+                        todo.add(position);
+                    }
+                }
+            }
+        }
+        return new PositionModel(-1, -1);
+    }
+
+    // EFFECTS: returns all valid orthogonal neighbors of the given position
+    private List<PositionModel> findNeighbourPositions(PositionModel center) {
+        List<PositionModel> neighbours = new ArrayList<>();
+        List<PositionModel> offsets = new ArrayList<>(Arrays.asList(
+                new PositionModel(0, -1),
+                new PositionModel(0, 1),
+                new PositionModel(-1, 0),
+                new PositionModel(1, 0)));
+        for (PositionModel offset : offsets) {
+            PositionModel neighbour = center.add(offset);
+            if (isInBounds(neighbour)) {
+                neighbours.add(neighbour);
+            }
+        }
+        return neighbours;
+    }
+
+    // EFFECTS: return true if position lies in bounds of layout
+    private boolean isInBounds(PositionModel positionModel) {
+        int sideLength = MazeSizeModel.getSideLength(size);
+        if (positionModel.getX() >= 0) {
+            if (positionModel.getX() < sideLength) {
+                if (positionModel.getY() >= 0) {
+                    return positionModel.getY() < sideLength;
+                }
+            }
+        }
+        return false;
     }
 
     // EFFECTS: returns maze layout's data in save file format (see Reader)

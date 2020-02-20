@@ -28,4 +28,8 @@ public final class PositionModel {
     public PositionModel add(PositionModel delta) {
         return new PositionModel(posX + delta.getX(), posY + delta.getY());
     }
+
+    public boolean equivalent(PositionModel other) {
+        return (getX() == other.getX() && getY() == other.getY());
+    }
 }

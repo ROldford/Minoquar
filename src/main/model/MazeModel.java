@@ -53,6 +53,12 @@ public class MazeModel {
         return mazeBoard.getTreasurePosition();
     }
 
+    // EFFECTS: gets minotaur start position (PASSAGE square closest to center)
+    //          uses breadth first search, starting from middle square
+    public PositionModel getMinotaurStartPosition() {
+        return mazeBoard.getMinotaurStartPosition();
+    }
+
     // EFFECTS: return list of strings to display the current maze
     public List<String> displayMaze() {
         return mazeBoard.display();

@@ -136,9 +136,9 @@ public class MazeLayoutModelTest {
             assertEquals("▓ ▓▓▓ ▓ ", display.get(2).substring(0, 8));
             assertNotEquals("X", display.get(0).substring(8, 9));
             assertNotEquals("X", display.get(2).substring(8, 9));
-            for (String row : display) {
-                System.out.println(row);
-            }
+//            for (String row : display) {
+//                System.out.println(row);
+//            }
         }
     }
 

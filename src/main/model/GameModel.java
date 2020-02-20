@@ -10,6 +10,7 @@ public class GameModel {
     // TODO: Should mazeDisplay be static or final to make it set-once read-only?
     private List<String> mazeDisplay;
     private HeroModel hero;
+    private MinotaurModel minotaur;
     private PositionModel treasure;
 
     // REQUIRES: hero's start position must be valid for given maze (based on maze size)
@@ -18,12 +19,19 @@ public class GameModel {
         this.maze = maze;
         this.mazeDisplay = maze.displayMaze();
         this.hero = new HeroModel(start);
+        this.minotaur = new MinotaurModel(maze.getMinotaurStartPosition());
+//        this.minotaur = new MinotaurModel(new PositionModel(10, 10));
         this.treasure = maze.getTreasurePosition();
     }
 
     // EFFECTS: returns current position of hero in maze
     public PositionModel getHeroPosition() {
         return hero.getPosition();
+    }
+
+    // EFFECTS: returns current position of minotaur in maze
+    public PositionModel getMinotaurPosition() {
+        return minotaur.getPosition();
     }
 
     // EFFECTS: if move is valid, move hero to end location and return true
@@ -37,6 +45,15 @@ public class GameModel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: moves minotaur according to minotaur movement rules
+    //          can tunnel through many WALL squares
+    //          will move as far as possible orthogonally towards hero
+    //          if diagonal to hero, will move whichever direction has the smallest delta to hero
+    public void moveMinotaur() {
+        // stub
+    }
+
     // EFFECTS: returns true if hero has captured the treasure, false if not
     public boolean checkForWin() {
         return (hero.getPosition().getX() == treasure.getX() && hero.getPosition().getY() == treasure.getY());
@@ -47,6 +64,7 @@ public class GameModel {
         List<String> display = new ArrayList<>(mazeDisplay);
         display = overlayGameElement(TREASURE_CHAR, treasure, display);
         display = overlayGameElement(HeroModel.HERO_CHAR, hero.getPosition(), display);
+        display = overlayGameElement(MinotaurModel.MINO_CHAR, minotaur.getPosition(), display);
         return display;
     }
 
