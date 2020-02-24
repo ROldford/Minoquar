@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameModelTest {
     private static final String START_TESTS_FILE = "./data/test/testMazeListMinotaurStart.txt";
+    private static final String MOVE_TESTS_FILE = "./data/test/testMazeListMinotaurMove.txt";
 
     GameModel game;
     List<GameModel> startTestGames;
@@ -125,10 +126,81 @@ public class GameModelTest {
                 });
     }
 
-//    @Test
-//    public void testMoveMinotaur() {
-//
-//    }
+    @Test
+    public void testMoveMinotaurOrthogonal() {
+        // orthogonal tests
+        // hero is already on minotaur: minotaur doesn't move
+        testMoveMinotaurCase(new PositionModel(0, 0), new PositionModel(0, 0));
+        // hero above minotaur start, 1 square away: minotaur moves up one square, stops on hero
+        testMoveMinotaurCase(new PositionModel(0, -1), new PositionModel(0, -1));
+        // hero above minotaur start, 5 squares away: minotaur moves up five squares, stops on hero
+        testMoveMinotaurCase(new PositionModel(0, -5), new PositionModel(0, -5));
+        // hero right of minotaur start, behind wall: minotaur moves right, stops at wall
+        testMoveMinotaurCase(new PositionModel(11, 0), new PositionModel(9, 0));
+        // hero left of minotaur start, behind long wall: minotaur moves left through wall, stops on hero
+        testMoveMinotaurCase(new PositionModel(-4, 0), new PositionModel(-4, 0));
+        // hero below minotaur start, just behind wall: minotaur moves down through wall, stops on hero
+        testMoveMinotaurCase(new PositionModel(0, 2), new PositionModel(0, 2));
+        // hero below minotaur start, 3 squares past wall: minotaur moves down through wall, stops after wall
+        testMoveMinotaurCase(new PositionModel(0, 5), new PositionModel(0, 2));
+    }
+
+    @Test
+    public void testMoveMinotaurDiagonal() {
+        // diagonal tests
+        // hero 1 square up, 3 squares right of minotaur: minotaur moves 1 square up
+        testMoveMinotaurCase(new PositionModel(3, -1), new PositionModel(0, -1));
+        // hero 3 squares up, 1 square right of minotaur: minotaur moves 1 square right
+        testMoveMinotaurCase(new PositionModel(1, -3), new PositionModel(1, 0));
+        // hero 1 square up, 1 square right of minotaur: minotaur randomly chooses direction
+        testMoveMinotaurDiagonalCase(
+                new PositionModel(1, -1),
+                new PositionModel(0, -1),
+                new PositionModel(1, 0));
+        // hero 1 square down, 2 squares left of minotaur: minotaur moves down through wall (2 squares down)
+        testMoveMinotaurCase(new PositionModel(-2, 1), new PositionModel(0, 2));
+        // hero 2 squares down, 1 square left of minotaur: minotaur moves left through wall (4 squares left)
+        testMoveMinotaurCase(new PositionModel(-1, 2), new PositionModel(-4, 0));
+        // hero 1 square down, 1 square left of minotaur: minotaur randomly chooses direction
+        testMoveMinotaurDiagonalCase(
+                new PositionModel(-1, 1),
+                new PositionModel(0, 2),
+                new PositionModel(-4, 0));
+    }
+
+    private void testMoveMinotaurCase(PositionModel heroStart,
+                                      PositionModel expectedDelta) {
+        MazeModel maze = generateMoveTestData();
+        assertNotNull(maze);
+        PositionModel minotaurStart = maze.getMinotaurStartPosition();
+        GameModel testGame = new GameModel(maze, minotaurStart.add(heroStart));
+        assertTrue(testGame.moveMinotaur());
+        assertTrue(testGame.getMinotaurPosition().equivalent(minotaurStart.add(expectedDelta)));
+    }
+
+    private void testMoveMinotaurDiagonalCase(PositionModel heroStart,
+                                              PositionModel expectedHorizontal,
+                                              PositionModel expectedVertical) {
+        MazeModel maze = generateMoveTestData();
+        assertNotNull(maze);
+        PositionModel minotaurStart = maze.getMinotaurStartPosition();
+        GameModel testGame = new GameModel(maze, minotaurStart.add(heroStart));
+        testGame.moveMinotaur();
+        boolean movedHorizontal = testGame.getMinotaurPosition().equivalent(minotaurStart.add(expectedHorizontal));
+        boolean movedVertical = testGame.getMinotaurPosition().equivalent(minotaurStart.add(expectedVertical));
+        assertTrue(movedHorizontal || movedVertical);
+    }
+
+    private MazeModel generateMoveTestData() {
+        try {
+            MazeListModel mazeList = Reader.readMazeList(new File(GameModelTest.MOVE_TESTS_FILE));
+            return mazeList.readMaze(0);
+        } catch (IOException e) {
+            fail(String.format("Something is wrong with the test file: %s", GameModelTest.MOVE_TESTS_FILE));
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Test
     public void testCheckForWin() {

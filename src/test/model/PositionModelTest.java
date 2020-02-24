@@ -63,4 +63,29 @@ public class PositionModelTest {
     private boolean samePosition(PositionModel a, PositionModel b) {
         return (a.getX() == b.getX() && a.getY() == b.getY());
     }
+
+    @Test
+    void testSubtract() {
+        List<PositionModel> others = new ArrayList<>(Arrays.asList(
+                new PositionModel(0, 0),
+                new PositionModel(0, 7),
+                new PositionModel(0, -7),
+                new PositionModel(7, 0),
+                new PositionModel(-7, 0),
+                new PositionModel(14, 5)
+        ));
+        List<PositionModel> expectedPositions = new ArrayList<>(Arrays.asList(
+                new PositionModel(posX, posY),
+                new PositionModel(posX, posY - 7),
+                new PositionModel(posX, posY - -7),
+                new PositionModel(posX - 7, posY),
+                new PositionModel(posX - -7, posY),
+                new PositionModel(posX - 14, posY - 5)
+        ));
+        Utilities.iterateSimultaneously(
+                expectedPositions, others,
+                (PositionModel expected, PositionModel other) -> assertTrue(
+                        samePosition(expected, position.subtract(other))));
+    }
+
 }

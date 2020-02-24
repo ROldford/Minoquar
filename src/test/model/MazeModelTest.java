@@ -44,4 +44,21 @@ public class MazeModelTest {
             }
         }
     }
+
+    @Test
+    public void testGetValidMoves() {
+        // corridors of top-left finder pattern: 4-size list
+        assertEquals(4, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.DOWN).size());
+        assertEquals(4, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.RIGHT).size());
+        assertEquals(4, maze.getValidMoves(new PositionModel(5,5), MazeModel.Direction.UP).size());
+        assertEquals(4, maze.getValidMoves(new PositionModel(5,5), MazeModel.Direction.LEFT).size());
+        // over wall, all directions: 1-size list
+        assertEquals(1, maze.getValidMoves(new PositionModel(5,5), MazeModel.Direction.RIGHT).size());
+        assertEquals(1, maze.getValidMoves(new PositionModel(5,5), MazeModel.Direction.DOWN).size());
+        assertEquals(1, maze.getValidMoves(new PositionModel(7,5), MazeModel.Direction.LEFT).size());
+        assertEquals(1, maze.getValidMoves(new PositionModel(5,7), MazeModel.Direction.UP).size());
+        // out of bounds (left and up): 0-size list
+        assertEquals(0, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.UP).size());
+        assertEquals(0, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.LEFT).size());
+    }
 }

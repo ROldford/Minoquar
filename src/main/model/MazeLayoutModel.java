@@ -113,21 +113,6 @@ public class MazeLayoutModel extends Layout {
         return neighbours;
     }
 
-    // TODO: move this to Layout and make public
-    // TODO: use this to throw exceptions in getSquare
-    // EFFECTS: return true if position lies in bounds of layout
-    private boolean isInBounds(PositionModel positionModel) {
-        int sideLength = MazeSizeModel.getSideLength(size);
-        if (positionModel.getX() >= 0) {
-            if (positionModel.getX() < sideLength) {
-                if (positionModel.getY() >= 0) {
-                    return positionModel.getY() < sideLength;
-                }
-            }
-        }
-        return false;
-    }
-
     // EFFECTS: returns maze layout's data in save file format (see Reader)
     public List<String> getSaveData() {
         List<String> saveData = new ArrayList<>();

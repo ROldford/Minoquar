@@ -3,6 +3,9 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.random;
+
 public class GameModel {
     public static final char TREASURE_CHAR = "O".charAt(0);
 
@@ -48,10 +51,103 @@ public class GameModel {
     // MODIFIES: this
     // EFFECTS: moves minotaur according to minotaur movement rules
     //          can tunnel through many WALL squares
-    //          will move as far as possible orthogonally towards hero
+    //          must follow all other movement rules (ie. passage moves stops at wall, etc.)
+    //          will move orthogonally towards hero
     //          if diagonal to hero, will move whichever direction has the smallest delta to hero
-    public void moveMinotaur() {
-        // stub
+    //              will end move so it is orthogonal to hero if possible
+    //              if both directions are equal, will prefer vertical movement
+    public boolean moveMinotaur() {
+        PositionModel minotaurPosition = minotaur.getPosition();
+        PositionModel heroPosition = hero.getPosition();
+        PositionModel delta = heroPosition.subtract(minotaurPosition);
+        if (delta.equivalent(new PositionModel(0, 0))) {
+            return true;
+        }
+        List<MazeModel.Direction> directions = decideDirection(delta);
+        for (MazeModel.Direction direction : directions) {
+            List<PositionModel> possibleMoves = maze.getValidMoves(minotaurPosition, direction);
+            if (possibleMoves.size() > 0) {
+                minotaur.setPosition(getBestMinotaurMove(possibleMoves, direction, heroPosition));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // EFFECTS: returns best minotaur move out of list of possible moves
+    //          best = puts minotaur on hero, else puts minotaur orthogonal to hero, else greatest distance
+    private PositionModel getBestMinotaurMove(
+            List<PositionModel> possibleMoves, MazeModel.Direction direction, PositionModel heroPosition) {
+        if (direction == MazeModel.Direction.LEFT || direction == MazeModel.Direction.RIGHT) {
+            for (PositionModel possibleMove : possibleMoves) {
+                if (possibleMove.getX() == heroPosition.getX()) {
+                    return possibleMove;
+                }
+            }
+            return possibleMoves.get(possibleMoves.size() - 1);
+        } else {
+            for (PositionModel possibleMove : possibleMoves) {
+                if (possibleMove.getY() == heroPosition.getY()) {
+                    return possibleMove;
+                }
+            }
+            return possibleMoves.get(possibleMoves.size() - 1);
+        }
+    }
+
+    // REQUIRES: at least one of x, y in delta is non-zero
+    // EFFECTS: returns list of correct directions for minotaur to move based on movement rules
+    //          if orthogonal, move towards hero; list has only 1 element
+    //          if diagonal, choose shorter move between x and y, or random if equal; list has 2 elements
+    private List<MazeModel.Direction> decideDirection(PositionModel delta) {
+        List<MazeModel.Direction> directions;
+        if (delta.getX() != 0 && delta.getY() != 0) {
+            directions = decideDirectionDiagonal(delta);
+        } else {
+            directions = new ArrayList<>();
+            directions.add(getDirectionFromDelta(delta));
+        }
+        return directions;
+    }
+
+    // REQUIRES: both x and y in delta are non-zero
+    // EFFECTS: returns list of correct directions for minotaur when diagonal to hero
+    private List<MazeModel.Direction> decideDirectionDiagonal(PositionModel delta) {
+        List<MazeModel.Direction> deltas = new ArrayList<>();
+        if (abs(delta.getX()) < abs(delta.getY())) {
+            deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
+            deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
+        } else if (abs(delta.getY()) < abs(delta.getX())) {
+            deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
+            deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
+        } else {
+            if (random() < 0.5) {
+                deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
+                deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
+            } else {
+                deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
+                deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
+            }
+        }
+        return deltas;
+    }
+
+    // REQUIRES: only one of x, y in delta is 0
+    // EFFECTS: returns Direction corresponding to given delta
+    private MazeModel.Direction getDirectionFromDelta(PositionModel delta) {
+        if (delta.getX() != 0) {
+            if (delta.getX() > 0) {
+                return MazeModel.Direction.RIGHT;
+            } else {
+                return MazeModel.Direction.LEFT;
+            }
+        } else {
+            if (delta.getY() > 0) {
+                return MazeModel.Direction.DOWN;
+            } else {
+                return MazeModel.Direction.UP;
+            }
+        }
     }
 
     // EFFECTS: returns true if player has won the game, false if not

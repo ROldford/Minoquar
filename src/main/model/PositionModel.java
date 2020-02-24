@@ -32,4 +32,9 @@ public final class PositionModel {
     public boolean equivalent(PositionModel other) {
         return (getX() == other.getX() && getY() == other.getY());
     }
+
+    // EFFECTS: return new PositionModel representing difference between this position and other
+    public PositionModel subtract(PositionModel other) {
+        return new PositionModel(posX - other.getX(), posY - other.getY());
+    }
 }

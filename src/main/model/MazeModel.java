@@ -8,6 +8,13 @@ public class MazeModel {
     private MazeBoardModel mazeBoard;
     private String name;
 
+    enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
+
     // EFFECTS: Constructs random maze with given name and size
     public MazeModel(String name, MazeSizeModel.MazeSize size) {
         this.name = name;
@@ -45,6 +52,18 @@ public class MazeModel {
         } else {
             return areSquaresIdentical(mazeBoard.getSquaresBetween(start, end));
         }
+    }
+
+    // EFFECTS: returns list of valid move endpoints from given start position in given direction
+    public List<PositionModel> getValidMoves(PositionModel start, Direction direction) {
+        List<PositionModel> squaresInDirection = mazeBoard.getSquaresInDirection(start, direction);
+        List<PositionModel> validMoves = new ArrayList<>();
+        for (PositionModel possibleEnd : squaresInDirection) {
+            if (isMoveValid(start, possibleEnd)) {
+                validMoves.add(possibleEnd);
+            }
+        }
+        return validMoves;
     }
 
     // EFFECTS: returns position of treasure in maze layout

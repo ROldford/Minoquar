@@ -99,4 +99,29 @@ public class MazeBoardModelTest {
         assertEquals(wallFirst, up);
     }
 
+    @Test
+    public void testGetSquaresInDirection() {
+        List<MazeSizeModel.MazeSize> sizes = new ArrayList<>(Arrays.asList(
+                MazeSizeModel.MazeSize.EXTRA_SMALL,
+                MazeSizeModel.MazeSize.SMALL,
+                MazeSizeModel.MazeSize.MEDIUM,
+                MazeSizeModel.MazeSize.LARGE,
+                MazeSizeModel.MazeSize.EXTRA_LARGE
+        ));
+        Utilities.iterateSimultaneously(
+                sizes, boards,
+                (MazeSizeModel.MazeSize size, MazeBoardModel board) -> {
+                    PositionModel start = new PositionModel(1, 0);
+                    int sideLength = MazeSizeModel.getSideLength(size);
+                    assertEquals(0, board.getSquaresInDirection(start, MazeModel.Direction.UP).size());
+                    assertEquals(1, board.getSquaresInDirection(start, MazeModel.Direction.LEFT).size());
+                    assertEquals(
+                            sideLength - 1,
+                            board.getSquaresInDirection(start, MazeModel.Direction.DOWN).size());
+                    assertEquals(
+                            sideLength - 2,
+                            board.getSquaresInDirection(start, MazeModel.Direction.RIGHT).size());
+                });
+    }
+
 }

@@ -91,6 +91,14 @@ public class Layout {
         }
     }
 
+    // TODO: use this to throw exceptions in getSquare
+    // EFFECTS: return true if position lies in bounds of layout
+    public boolean isInBounds(PositionModel position) {
+        boolean validX = (0 <= position.getX() && position.getX() < width);
+        boolean validY = (0 <= position.getY() && position.getY() < height);
+        return validX && validY;
+    }
+
     // REQUIRES: position is not outside of layout
     // EFFECTS: converts positions to index number for "flattened" 2D grid list of given width
     // Example: positionToListIndex( (2, 4), 5) -> 14

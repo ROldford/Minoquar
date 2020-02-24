@@ -31,12 +31,16 @@ public class GameUI {
             displayGame();
             displayHeroPosition();
             displayMinotaurPosition();
-            boolean moveValid = getHeroMove();
-            boolean gameOver = checkForWin();
-            if (!gameOver) {
-                gameOver = checkForLoss();
+            keepGoing = getHeroMove();
+            if (keepGoing) {
+                keepGoing = !checkForWin();
             }
-            keepGoing = moveValid && !gameOver;
+            if (keepGoing) {
+                keepGoing = getMinotaurMove();
+            }
+            if (keepGoing) {
+                keepGoing = !checkForLoss();
+            }
         }
     }
 
@@ -57,14 +61,17 @@ public class GameUI {
 
     // EFFECTS: displays current hero position in text to user
     private void displayHeroPosition() {
-        PositionModel heroPosition = game.getHeroPosition();
-        System.out.printf("Hero is at row %d, column %d%n", heroPosition.getY(), heroPosition.getX());
+        displayEntityPosition(game.getHeroPosition(), "Hero");
     }
 
     // EFFECTS: displays current minotaur position in text to user
     private void displayMinotaurPosition() {
-        PositionModel minotaurPosition = game.getMinotaurPosition();
-        System.out.printf("Hero is at row %d, column %d%n", minotaurPosition.getY(), minotaurPosition.getX());
+        displayEntityPosition(game.getMinotaurPosition(), "Minotaur");
+    }
+
+    // EFFECTS: displays entity position in text to user using given name
+    private void displayEntityPosition(PositionModel position, String name) {
+        System.out.printf("%s is at row %d, column %d%n", name, position.getY(), position.getX());
     }
 
     // MODIFIES: this.input, game
@@ -117,6 +124,10 @@ public class GameUI {
         } else {
             return false;
         }
+    }
+
+    private boolean getMinotaurMove() {
+        return game.moveMinotaur();
     }
 
     // EFFECTS: checks if game has been lost

@@ -71,4 +71,27 @@ public class MazeBoardModel {
     public List<String> getSaveData() {
         return mazeLayout.getSaveData();
     }
+
+    // EFFECTS: returns squares from start to edge of board in given direction
+    public List<PositionModel> getSquaresInDirection(PositionModel start, MazeModel.Direction direction) {
+        PositionModel increment;
+        List<PositionModel> squares = new ArrayList<>();
+        if (direction == MazeModel.Direction.UP) {
+            increment = new PositionModel(0, -1);
+        } else if (direction == MazeModel.Direction.DOWN) {
+            increment = new PositionModel(0, 1);
+        } else if (direction == MazeModel.Direction.LEFT) {
+            increment = new PositionModel(-1, 0);
+        } else if (direction == MazeModel.Direction.RIGHT) {
+            increment = new PositionModel(1, 0);
+        } else {
+            return new ArrayList<>();
+        }
+        PositionModel possibleEnd = start.add(increment);
+        while (mazeLayout.isInBounds(possibleEnd)) {
+            squares.add(possibleEnd);
+            possibleEnd = possibleEnd.add(increment);
+        }
+        return squares; //stub
+    }
 }
