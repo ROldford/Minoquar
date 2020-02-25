@@ -60,7 +60,7 @@ public class GameModel {
         PositionModel minotaurPosition = minotaur.getPosition();
         PositionModel heroPosition = hero.getPosition();
         PositionModel delta = heroPosition.subtract(minotaurPosition);
-        if (delta.equivalent(new PositionModel(0, 0))) {
+        if (delta.equals(new PositionModel(0, 0))) {
             return true;
         }
         List<MazeModel.Direction> directions = decideDirection(delta);
@@ -84,15 +84,14 @@ public class GameModel {
                     return possibleMove;
                 }
             }
-            return possibleMoves.get(possibleMoves.size() - 1);
         } else {
             for (PositionModel possibleMove : possibleMoves) {
                 if (possibleMove.getY() == heroPosition.getY()) {
                     return possibleMove;
                 }
             }
-            return possibleMoves.get(possibleMoves.size() - 1);
         }
+        return possibleMoves.get(possibleMoves.size() - 1);
     }
 
     // REQUIRES: at least one of x, y in delta is non-zero
@@ -154,14 +153,14 @@ public class GameModel {
     //          player wins if:
     //              - hero has captured the treasure
     public boolean checkForWin() {
-        return (hero.getPosition().equivalent(treasure));
+        return (hero.getPosition().equals(treasure));
     }
 
     // EFFECTS: return true if player has lost the game, false if not
     //          player loses if:
     //              - minotaur moves onto hero's position
     public boolean checkForLoss() {
-        return (hero.getPosition().equivalent(minotaur.getPosition()));
+        return (hero.getPosition().equals(minotaur.getPosition()));
     }
 
     // EFFECTS: return list of strings to display the current game state

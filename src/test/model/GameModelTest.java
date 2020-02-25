@@ -175,7 +175,7 @@ public class GameModelTest {
         PositionModel minotaurStart = maze.getMinotaurStartPosition();
         GameModel testGame = new GameModel(maze, minotaurStart.add(heroStart));
         assertTrue(testGame.moveMinotaur());
-        assertTrue(testGame.getMinotaurPosition().equivalent(minotaurStart.add(expectedDelta)));
+        assertEquals(testGame.getMinotaurPosition(), minotaurStart.add(expectedDelta));
     }
 
     private void testMoveMinotaurDiagonalCase(PositionModel heroStart,
@@ -186,8 +186,8 @@ public class GameModelTest {
         PositionModel minotaurStart = maze.getMinotaurStartPosition();
         GameModel testGame = new GameModel(maze, minotaurStart.add(heroStart));
         testGame.moveMinotaur();
-        boolean movedHorizontal = testGame.getMinotaurPosition().equivalent(minotaurStart.add(expectedHorizontal));
-        boolean movedVertical = testGame.getMinotaurPosition().equivalent(minotaurStart.add(expectedVertical));
+        boolean movedHorizontal = testGame.getMinotaurPosition().equals(minotaurStart.add(expectedHorizontal));
+        boolean movedVertical = testGame.getMinotaurPosition().equals(minotaurStart.add(expectedVertical));
         assertTrue(movedHorizontal || movedVertical);
     }
 

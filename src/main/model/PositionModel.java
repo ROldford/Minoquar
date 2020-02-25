@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public final class PositionModel {
     private int posX;
     private int posY;
@@ -29,12 +31,26 @@ public final class PositionModel {
         return new PositionModel(posX + delta.getX(), posY + delta.getY());
     }
 
-    public boolean equivalent(PositionModel other) {
-        return (getX() == other.getX() && getY() == other.getY());
-    }
-
     // EFFECTS: return new PositionModel representing difference between this position and other
     public PositionModel subtract(PositionModel other) {
         return new PositionModel(posX - other.getX(), posY - other.getY());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PositionModel that = (PositionModel) o;
+        return posX == that.posX && posY == that.posY;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(posX, posY);
+    }
+
 }
