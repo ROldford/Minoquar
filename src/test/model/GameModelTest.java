@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameModelTest {
     private static final String START_TESTS_FILE = "./data/test/testMazeListMinotaurStart.txt";
     private static final String MOVE_TESTS_FILE = "./data/test/testMazeListMinotaurMove.txt";
+    private static final String ALL_WALL_TEST_FILE = "./data/test/testMazeListMinotaurWalledOff.txt";
+    private static final String NO_VALID_MOVES_TEST_FILE = "./data/test/testMazeListMinotaurNoValidMoves.txt";
 
     GameModel game;
     List<GameModel> startTestGames;
@@ -106,6 +108,9 @@ public class GameModelTest {
                     assertEquals(expected.getX(), actual.getX());
                     assertEquals(expected.getY(), actual.getY());
                 });
+        MazeModel maze = generateTestData(ALL_WALL_TEST_FILE);
+        assertNotNull(maze);
+        assertEquals(new PositionModel(-1, -1), maze.getMinotaurStartPosition());
     }
 
     @Test
@@ -168,35 +173,45 @@ public class GameModelTest {
                 new PositionModel(-4, 0));
     }
 
+    @Test
+    public void testMoveMinotaurInvalid() {
+        MazeModel maze = generateTestData(NO_VALID_MOVES_TEST_FILE);
+        assertNotNull(maze);
+        assertEquals(new PositionModel(12, 12), maze.getMinotaurStartPosition());
+        GameModel testGame = new GameModel(maze, new PositionModel(7, 7));
+        assertFalse(testGame.moveMinotaur(0.0));
+    }
+
     private void testMoveMinotaurCase(PositionModel heroStart,
                                       PositionModel expectedDelta) {
-        MazeModel maze = generateMoveTestData();
+        MazeModel maze = generateTestData(MOVE_TESTS_FILE);
         assertNotNull(maze);
         PositionModel minotaurStart = maze.getMinotaurStartPosition();
         GameModel testGame = new GameModel(maze, minotaurStart.add(heroStart));
-        assertTrue(testGame.moveMinotaur());
+        assertTrue(testGame.moveMinotaur(0.0));
         assertEquals(testGame.getMinotaurPosition(), minotaurStart.add(expectedDelta));
     }
 
     private void testMoveMinotaurDiagonalCase(PositionModel heroStart,
-                                              PositionModel expectedHorizontal,
-                                              PositionModel expectedVertical) {
-        MazeModel maze = generateMoveTestData();
+                                              PositionModel expectedVertical,
+                                              PositionModel expectedHorizontal) {
+        MazeModel maze = generateTestData(MOVE_TESTS_FILE);
         assertNotNull(maze);
         PositionModel minotaurStart = maze.getMinotaurStartPosition();
-        GameModel testGame = new GameModel(maze, minotaurStart.add(heroStart));
-        testGame.moveMinotaur();
-        boolean movedHorizontal = testGame.getMinotaurPosition().equals(minotaurStart.add(expectedHorizontal));
-        boolean movedVertical = testGame.getMinotaurPosition().equals(minotaurStart.add(expectedVertical));
-        assertTrue(movedHorizontal || movedVertical);
+        GameModel testGameHorizontalMove = new GameModel(maze, minotaurStart.add(heroStart));
+        testGameHorizontalMove.moveMinotaur(0.4);
+        assertEquals(testGameHorizontalMove.getMinotaurPosition(), minotaurStart.add(expectedHorizontal));
+        GameModel testGameVerticalMove = new GameModel(maze, minotaurStart.add(heroStart));
+        testGameVerticalMove.moveMinotaur(0.9);
+        assertEquals(testGameVerticalMove.getMinotaurPosition(), minotaurStart.add(expectedVertical));
     }
 
-    private MazeModel generateMoveTestData() {
+    private MazeModel generateTestData(String filename) {
         try {
-            MazeListModel mazeList = Reader.readMazeList(new File(GameModelTest.MOVE_TESTS_FILE));
+            MazeListModel mazeList = Reader.readMazeList(new File(filename));
             return mazeList.readMaze(0);
         } catch (IOException e) {
-            fail(String.format("Something is wrong with the test file: %s", GameModelTest.MOVE_TESTS_FILE));
+            fail(String.format("Something is wrong with the test file: %s", filename));
             e.printStackTrace();
         }
         return null;

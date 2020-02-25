@@ -48,12 +48,8 @@ public class PositionModelTest {
         ));
         Utilities.iterateSimultaneously(
                 expectedPositions, deltas,
-                (PositionModel expected, PositionModel delta) -> assertTrue(
-                        samePosition(expected, position.add(delta))));
-    }
-
-    private boolean samePosition(PositionModel a, PositionModel b) {
-        return (a.getX() == b.getX() && a.getY() == b.getY());
+                (PositionModel expected, PositionModel delta) ->
+                        assertEquals(expected, position.add(delta)));
     }
 
     @Test
@@ -76,8 +72,19 @@ public class PositionModelTest {
         ));
         Utilities.iterateSimultaneously(
                 expectedPositions, others,
-                (PositionModel expected, PositionModel other) -> assertTrue(
-                        samePosition(expected, position.subtract(other))));
+                (PositionModel expected, PositionModel other) -> assertEquals(
+                        expected, position.subtract(other)));
+    }
+
+    @Test
+    void testEqualsHashCode() {
+        assertNotEquals(position, null);
+        assertNotEquals(position, "not same type");
+        assertEquals(position, position);
+        assertEquals(position.hashCode(), position.hashCode());
+        PositionModel other = new PositionModel(posX, posY);
+        assertEquals(position, other);
+        assertEquals(position.hashCode(), other.hashCode());
     }
 
 }

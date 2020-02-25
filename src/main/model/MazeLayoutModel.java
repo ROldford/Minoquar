@@ -113,8 +113,10 @@ public class MazeLayoutModel extends Layout {
         return neighbours;
     }
 
+    // REQUIRES: maze layout only consists of WALL and PASSAGE
     // EFFECTS: returns maze layout's data in save file format (see Reader)
     public List<String> getSaveData() {
+        // TODO: check for SAVE_FILE_PASSAGE, final else (for invalid square) throws exception
         List<String> saveData = new ArrayList<>();
         for (int y = 0; y < MazeSizeModel.getSideLength(size); y++) {
             StringBuilder row = new StringBuilder();
@@ -122,11 +124,8 @@ public class MazeLayoutModel extends Layout {
                 MazeSquare square = getSquare(new PositionModel(x, y));
                 if (square == MazeSquare.WALL) {
                     row.append(Reader.SAVE_FILE_WALL);
-                } else if (square == MazeSquare.PASSAGE) {
+                } else  {
                     row.append(Reader.SAVE_FILE_PASSAGE);
-                } else {
-                    // TODO: add exception throw later
-                    System.out.println("Invalid layout: has empty squares");
                 }
             }
             saveData.add(row.toString());
@@ -226,18 +225,17 @@ public class MazeLayoutModel extends Layout {
         }
     }
 
+    // REQUIRES: layout only consists of SAVE_FILE_WALL and SAVE_FILE_PASSAGE
     // EFFECTS: converts saved layout (in list of string format) to maze layout format
     private static List<MazeSquare> parseSavedLayout(List<String> savedLayout) {
+        // TODO: check for SAVE_FILE_PASSAGE, final else (for invalid square) throws exception
         List<MazeSquare> layoutData = new ArrayList<>();
         for (String row : savedLayout) {
             for (char ch : row.toCharArray()) {
                 if (ch == Reader.SAVE_FILE_WALL) {
                     layoutData.add(MazeSquare.WALL);
-                } else if (ch == Reader.SAVE_FILE_PASSAGE) {
-                    layoutData.add(MazeSquare.PASSAGE);
                 } else {
-                    // TODO: add exception throw here later
-                    layoutData.add(MazeSquare.EMPTY);
+                    layoutData.add(MazeSquare.PASSAGE);
                 }
             }
         }

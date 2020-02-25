@@ -9,6 +9,8 @@ import model.PositionModel;
 import java.util.List;
 import java.util.Scanner;
 
+import static java.lang.Math.random;
+
 public class GameUI {
     private static final String QUIT_COMMAND = MenuUI.QUIT_COMMAND;
 
@@ -127,7 +129,7 @@ public class GameUI {
     }
 
     private boolean getMinotaurMove() {
-        return game.moveMinotaur();
+        return game.moveMinotaur(random());
     }
 
     // EFFECTS: checks if game has been lost

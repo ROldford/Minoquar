@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.random;
 
 public class GameModel {
     public static final char TREASURE_CHAR = "O".charAt(0);
@@ -55,15 +54,15 @@ public class GameModel {
     //          will move orthogonally towards hero
     //          if diagonal to hero, will move whichever direction has the smallest delta to hero
     //              will end move so it is orthogonal to hero if possible
-    //              if both directions are equal, will prefer vertical movement
-    public boolean moveMinotaur() {
+    //              if both directions are equal, chooses based on given random number (horizontal if <0.5)
+    public boolean moveMinotaur(double random) {
         PositionModel minotaurPosition = minotaur.getPosition();
         PositionModel heroPosition = hero.getPosition();
         PositionModel delta = heroPosition.subtract(minotaurPosition);
         if (delta.equals(new PositionModel(0, 0))) {
             return true;
         }
-        List<MazeModel.Direction> directions = decideDirection(delta);
+        List<MazeModel.Direction> directions = decideDirection(delta, random);
         for (MazeModel.Direction direction : directions) {
             List<PositionModel> possibleMoves = maze.getValidMoves(minotaurPosition, direction);
             if (possibleMoves.size() > 0) {
@@ -98,10 +97,10 @@ public class GameModel {
     // EFFECTS: returns list of correct directions for minotaur to move based on movement rules
     //          if orthogonal, move towards hero; list has only 1 element
     //          if diagonal, choose shorter move between x and y, or random if equal; list has 2 elements
-    private List<MazeModel.Direction> decideDirection(PositionModel delta) {
+    private List<MazeModel.Direction> decideDirection(PositionModel delta, double random) {
         List<MazeModel.Direction> directions;
         if (delta.getX() != 0 && delta.getY() != 0) {
-            directions = decideDirectionDiagonal(delta);
+            directions = decideDirectionDiagonal(delta, random);
         } else {
             directions = new ArrayList<>();
             directions.add(getDirectionFromDelta(delta));
@@ -111,7 +110,7 @@ public class GameModel {
 
     // REQUIRES: both x and y in delta are non-zero
     // EFFECTS: returns list of correct directions for minotaur when diagonal to hero
-    private List<MazeModel.Direction> decideDirectionDiagonal(PositionModel delta) {
+    private List<MazeModel.Direction> decideDirectionDiagonal(PositionModel delta, double random) {
         List<MazeModel.Direction> deltas = new ArrayList<>();
         if (abs(delta.getX()) < abs(delta.getY())) {
             deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
@@ -120,7 +119,7 @@ public class GameModel {
             deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
             deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
         } else {
-            if (random() < 0.5) {
+            if (random < 0.5) {
                 deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
                 deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
             } else {

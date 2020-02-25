@@ -82,10 +82,8 @@ public class MazeBoardModel {
             increment = new PositionModel(0, 1);
         } else if (direction == MazeModel.Direction.LEFT) {
             increment = new PositionModel(-1, 0);
-        } else if (direction == MazeModel.Direction.RIGHT) {
-            increment = new PositionModel(1, 0);
         } else {
-            return new ArrayList<>();
+            increment = new PositionModel(1, 0);
         }
         PositionModel possibleEnd = start.add(increment);
         while (mazeLayout.isInBounds(possibleEnd)) {
