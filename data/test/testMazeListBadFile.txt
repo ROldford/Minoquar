@@ -1,0 +1,6 @@
+this is a bad file
+it doesn't have any mazes
+test test test
+more lines
+---
+that wasn't the right kind of separator

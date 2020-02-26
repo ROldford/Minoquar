@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Reader {
+    private Reader() {}
+
     public static final String SEPARATOR_LINE = "-----";
     public static final char SAVE_FILE_WALL = "X".charAt(0);
     public static final char SAVE_FILE_PASSAGE = ".".charAt(0);
@@ -55,6 +57,8 @@ public class Reader {
                 }
                 parsedMazes.add(new MazeModel(name, size, mazeData));
                 i = i + 3 + sideLength;
+            } else {
+                i++;
             }
         }
         return parsedMazes;

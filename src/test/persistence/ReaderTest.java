@@ -50,6 +50,16 @@ public class ReaderTest {
         }
     }
 
+    @Test
+    public void testParseNonMazeListFile() {
+        try {
+            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeListBadFile.txt"));
+            assertEquals(0, mazes.size());
+        } catch (IOException e) {
+            fail("IOException should not have been thrown");
+        }
+    }
+
     private void testMaze(MazeModel maze, String expectedName, MazeSizeModel.MazeSize expectedSize) {
         assertEquals(expectedName, maze.getName());
         int oneSideLength = MazeSizeModel.getSideLength(expectedSize);
