@@ -1,29 +1,35 @@
 package ui;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-public class Minoquar {
-    private static void createAndShowGUI() {
-        // Create and set up window
-        JFrame frame = new JFrame("Minoquar");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+public class Minoquar extends JFrame{
+    private MenuUI menuUI;
 
-        // Create and set up content pane
-        JComponent newContentPane = new MenuUI();
-        newContentPane.setOpaque(true);
-        frame.setContentPane(newContentPane);
+    public Minoquar() {
+        setTitle("Minoquar");
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setLayout(new BorderLayout());
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exitProcedure();
+            }
+        });
+        this.menuUI = new MenuUI();
+        add(menuUI);
+        pack();
+        setVisible(true);
+    }
 
-        // Display window
-        frame.pack();
-        frame.setVisible(true);
+    private void exitProcedure() {
+        dispose();
+        System.exit(0);
     }
 
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                createAndShowGUI();
-            }
-        });
+        Minoquar appMainWindow = new Minoquar();
     }
 }

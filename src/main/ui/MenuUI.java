@@ -5,6 +5,7 @@ package ui;
 
 import model.*;
 import persistence.Reader;
+import persistence.Writer;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -15,7 +16,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 public class MenuUI extends JPanel implements ListSelectionListener {
     private static final String SAVE_FILE = "./data/mazeSaveFile.txt";
@@ -86,6 +89,20 @@ public class MenuUI extends JPanel implements ListSelectionListener {
                 System.out.println("Creating blank maze list");
                 mazeList = new MazeListModel();
             }
+        }
+    }
+
+    // EFFECTS: saves maze list state to SAVE_FILE
+    private void saveMazes() {
+        try {
+            Writer writer = new Writer(new File(SAVE_FILE));
+            writer.write(mazeList);
+            writer.close();
+            System.out.printf("Mazes saved to file %s%n", SAVE_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.printf("Unable to save mazes to file%s%n. Check if file exists.", SAVE_FILE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
@@ -323,19 +340,7 @@ public class MenuUI extends JPanel implements ListSelectionListener {
 //        new GameUI(new GameModel(maze, new PositionModel(7, 0)));
     }
 
-    // EFFECTS: saves maze list state to SAVE_FILE
-    private void saveMazes() {
-//        try {
-//            Writer writer = new Writer(new File(SAVE_FILE));
-//            writer.write(mazeList);
-//            writer.close();
-//            System.out.printf("Mazes saved to file %s%n", SAVE_FILE);
-//        } catch (FileNotFoundException e) {
-//            System.out.printf("Unable to save mazes to file%s%n. Check if file exists.", SAVE_FILE);
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-    }
+
 
 
     // EFFECTS: returns maze's index in list given it's number in display
@@ -375,12 +380,6 @@ public class MenuUI extends JPanel implements ListSelectionListener {
             }
 
             mazeList.createRandomMaze(index, name, MazeSizeModel.MazeSize.EXTRA_SMALL);
-            System.out.printf("Added maze %s to list at index %d%n", name, index);
-            System.out.println("Current list");
-            for (int i = 0; i < mazeList.getSize(); i++) {
-                System.out.println(mazeList.getElementAt(i).toString());
-            }
-            list.setModel(mazeList);
 
             // Reset text field
             mazeName.requestFocusInWindow();
@@ -389,9 +388,6 @@ public class MenuUI extends JPanel implements ListSelectionListener {
             // Select new item and make it visible
             list.setSelectedIndex(index);
             list.ensureIndexIsVisible(index);
-            list.repaint();
-
-            System.out.println(mazeList.getSize());
         }
 
         // EFFECTS: returns true if maze with matching name exists in maze list
@@ -451,17 +447,6 @@ public class MenuUI extends JPanel implements ListSelectionListener {
                 }
                 list.setSelectedIndex(index);
                 list.ensureIndexIsVisible(index);
-                list.repaint();
-
-                System.out.println(mazeList.getSize());
-                System.out.println(list.getSelectedIndex());
-            }
-
-            System.out.printf("Maze removed at index%d%n", index);
-            System.out.printf("Current list size: %d%n", mazeList.getSize());
-            System.out.println("Current list");
-            for (int i = 0; i < mazeList.getSize(); i++) {
-                System.out.println(mazeList.getElementAt(i).toString());
             }
         }
     }
