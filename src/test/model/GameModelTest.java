@@ -30,10 +30,10 @@ public class GameModelTest {
                 new PositionModel(7, 0));
         try {
             MazeListModel startTestMazeList = Reader.readMazeList(new File(START_TESTS_FILE));
-            emptyMaze = startTestMazeList.readMaze(0);
+            emptyMaze = startTestMazeList.getElementAt(0);
             startTestGames = new ArrayList<>();
-            for (int i = 0; i < startTestMazeList.size(); i++) {
-                MazeModel startTestMaze = startTestMazeList.readMaze(i);
+            for (int i = 0; i < startTestMazeList.getSize(); i++) {
+                MazeModel startTestMaze = startTestMazeList.getElementAt(i);
                 startTestGames.add(new GameModel(
                         startTestMaze,
                         new PositionModel(7, 0)));
@@ -209,7 +209,7 @@ public class GameModelTest {
     private MazeModel generateTestData(String filename) {
         try {
             MazeListModel mazeList = Reader.readMazeList(new File(filename));
-            return mazeList.readMaze(0);
+            return mazeList.getElementAt(0);
         } catch (IOException e) {
             fail(String.format("Something is wrong with the test file: %s", filename));
             e.printStackTrace();

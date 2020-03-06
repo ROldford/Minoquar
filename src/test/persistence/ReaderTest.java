@@ -21,7 +21,7 @@ public class ReaderTest {
         // xs maze
         try {
             MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList1.txt"));
-            testMaze(mazes.readMaze(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
+            testMaze(mazes.getElementAt(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -32,7 +32,7 @@ public class ReaderTest {
         // xl maze
         try {
             MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList2.txt"));
-            testMaze(mazes.readMaze(0), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
+            testMaze(mazes.getElementAt(0), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -43,8 +43,8 @@ public class ReaderTest {
         // both mazes from before in same file
         try {
             MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList3.txt"));
-            testMaze(mazes.readMaze(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
-            testMaze(mazes.readMaze(1), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
+            testMaze(mazes.getElementAt(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
+            testMaze(mazes.getElementAt(1), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -54,7 +54,7 @@ public class ReaderTest {
     public void testParseNonMazeListFile() {
         try {
             MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeListBadFile.txt"));
-            assertEquals(0, mazes.size());
+            assertEquals(0, mazes.getSize());
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }

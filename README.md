@@ -22,11 +22,24 @@ implement the more difficult parts of a digital game, such as physics, collision
 **User Stories For This Deliverable:**
 
 *Required Stories*
+- [ ] As a user, I want to interact with the game through a GUI.
+    - [X] Maze List Panel
+        - [ ] Buttons for Save / Load panels
+    - [ ] Game Panel
+        - [ ] Maze Square images
+        - [ ] Entity images
+    - [ ] Save Panel (with save slot buttons)
+    - [ ] Load Panel (with save slot buttons)
+
+*Other Stories*
+- [ ] As a user, I want to see wins and losses for a given maze.
+    - [ ] Saved and read to file
+    - [ ] Visible on GUI
+
+**Phase 2 User Stories:**
 - [X] As a user, I want to be able to delete a maze from the maze list.
 - [X] As a user, when I modify the maze list (add or delete), I want the list to be saved to file.
 - [X] As a user, when I start the app, I want the saved maze list to be read from file.
-
-*Other Stories*
 - [X] As a user, I want an enemy minotaur to take a turn after I do.
     - [X] Minotaur starts in the center square of the maze (or the closest passage).
     - [X] Minotaur moves following the game's minotaur movement rules.

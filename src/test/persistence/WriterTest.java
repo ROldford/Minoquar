@@ -35,8 +35,8 @@ public class WriterTest {
         testWriter.close();
         try {
             MazeListModel writeResult = Reader.readMazeList(new File(TEST_WRITE_FILE));
-            testWriteResultMatchesTestData(testData.readMaze(0), writeResult.readMaze(0));
-            testWriteResultMatchesTestData(testData.readMaze(1), writeResult.readMaze(1));
+            testWriteResultMatchesTestData(testData.getElementAt(0), writeResult.getElementAt(0));
+            testWriteResultMatchesTestData(testData.getElementAt(1), writeResult.getElementAt(1));
         } catch (IOException e) {
             fail("Should not throw IOException");
         }

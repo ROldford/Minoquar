@@ -102,5 +102,9 @@ public class MazeModel {
         return MazeSizeModel.getSizeCode(mazeBoard.getSize());
     }
 
-
+    // EFFECTS: returns string describing maze
+    @Override
+    public String toString() {
+        return String.format("%s - %s (%dx%d)", name, getSizeName(), getSideLength(), getSideLength());
+    }
 }
