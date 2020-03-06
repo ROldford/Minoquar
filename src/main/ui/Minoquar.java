@@ -25,6 +25,7 @@ public class Minoquar extends JFrame{
     }
 
     private void exitProcedure() {
+        menuUI.saveMazes();
         dispose();
         System.exit(0);
     }

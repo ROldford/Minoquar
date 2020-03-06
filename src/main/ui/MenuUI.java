@@ -93,7 +93,7 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     }
 
     // EFFECTS: saves maze list state to SAVE_FILE
-    private void saveMazes() {
+    protected void saveMazes() {
         try {
             Writer writer = new Writer(new File(SAVE_FILE));
             writer.write(mazeList);
