@@ -27,12 +27,6 @@ public class MazeListModel extends AbstractListModel implements Saveable {
         return mazes.size();
     }
 
-    // EFFECTS: returns the maze at given list index
-    @Override
-    public MazeModel getElementAt(int index) {
-        return mazes.get(index);
-    }
-
     // EFFECTS: returns true if mazeList contains a maze with the same name
     public boolean containsSameName(String name) {
         for (int i = 0; i < mazes.size(); i++) {
@@ -55,6 +49,19 @@ public class MazeListModel extends AbstractListModel implements Saveable {
     public void createRandomMaze(int index, String name, MazeSizeModel.MazeSize size) {
         mazes.add(index, new MazeModel(name, size));
         fireIntervalAdded(this, index, index);
+    }
+
+    // EFFECTS: returns the maze at given list index
+    @Override
+    public MazeModel getElementAt(int index) {
+        return mazes.get(index);
+    }
+
+    // EFFECTS: replaces this list's data with new data
+    public void updateMazeList(List<MazeModel> mazes) {
+//        int endIndex = Math.min(this.mazes.size(), mazes.size()) - 1;
+        this.mazes = mazes;
+        fireContentsChanged(this, 0, mazes.size() - 1);
     }
 
     // MODIFIES: this

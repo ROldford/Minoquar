@@ -24,12 +24,14 @@ implement the more difficult parts of a digital game, such as physics, collision
 *Required Stories*
 - [ ] As a user, I want to interact with the game through a GUI.
     - [X] Maze List Panel
-        - [ ] Buttons for Save / Load panels
+        - [X] Add Maze Button
+        - [X] Delete Maze Button
+        - [ ] Start Game Button
+        - [X] Save Button
+        - [X] Load Button
     - [ ] Game Panel
         - [ ] Maze Square images
         - [ ] Entity images
-    - [ ] Save Panel (with save slot buttons)
-    - [ ] Load Panel (with save slot buttons)
 
 *Other Stories*
 - [ ] As a user, I want to see wins and losses for a given maze.

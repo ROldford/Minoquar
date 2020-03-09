@@ -20,7 +20,8 @@ public class ReaderTest {
     public void testParseMazeListFile1() {
         // xs maze
         try {
-            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList1.txt"));
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeList1.txt")));
             testMaze(mazes.getElementAt(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
@@ -31,7 +32,8 @@ public class ReaderTest {
     public void testParseMazeListFile2() {
         // xl maze
         try {
-            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList2.txt"));
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeList2.txt")));
             testMaze(mazes.getElementAt(0), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
@@ -42,7 +44,8 @@ public class ReaderTest {
     public void testParseMazeListFile3() {
         // both mazes from before in same file
         try {
-            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList3.txt"));
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeList3.txt")));
             testMaze(mazes.getElementAt(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
             testMaze(mazes.getElementAt(1), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
         } catch (IOException e) {
@@ -53,7 +56,8 @@ public class ReaderTest {
     @Test
     public void testParseNonMazeListFile() {
         try {
-            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeListBadFile.txt"));
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeListBadFile.txt")));
             assertEquals(0, mazes.getSize());
         } catch (IOException e) {
             fail("IOException should not have been thrown");

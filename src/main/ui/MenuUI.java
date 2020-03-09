@@ -3,7 +3,9 @@
 
 package ui;
 
-import model.*;
+import model.MazeListModel;
+import model.MazeModel;
+import model.MazeSizeModel;
 import persistence.Reader;
 import persistence.Writer;
 
@@ -19,6 +21,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuUI extends JPanel implements ListSelectionListener {
     private static final String SAVE_FILE = "./data/mazeSaveFile.txt";
@@ -26,11 +30,15 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     private static final String CREATE_STRING = "New Maze";
     private static final String DELETE_STRING = "Delete Maze";
     private static final String START_GAME_STRING = "Start Game";
+    private static final String SAVE_STRING = "Save Mazes";
+    private static final String LOAD_STRING = "Load Mazes";
 
     private JList list;
     private JButton createButton;
     private JButton deleteButton;
     private JButton startGameButton;
+    private JButton saveButton;
+    private JButton loadButton;
     private JTextField mazeName;
     // TODO: implement chooser for all maze sizes
     // for now, just create xs size mazes
@@ -41,7 +49,7 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     public MenuUI() {
         super(new BorderLayout());
 
-        loadMazes();
+        mazeList = new MazeListModel(loadMazes());
         createListUI();
 //        runApp();
     }
@@ -75,19 +83,22 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     }
 
     // MODIFIES: this
-    // EFFECTS: loads mazes from file and initializes mazeList
-    private void loadMazes() {
+    // EFFECTS: returns list of mazes loaded from memory
+    private List<MazeModel> loadMazes() {
+        // TODO: rewrite this to update mazeList if it already has data
+        System.out.println("Attempting to load mazes");
         try {
-            mazeList = Reader.readMazeList(new File(SAVE_FILE));
+            return Reader.readMazeList(new File(SAVE_FILE));
         } catch (IOException e) {
             System.out.println("Could not read save file");
             System.out.println("Trying default maze list");
             try {
-                mazeList = Reader.readMazeList(new File(DEFAULT_SAVE_FILE));
+                return Reader.readMazeList(new File(DEFAULT_SAVE_FILE));
+//                mazeList = new MazeListModel(Reader.readMazeList(new File(DEFAULT_SAVE_FILE)));
             } catch (IOException defaultE) {
                 System.out.println("Could not read default save file");
                 System.out.println("Creating blank maze list");
-                mazeList = new MazeListModel();
+                return new ArrayList<MazeModel>();
             }
         }
     }
@@ -125,14 +136,25 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     private JPanel createControlPane() {
         setupControls();
 
+        JPanel topControlPane = new JPanel();
+        topControlPane.setLayout(new BoxLayout(topControlPane, BoxLayout.LINE_AXIS));
+        topControlPane.add(startGameButton);
+        addUIControlSeparator(topControlPane, 5);
+        topControlPane.add(mazeName);
+        topControlPane.add(createButton);
+        topControlPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+
+        JPanel bottomControlPane = new JPanel();
+        bottomControlPane.setLayout(new BoxLayout(bottomControlPane, BoxLayout.LINE_AXIS));
+        bottomControlPane.add(deleteButton);
+        addUIControlSeparator(bottomControlPane, 5);
+        bottomControlPane.add(saveButton);
+        bottomControlPane.add(loadButton);
+
         JPanel controlPane = new JPanel();
-        controlPane.setLayout(new BoxLayout(controlPane, BoxLayout.LINE_AXIS));
-        controlPane.add(startGameButton);
-        addUIControlSeparator(controlPane, 5);
-        controlPane.add(mazeName);
-        controlPane.add(createButton);
-        addUIControlSeparator(controlPane, 5);
-        controlPane.add(deleteButton);
+        controlPane.setLayout(new BoxLayout(controlPane, BoxLayout.PAGE_AXIS));
+        controlPane.add(topControlPane, BorderLayout.NORTH);
+        controlPane.add(bottomControlPane, BorderLayout.SOUTH);
         controlPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         return controlPane;
     }
@@ -140,20 +162,23 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     // MODIFIES: this
     // EFFECTS: sets up interface controls
     private void setupControls() {
-        // create blank buttons first
-        // use blank buttons to set up listeners that need button access
-        // finalize button set up now that listeners are made
         createButton = new JButton();
         deleteButton = new JButton();
         startGameButton = new JButton();
+        saveButton = new JButton();
+        loadButton = new JButton();
 
         CreateListener createListener = new CreateListener(createButton);
         DeleteListener deleteListener = new DeleteListener();
         StartGameListener startGameListener = new StartGameListener();
+        SaveMazesListener saveListener = new SaveMazesListener();
+        LoadMazesListener loadListener = new LoadMazesListener();
 
         setupButton(createButton, createListener, CREATE_STRING, false);
         setupButton(deleteButton, deleteListener, DELETE_STRING, true);
         setupButton(startGameButton, startGameListener, START_GAME_STRING, false);
+        setupButton(saveButton, saveListener, SAVE_STRING, true);
+        setupButton(loadButton, loadListener, LOAD_STRING, true);
 
         mazeName = new JTextField(10);
         mazeName.addActionListener(createListener);
@@ -457,6 +482,20 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         public void actionPerformed(ActionEvent e) {
             // TODO: implement actual game start
             Toolkit.getDefaultToolkit().beep();
+        }
+    }
+
+    class SaveMazesListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            saveMazes();
+        }
+    }
+
+    class LoadMazesListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mazeList.updateMazeList(loadMazes());
         }
     }
 

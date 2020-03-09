@@ -25,7 +25,7 @@ public class WriterTest {
 
     @BeforeEach
     void runBefore() throws IOException  {
-        testData = Reader.readMazeList(new File(TEST_READ_FILE));
+        testData = new MazeListModel(Reader.readMazeList(new File(TEST_READ_FILE)));
         testWriter = new Writer(new File(TEST_WRITE_FILE));
     }
 
@@ -34,7 +34,7 @@ public class WriterTest {
         testWriter.write(testData);
         testWriter.close();
         try {
-            MazeListModel writeResult = Reader.readMazeList(new File(TEST_WRITE_FILE));
+            MazeListModel writeResult = new MazeListModel(Reader.readMazeList(new File(TEST_WRITE_FILE)));
             testWriteResultMatchesTestData(testData.getElementAt(0), writeResult.getElementAt(0));
             testWriteResultMatchesTestData(testData.getElementAt(1), writeResult.getElementAt(1));
         } catch (IOException e) {

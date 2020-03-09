@@ -3,6 +3,10 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MazeListModelTest {
@@ -41,6 +45,25 @@ public class MazeListModelTest {
         MazeModel second = mazeList.getElementAt(1);
         assertEquals("maze 0", first.getName());
         assertEquals("maze 2", second.getName());
+    }
+
+    @Test
+    public void testUpdateList(){
+        MazeModel maze3 = new MazeModel("maze 3", TEST_SIZE);
+        MazeModel maze4 = new MazeModel("maze 4", TEST_SIZE);
+        MazeModel maze5 = new MazeModel("maze 5", TEST_SIZE);
+        MazeModel maze6 = new MazeModel("maze 6", TEST_SIZE);
+        List<MazeModel> newMazeList = new ArrayList<>(Arrays.asList(
+                maze3, maze4, maze5, maze6));
+        mazeList.createRandomMaze("maze 0", TEST_SIZE);
+        mazeList.createRandomMaze("maze 1", TEST_SIZE);
+        mazeList.createRandomMaze("maze 2", TEST_SIZE);
+        assertEquals(3, mazeList.getSize());
+        mazeList.updateMazeList(newMazeList);
+        assertEquals(4, mazeList.getSize());
+        for (int i = 0; i < newMazeList.size(); i++) {
+            assertEquals(newMazeList.get(i).getName(), mazeList.getElementAt(i).getName());
+        }
     }
 
 }
