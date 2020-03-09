@@ -34,6 +34,7 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     private static final String LOAD_STRING = "Load Mazes";
 
     private JList list;
+    private Minoquar minoquarFrame;
     private JButton createButton;
     private JButton deleteButton;
     private JButton startGameButton;
@@ -46,10 +47,10 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     private MazeListModel mazeList;
 
     // EFFECTS: runs the app menu UI
-    public MenuUI() {
+    public MenuUI(Minoquar minoquarFrame) {
         super(new BorderLayout());
-
-        mazeList = new MazeListModel(loadMazes());
+        this.minoquarFrame = minoquarFrame;
+        this.mazeList = new MazeListModel(loadMazes());
         createListUI();
 //        runApp();
     }
@@ -82,10 +83,8 @@ public class MenuUI extends JPanel implements ListSelectionListener {
 
     }
 
-    // MODIFIES: this
     // EFFECTS: returns list of mazes loaded from memory
     private List<MazeModel> loadMazes() {
-        // TODO: rewrite this to update mazeList if it already has data
         System.out.println("Attempting to load mazes");
         try {
             return Reader.readMazeList(new File(SAVE_FILE));
@@ -176,7 +175,7 @@ public class MenuUI extends JPanel implements ListSelectionListener {
 
         setupButton(createButton, createListener, CREATE_STRING, false);
         setupButton(deleteButton, deleteListener, DELETE_STRING, true);
-        setupButton(startGameButton, startGameListener, START_GAME_STRING, false);
+        setupButton(startGameButton, startGameListener, START_GAME_STRING, true);
         setupButton(saveButton, saveListener, SAVE_STRING, true);
         setupButton(loadButton, loadListener, LOAD_STRING, true);
 
@@ -200,178 +199,6 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         panel.add(Box.createHorizontalStrut(spacing));
         panel.add(new JSeparator(SwingConstants.VERTICAL));
         panel.add(Box.createHorizontalStrut(spacing));
-    }
-
-    // EFFECTS: displays maze list to user, 1 page of 5 mazes at a time
-    private void displayMazeList(int mazeListPage) {
-//        if (mazeList.size() == 0) {
-//            System.out.println("No mazes made yet!");
-//        } else {
-//            System.out.printf("Mazes Page %d%n", mazeListPage + 1);
-//            for (int i = 0; i < 5; i++) {
-//                int mazeNumber = mazeListPage * 5 + i;
-//                if (mazeNumber < mazeList.size()) {
-//                    System.out.printf("#%d: %s%n", i + 1, mazeList.readMaze(mazeNumber).getName());
-//                }
-//            }
-//        }
-    }
-
-    // EFFECTS: displays menu of options to user
-    private void displayMenu() {
-//        System.out.println("\nSelect from:");
-//        System.out.println("\tprev -> Show the 5 previous mazes");
-//        System.out.println("\tnext -> Show the 5 next mazes");
-//        System.out.println("\tadd -> Add a new random maze");
-//        System.out.println("\tdel -> Delete a maze");
-//        System.out.println("\tgame -> Start a game");
-//        System.out.println("q -> quit Minoquar");
-    }
-
-    // MODIFIES: this
-    // EFFECTS: processes user command
-    private void processCommand(String command) {
-//        switch (command) {
-//            case "prev":
-//                updateMazeListPage("prev");
-//                break;
-//            case "next":
-//                updateMazeListPage("next");
-//                break;
-//            case "add":
-//                createMaze();
-//                break;
-//            case "del":
-//                deleteMaze();
-//                break;
-//            case "game":
-//                chooseMaze();
-//                break;
-//            default:
-//                System.out.println("I didn't understand that");
-//        }
-    }
-
-    private void updateMazeListPage(String direction) {
-//        switch (direction) {
-//            case "prev":
-//                mazeListPage -= 1;
-//                if (mazeListPage < 0) {
-//                    mazeListPage = mazeList.size() / 5;
-//                }
-//                break;
-//            case "next":
-//                mazeListPage += 1;
-//                if (mazeListPage * 5 > mazeList.size()) {
-//                    mazeListPage = 0;
-//                }
-//            default:
-//                System.out.println("updateMazeListPage got a bad input!");
-//        }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: adds a new random maze to maze list
-    private void createMaze() {
-//        String size = inputMazeSize();
-//        if (!size.equals("back")) {
-//            String name = inputMazeName();
-//            switch (size) {
-//                case "xs":
-//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.EXTRA_SMALL);
-//                    break;
-//                case "sm":
-//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.SMALL);
-//                    break;
-//                case "md":
-//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.MEDIUM);
-//                    break;
-//                case "lg":
-//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.LARGE);
-//                    break;
-//                case "xl":
-//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.EXTRA_LARGE);
-//                    break;
-//                default:
-//                    System.out.println("I didn't understand that");
-//            }
-//        }
-    }
-
-    // MODIFIES: this.input
-    // EFFECTS: displays menu of maze sizes to user, and processes user input
-    private String inputMazeSize() {
-//        System.out.println("\nChoose maze size");
-//        List<MazeSizeModel.MazeSize> sizes = new ArrayList<>(Arrays.asList(
-//                MazeSizeModel.MazeSize.EXTRA_SMALL,
-//                MazeSizeModel.MazeSize.SMALL,
-//                MazeSizeModel.MazeSize.MEDIUM,
-//                MazeSizeModel.MazeSize.LARGE,
-//                MazeSizeModel.MazeSize.EXTRA_LARGE));
-//        for (MazeSizeModel.MazeSize size : sizes) {
-//            printMazeSizeInput(size);
-//        }
-//        System.out.println("back -> go back to menu");
-//        return input.next().toLowerCase();
-        return null; //stub
-    }
-
-    // EFFECTS: prints maze size selection string (format: [size code] -> [size name]
-    private void printMazeSizeInput(MazeSizeModel.MazeSize size) {
-//        System.out.printf("\t%s -> %s%n", MazeSizeModel.getSizeCode(size), MazeSizeModel.getSizeName(size));
-    }
-
-    // MODIFIES: this.input
-    // EFFECTS: requests maze name, and processes user input
-    private String inputMazeName() {
-//        System.out.println("Name this maze:");
-//        return input.next().toLowerCase();
-        return null; //stub
-    }
-
-    // MODIFIES: this
-    // EFFECTS: deletes a maze from maze list
-    private void deleteMaze() {
-//        displayMazeList(mazeListPage);
-//        System.out.println("\nType a maze's number to delete it");
-//        int mazeNumber = input.nextInt();
-//        try {
-//            System.out.printf("\nDeleting Maze %d%n", mazeNumber);
-//            mazeList.deleteMaze(getListIndexFromDisplayIndex(mazeNumber));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("That maze doesn't exist");
-//        }
-    }
-
-    // MODIFIES: this.input
-    // EFFECTS: displays maze list, processes user input, and starts game with chosen maze
-    private void chooseMaze() {
-//        displayMazeList(mazeListPage);
-//        System.out.println("\nType a maze's number to choose it");
-//        int mazeNumber = input.nextInt();
-//        try {
-//            MazeModel maze = mazeList.readMaze(getListIndexFromDisplayIndex(mazeNumber));
-//            System.out.printf("\nNow playing Maze %d%n", mazeNumber);
-//            startGame(maze);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("That maze doesn't exist");
-//        }
-    }
-
-    // EFFECTS: starts game using given maze
-    private void startGame(MazeModel maze) {
-//        new GameUI(new GameModel(maze, new PositionModel(7, 0)));
-    }
-
-
-
-
-    // EFFECTS: returns maze's index in list given it's number in display
-    private int getListIndexFromDisplayIndex(int displayIndex) {
-//        return mazeListPage * 5 + displayIndex - 1;
-        return 0; //stub
     }
 
     class CreateListener implements ActionListener, DocumentListener {
@@ -441,12 +268,16 @@ public class MenuUI extends JPanel implements ListSelectionListener {
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: enables create maze button if it is disabled
         private void enableButton() {
             if (!alreadyEnabled) {
                 button.setEnabled(true);
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: disables create maze button when text field is empty
         private boolean handleEmptyTextField(DocumentEvent e) {
             if (e.getDocument().getLength() <= 0) {
                 button.setEnabled(false);
@@ -458,6 +289,8 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     }
 
     class DeleteListener implements ActionListener {
+        // MODIFIES: this
+        // EFFECTS: processes button press and deletes chosen maze
         @Override
         public void actionPerformed(ActionEvent e) {
             int index = list.getSelectedIndex();
@@ -478,14 +311,17 @@ public class MenuUI extends JPanel implements ListSelectionListener {
 
     class StartGameListener implements ActionListener {
 
+        // EFFECTS: processes button press, starts new game with selected maze
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO: implement actual game start
-            Toolkit.getDefaultToolkit().beep();
+//            Toolkit.getDefaultToolkit().beep();
+            minoquarFrame.swapToGameUI();
         }
     }
 
     class SaveMazesListener implements ActionListener {
+        // EFFECTS: processes button press, saves maze list to file
         @Override
         public void actionPerformed(ActionEvent e) {
             saveMazes();
@@ -493,12 +329,15 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     }
 
     class LoadMazesListener implements ActionListener {
+        // EFFECTS: processes button press, loads maze list from file
         @Override
         public void actionPerformed(ActionEvent e) {
             mazeList.updateMazeList(loadMazes());
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: disables delete and start game buttons if no maze is selected
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
@@ -512,3 +351,172 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         }
     }
 }
+
+
+
+
+//    // EFFECTS: displays maze list to user, 1 page of 5 mazes at a time
+//    private void displayMazeList(int mazeListPage) {
+//        if (mazeList.size() == 0) {
+//            System.out.println("No mazes made yet!");
+//        } else {
+//            System.out.printf("Mazes Page %d%n", mazeListPage + 1);
+//            for (int i = 0; i < 5; i++) {
+//                int mazeNumber = mazeListPage * 5 + i;
+//                if (mazeNumber < mazeList.size()) {
+//                    System.out.printf("#%d: %s%n", i + 1, mazeList.readMaze(mazeNumber).getName());
+//                }
+//            }
+//        }
+//    }
+//
+//    // EFFECTS: displays menu of options to user
+//    private void displayMenu() {
+//        System.out.println("\nSelect from:");
+//        System.out.println("\tprev -> Show the 5 previous mazes");
+//        System.out.println("\tnext -> Show the 5 next mazes");
+//        System.out.println("\tadd -> Add a new random maze");
+//        System.out.println("\tdel -> Delete a maze");
+//        System.out.println("\tgame -> Start a game");
+//        System.out.println("q -> quit Minoquar");
+//    }
+//
+//    // MODIFIES: this
+//    // EFFECTS: processes user command
+//    private void processCommand(String command) {
+//        switch (command) {
+//            case "prev":
+//                updateMazeListPage("prev");
+//                break;
+//            case "next":
+//                updateMazeListPage("next");
+//                break;
+//            case "add":
+//                createMaze();
+//                break;
+//            case "del":
+//                deleteMaze();
+//                break;
+//            case "game":
+//                chooseMaze();
+//                break;
+//            default:
+//                System.out.println("I didn't understand that");
+//        }
+//    }
+//
+//    private void updateMazeListPage(String direction) {
+//        switch (direction) {
+//            case "prev":
+//                mazeListPage -= 1;
+//                if (mazeListPage < 0) {
+//                    mazeListPage = mazeList.size() / 5;
+//                }
+//                break;
+//            case "next":
+//                mazeListPage += 1;
+//                if (mazeListPage * 5 > mazeList.size()) {
+//                    mazeListPage = 0;
+//                }
+//            default:
+//                System.out.println("updateMazeListPage got a bad input!");
+//        }
+//    }
+//
+//    // MODIFIES: this
+//    // EFFECTS: adds a new random maze to maze list
+//    private void createMaze() {
+//        String size = inputMazeSize();
+//        if (!size.equals("back")) {
+//            String name = inputMazeName();
+//            switch (size) {
+//                case "xs":
+//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.EXTRA_SMALL);
+//                    break;
+//                case "sm":
+//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.SMALL);
+//                    break;
+//                case "md":
+//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.MEDIUM);
+//                    break;
+//                case "lg":
+//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.LARGE);
+//                    break;
+//                case "xl":
+//                    mazeList.createRandomMaze(name, MazeSizeModel.MazeSize.EXTRA_LARGE);
+//                    break;
+//                default:
+//                    System.out.println("I didn't understand that");
+//            }
+//        }
+//    }
+//
+//    // MODIFIES: this.input
+//    // EFFECTS: displays menu of maze sizes to user, and processes user input
+//    private String inputMazeSize() {
+//        System.out.println("\nChoose maze size");
+//        List<MazeSizeModel.MazeSize> sizes = new ArrayList<>(Arrays.asList(
+//                MazeSizeModel.MazeSize.EXTRA_SMALL,
+//                MazeSizeModel.MazeSize.SMALL,
+//                MazeSizeModel.MazeSize.MEDIUM,
+//                MazeSizeModel.MazeSize.LARGE,
+//                MazeSizeModel.MazeSize.EXTRA_LARGE));
+//        for (MazeSizeModel.MazeSize size : sizes) {
+//            printMazeSizeInput(size);
+//        }
+//        System.out.println("back -> go back to menu");
+//        return input.next().toLowerCase();
+//    }
+//
+//    // EFFECTS: prints maze size selection string (format: [size code] -> [size name]
+//    private void printMazeSizeInput(MazeSizeModel.MazeSize size) {
+//        System.out.printf("\t%s -> %s%n", MazeSizeModel.getSizeCode(size), MazeSizeModel.getSizeName(size));
+//    }
+//
+//    // MODIFIES: this.input
+//    // EFFECTS: requests maze name, and processes user input
+//    private String inputMazeName() {
+//        System.out.println("Name this maze:");
+//        return input.next().toLowerCase();
+//    }
+//
+//    // MODIFIES: this
+//    // EFFECTS: deletes a maze from maze list
+//    private void deleteMaze() {
+//        displayMazeList(mazeListPage);
+//        System.out.println("\nType a maze's number to delete it");
+//        int mazeNumber = input.nextInt();
+//        try {
+//            System.out.printf("\nDeleting Maze %d%n", mazeNumber);
+//            mazeList.deleteMaze(getListIndexFromDisplayIndex(mazeNumber));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("That maze doesn't exist");
+//        }
+//    }
+//
+//    // MODIFIES: this.input
+//    // EFFECTS: displays maze list, processes user input, and starts game with chosen maze
+//    private void chooseMaze() {
+//        displayMazeList(mazeListPage);
+//        System.out.println("\nType a maze's number to choose it");
+//        int mazeNumber = input.nextInt();
+//        try {
+//            MazeModel maze = mazeList.readMaze(getListIndexFromDisplayIndex(mazeNumber));
+//            System.out.printf("\nNow playing Maze %d%n", mazeNumber);
+//            startGame(maze);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("That maze doesn't exist");
+//        }
+//    }
+//
+//    // EFFECTS: starts game using given maze
+//    private void startGame(MazeModel maze) {
+//        new GameUI(new GameModel(maze, new PositionModel(7, 0)));
+//    }
+//
+//    // EFFECTS: returns maze's index in list given it's number in display
+//    private int getListIndexFromDisplayIndex(int displayIndex) {
+//        return mazeListPage * 5 + displayIndex - 1;
+//    }

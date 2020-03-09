@@ -3,15 +3,46 @@
 
 package ui;
 
-import model.GameModel;
-import model.PositionModel;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import java.util.List;
-import java.util.Scanner;
+public class GameUI extends JPanel {
+    JButton quitButton;
+    Minoquar minoquarFrame;
 
-import static java.lang.Math.random;
+    // EFFECTS: runs the app's game UI
+    public GameUI(Minoquar minoquarFrame) {
+        super(new BorderLayout());
+        this.minoquarFrame = minoquarFrame;
+        createGameUI();
+    }
 
-public class GameUI {
+    // MODIFIES: this
+    // EFFECTS: sets up game UI panels
+    public void createGameUI() {
+        String label = "Quit Game";
+        quitButton = new JButton(label);
+        QuitButtonListener quitButtonListener = new QuitButtonListener();
+        quitButton.setActionCommand(label);
+        quitButton.addActionListener(quitButtonListener);
+        add(quitButton);
+    }
+
+    class QuitButtonListener implements ActionListener {
+
+        // EFFECTS: quits game and goes back to menu UI
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            minoquarFrame.swapToMenuUI();
+        }
+    }
+}
+
+
+
+
 //    private static final String QUIT_COMMAND = MenuUI.QUIT_COMMAND;
 //
 //    private Scanner input;
@@ -143,4 +174,3 @@ public class GameUI {
 //            return false;
 //        }
 //    }
-}
