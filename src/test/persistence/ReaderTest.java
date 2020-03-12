@@ -8,6 +8,8 @@ import model.MazeModel;
 import model.MazeSizeModel;
 import model.PositionModel;
 import org.junit.jupiter.api.Test;
+import ui.SquareDisplayData;
+import utils.GridArray;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,10 +75,8 @@ public class ReaderTest {
         assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(5, 1)));
         assertTrue(maze.isMoveValid(new PositionModel(5, 1), new PositionModel(7,1)));
         assertFalse(maze.isMoveValid(new PositionModel(7,6), new PositionModel(11, 6)));
-        List<String> oneDisplay = maze.displayMaze();
-        assertEquals(oneSideLength, oneDisplay.size());
-        for (String row : oneDisplay) {
-            assertEquals(oneSideLength, row.length());
-        }
+        GridArray<SquareDisplayData> oneDisplay = maze.displayMaze();
+        assertEquals(oneSideLength, oneDisplay.getWidth());
+        assertEquals(oneSideLength, oneDisplay.getHeight());
     }
 }

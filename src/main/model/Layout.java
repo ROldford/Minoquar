@@ -1,80 +1,74 @@
 package model;
 
+import ui.SquareDisplayData;
+import utils.GridArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
 // stores grid layout of given dimensions, can return state of square, and add other layouts on top of itself
 public class Layout {
 
-    enum MazeSquare {
+    public enum MazeSquare {
         WALL,
         PASSAGE,
         EMPTY
     }
 
-    public static final char WALL_CHAR = "▓".charAt(0);
-    public static final char PASSAGE_CHAR = " ".charAt(0);
-    public static final char EMPTY_CHAR = "X".charAt(0);
+//    public static final char WALL_CHAR = "▓".charAt(0);
+//    public static final char PASSAGE_CHAR = " ".charAt(0);
+//    public static final char EMPTY_CHAR = "X".charAt(0);
 
-    int width;
-    int height;
-    List<MazeSquare> layout;
+//    int width;
+//    int height;
+    GridArray<MazeSquare> layout;
 
     // EFFECTS: construct grid layout of given width and height with all squares empty
     public Layout(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.layout = new ArrayList<>();
+//        this.width = width;
+//        this.height = height;
+        List<MazeSquare> layoutEmpty = new ArrayList<>();
         for (int i = 0; i < (width * height); i++) {
-            layout.add(i, MazeSquare.EMPTY);
+            layoutEmpty.add(i, MazeSquare.EMPTY);
         }
+        this.layout = new GridArray<>(width, height, layoutEmpty);
     }
 
     // REQUIRES: presetLayout's size must equal width * height
     // EFFECTS: construct grid layout of given width and height using squares from preset layout
     public Layout(int width, int height, List<MazeSquare> presetLayout) {
-        this.width = width;
-        this.height = height;
-        this.layout = presetLayout;
+//        this.width = width;
+//        this.height = height;
+        this.layout = new GridArray<>(width, height, presetLayout);
     }
 
     // REQUIRES: position is not outside of layout
     // EFFECTS: returns status of square at given position
     public MazeSquare getSquare(PositionModel position) {
-        return layout.get(positionToListIndex(position, width));
+        return layout.get(position);
     }
 
     // EFFECTS: return width of maze
     public int getWidth() {
-        return width;
+        return layout.getWidth();
     }
 
     // EFFECTS: return width of maze
     public int getHeight() {
-        return height;
+        return layout.getHeight();
     }
 
-    // EFFECTS: return list of strings to display the current layout
-    public List<String> display() {
-        List<String> displayList = new ArrayList<>();
-        for (int y = 0; y < height; y++) {
-            StringBuilder row = new StringBuilder();
-            for (int x = 0; x < width; x++) {
-                switch (getSquare(new PositionModel(x, y))) {
-                    case WALL:
-                        row.append(WALL_CHAR);
-                        break;
-                    case PASSAGE:
-                        row.append(PASSAGE_CHAR);
-                        break;
-                    default:
-                        row.append(EMPTY_CHAR);
-                        break;
-                }
+    // EFFECTS: return GridArray of SquareDisplayData to display the current layout
+    public GridArray<SquareDisplayData> display() {
+        GridArray<SquareDisplayData> displayData = new GridArray<>(getWidth(), getHeight());
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                PositionModel position = new PositionModel(x, y);
+                SquareDisplayData squareDisplay = new SquareDisplayData(layout.get(position), new ArrayList<>());
+                displayData.set(x, y, squareDisplay);
             }
-            displayList.add(row.toString());
         }
-        return displayList;
+        return displayData;
     }
 
     // REQUIRES: other layout does not fall outside of this pattern's dimensions
@@ -85,7 +79,7 @@ public class Layout {
         for (int x = 0; x < other.getWidth(); x++) {
             for (int y = 0; y < other.getHeight(); y++) {
                 layout.set(
-                        positionToListIndex(cornerPosition.add(new PositionModel(x, y)), width),
+                        cornerPosition.add(new PositionModel(x, y)),
                         other.getSquare(new PositionModel(x, y)));
             }
         }
@@ -94,15 +88,6 @@ public class Layout {
     // TODO: use this to throw exceptions in getSquare
     // EFFECTS: return true if position lies in bounds of layout
     public boolean isInBounds(PositionModel position) {
-        boolean validX = (0 <= position.getX() && position.getX() < width);
-        boolean validY = (0 <= position.getY() && position.getY() < height);
-        return validX && validY;
-    }
-
-    // REQUIRES: position is not outside of layout
-    // EFFECTS: converts positions to index number for "flattened" 2D grid list of given width
-    // Example: positionToListIndex( (2, 4), 5) -> 14
-    protected int positionToListIndex(PositionModel position, int width) {
-        return position.getY() * width + position.getX(); //stub
+        return layout.isInBounds(position);
     }
 }
