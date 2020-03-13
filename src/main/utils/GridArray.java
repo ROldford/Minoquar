@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Objects;
 
 // capable of storing data in 2D grid format
+// coordinate system has origin at top left
+// x increases left to right
+// y increases top to bottom
 public class GridArray<T> {
-    // TODO: implement Iterable
     private int width;
     private int height;
     private List<T> data;
@@ -47,10 +49,14 @@ public class GridArray<T> {
         return width;
     }
 
+    // REQUIRES: x and y are in grid bounds
+    // EFFECTS: returns element at given x and y coordinates
     public T get(int x, int y) {
         return data.get(coordinatesToListIndex(x, y));
     }
 
+    // REQUIRES: position is in grid bounds
+    // EFFECTS: returns element at given position
     public T get(PositionModel position) {
         return get(position.getX(), position.getY());
     }
@@ -102,6 +108,8 @@ public class GridArray<T> {
         return y * width + x;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets grid array dimensions
     private void setDimensions(int width, int height) {
         this.width = width;
         this.height = height;
@@ -113,5 +121,22 @@ public class GridArray<T> {
             nullList.add(null);
         }
         return nullList;
+    }
+
+    // REQUIRES: element is not null;
+    // EFFECTS: returns true if element is in grid
+    public boolean contains(T element) {
+        return data.contains(element);
+    }
+
+    // REQUIRES: element is not null
+    // EFFECTS: returns position of first occurrence of element in grid, or (-1, -1) if not present
+    public PositionModel getPositionOfElement(T element) {
+        int index = data.indexOf(element);
+        if (index < 0) {
+            return new PositionModel(-1, -1);
+        } else {
+            return new PositionModel(index % width, index / width);
+        }
     }
 }
