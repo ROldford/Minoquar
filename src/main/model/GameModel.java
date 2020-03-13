@@ -1,29 +1,39 @@
 package model;
 
+import ui.SquareDisplayData;
+import utils.GridArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
 
 public class GameModel {
-    public static final char TREASURE_CHAR = "O".charAt(0);
-
     private MazeModel maze;
-    // TODO: Should mazeDisplay be static or final to make it set-once read-only?
-    private List<String> mazeDisplay;
-    private HeroModel hero;
-    private MinotaurModel minotaur;
-    private PositionModel treasure;
+    private GameEntity hero;
+    private GameEntity minotaur;
+    private GameEntity treasure;
+
+    // EFFECTS: construct new game with given maze
+    public GameModel(MazeModel maze) {
+        this.maze = maze;
+        // TODO: implement start point choice
+        // currently using fixed start
+        setupEntities(new PositionModel(7, 0));
+    }
 
     // REQUIRES: hero's start position must be valid for given maze (based on maze size)
-    // EFFECTS: construct new game with given maze and hero start position
+    // EFFECTS: construct new game with given maze
+    // meant for testing
     public GameModel(MazeModel maze, PositionModel start) {
         this.maze = maze;
-        this.mazeDisplay = maze.displayMaze();
-        this.hero = new HeroModel(start);
-        this.minotaur = new MinotaurModel(maze.getMinotaurStartPosition());
-//        this.minotaur = new MinotaurModel(new PositionModel(10, 10));
-        this.treasure = maze.getTreasurePosition();
+        setupEntities(start);
+    }
+
+    private void setupEntities(PositionModel heroStart) {
+        this.hero = new GameEntity(GameEntity.EntityType.HERO, heroStart);
+        this.minotaur = new GameEntity(GameEntity.EntityType.MINOTAUR, maze.getMinotaurStartPosition());
+        this.treasure = new GameEntity(GameEntity.EntityType.TREASURE, maze.getTreasurePosition());
     }
 
     // EFFECTS: returns current position of hero in maze
@@ -152,7 +162,7 @@ public class GameModel {
     //          player wins if:
     //              - hero has captured the treasure
     public boolean checkForWin() {
-        return (hero.getPosition().equals(treasure));
+        return (hero.getPosition().equals(treasure.getPosition()));
     }
 
     // EFFECTS: return true if player has lost the game, false if not
@@ -162,29 +172,21 @@ public class GameModel {
         return (hero.getPosition().equals(minotaur.getPosition()));
     }
 
-    // EFFECTS: return list of strings to display the current game state
-    public List<String> display() {
-        List<String> display = new ArrayList<>(mazeDisplay);
-        display = overlayGameElement(TREASURE_CHAR, treasure, display);
-        display = overlayGameElement(HeroModel.HERO_CHAR, hero.getPosition(), display);
-        display = overlayGameElement(MinotaurModel.MINO_CHAR, minotaur.getPosition(), display);
+    // EFFECTS: return list of SquareDisplayData instances to display the current game state
+    public GridArray<SquareDisplayData> display() {
+        GridArray<SquareDisplayData> display = maze.displayMaze();
+        overlayGameElement(treasure, display);
+        overlayGameElement(hero, display);
+        overlayGameElement(minotaur, display);
         return display;
     }
 
-    // EFFECTS: return new display list of strings with game element character overlaid at given position
-    private List<String> overlayGameElement(char ch, PositionModel position, List<String> display) {
-        List<String> overlaid = new ArrayList<>(display);
-        String row = overlaid.get(position.getY());
-        row = replaceCharAtIndex(row, position.getX(), ch);
-        overlaid.set(position.getY(), row);
-        return overlaid;
-    }
-
-    // EFFECTS: makes new string where character at index is replaced with new character
-    // Based on code at https://www.baeldung.com/java-replace-character-at-index
-    private String replaceCharAtIndex(String str, int index, char newChar) {
-        StringBuilder newString = new StringBuilder(str);
-        newString.setCharAt(index, newChar);
-        return newString.toString();
+    // MODIFIES: display
+    // EFFECTS: return new list of display data with game element added at given position
+    private void overlayGameElement(GameEntity entity, GridArray<SquareDisplayData> display) {
+        PositionModel position = entity.getPosition();
+        SquareDisplayData squareDisplay = display.get(position);
+        squareDisplay.addEntityType(entity.getEntityType());
+        display.set(position, squareDisplay);
     }
 }

@@ -3,13 +3,13 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
+import ui.SquareDisplayData;
+import utils.GridArray;
 import utils.Utilities;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,17 +26,14 @@ public class GameModelTest {
     @BeforeEach
     public void beforeEach() {
         game = new GameModel(
-                new MazeModel("test", MazeSizeModel.MazeSize.EXTRA_SMALL),
-                new PositionModel(7, 0));
+                new MazeModel("test", MazeSizeModel.MazeSize.EXTRA_SMALL));
         try {
-            MazeListModel startTestMazeList = Reader.readMazeList(new File(START_TESTS_FILE));
-            emptyMaze = startTestMazeList.readMaze(0);
+            MazeListModel startTestMazeList = new MazeListModel(Reader.readMazeList(new File(START_TESTS_FILE)));
+            emptyMaze = startTestMazeList.getElementAt(0);
             startTestGames = new ArrayList<>();
-            for (int i = 0; i < startTestMazeList.size(); i++) {
-                MazeModel startTestMaze = startTestMazeList.readMaze(i);
-                startTestGames.add(new GameModel(
-                        startTestMaze,
-                        new PositionModel(7, 0)));
+            for (int i = 0; i < startTestMazeList.getSize(); i++) {
+                MazeModel startTestMaze = startTestMazeList.getElementAt(i);
+                startTestGames.add(new GameModel(startTestMaze));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,17 +42,38 @@ public class GameModelTest {
 
     @Test
     public void testInit() {
-        List<String> display = game.display();
-        assertEquals("▓▓▓▓▓▓▓☺", display.get(0).substring(0, 8));
-        assertEquals("▓     ▓ ", display.get(1).substring(0, 8));
-        assertEquals("▓ ▓▓▓ ▓ ", display.get(2).substring(0, 8));
-        assertNotEquals("X", display.get(0).substring(8, 9));
+        assertNotNull(game.getHeroPosition());
+        assertNotNull(game.getMinotaurPosition());
+    }
+
+    @Test
+    public void testDisplay() {
+        SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
+        SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
+        SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
+        SquareDisplayData hero = new SquareDisplayData(Layout.MazeSquare.PASSAGE,
+                new ArrayList<>(Collections.singletonList(GameEntity.EntityType.HERO)));
+        SquareDisplayData exit = new SquareDisplayData(Layout.MazeSquare.PASSAGE,
+                new ArrayList<>(Collections.singletonList(GameEntity.EntityType.TREASURE)));
+        GridArray<SquareDisplayData> expectedFinder = new GridArray<>(8, 3,
+                new ArrayList<>(Arrays.asList(
+                        wall, wall, wall, wall, wall, wall, wall, hero,
+                        wall, pass, pass, pass, pass, pass, wall, pass,
+                        wall, pass, wall, wall, wall, pass, wall, pass)));
+        List<SquareDisplayData> expectedAlignment = new ArrayList<>(Arrays.asList(
+                wall, exit, pass, pass, wall));
+        GridArray<SquareDisplayData> display = game.display();
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 3; y++) {
+                assertEquals(expectedFinder.get(x, y), display.get(x, y));
+            }
+        }
+        assertNotEquals(empty, display.get(8, 0));
         PositionModel alignCorner = MazeSizeModel.getAlignPatternPosition(MazeSizeModel.MazeSize.EXTRA_SMALL);
-        assertEquals("▓O  ▓", display.get(alignCorner.getY()+1).substring(
-                alignCorner.getX(), alignCorner.getX()+5));
-//        for (String row : display) {
-//            System.out.println(row);
-//        }
+        for (int i = 0; i < 4; i++) {
+            PositionModel checkPosition = alignCorner.add(new PositionModel(i, 1));
+            assertEquals(expectedAlignment.get(i), display.get(checkPosition));
+        }
     }
 
     @Test
@@ -114,7 +132,9 @@ public class GameModelTest {
     }
 
     @Test
-    public void displayMinotaur() {
+    public void testDisplayMinotaur() {
+        SquareDisplayData minotaur = new SquareDisplayData(Layout.MazeSquare.PASSAGE,
+                new ArrayList<>(Collections.singletonList(GameEntity.EntityType.MINOTAUR)));
         List<PositionModel> expectedMinotaurStartPositions = new ArrayList<>(Arrays.asList(
                 new PositionModel(12, 12),
                 new PositionModel(12, 11),
@@ -126,8 +146,8 @@ public class GameModelTest {
         Utilities.iterateSimultaneously(
                 expectedMinotaurStartPositions, startTestGames,
                 (PositionModel expected, GameModel game) -> {
-                    List<String> display = game.display();
-                    assertEquals(MinotaurModel.MINO_CHAR, display.get(expected.getY()).charAt(expected.getX()));
+                    GridArray<SquareDisplayData> display = game.display();
+                    assertEquals(minotaur, display.get(expected));
                 });
     }
 
@@ -208,8 +228,8 @@ public class GameModelTest {
 
     private MazeModel generateTestData(String filename) {
         try {
-            MazeListModel mazeList = Reader.readMazeList(new File(filename));
-            return mazeList.readMaze(0);
+            MazeListModel mazeList = new MazeListModel(Reader.readMazeList(new File(filename)));
+            return mazeList.getElementAt(0);
         } catch (IOException e) {
             fail(String.format("Something is wrong with the test file: %s", filename));
             e.printStackTrace();

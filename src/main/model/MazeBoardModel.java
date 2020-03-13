@@ -1,5 +1,8 @@
 package model;
 
+import ui.SquareDisplayData;
+import utils.GridArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +66,7 @@ public class MazeBoardModel {
     }
 
     // EFFECTS: return list of strings to display the current maze board
-    public List<String> display() {
+    public GridArray<SquareDisplayData> display() {
         return mazeLayout.display();
     }
 

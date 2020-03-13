@@ -3,6 +3,8 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
+import ui.SquareDisplayData;
+import utils.GridArray;
 import utils.Utilities;
 
 import java.io.File;
@@ -130,12 +132,27 @@ public class MazeLayoutModelTest {
     @Test
     public void testDisplay() {
         for (MazeLayoutModel layout : layouts) {
-            List<String> display = layout.display();
-            assertEquals("▓▓▓▓▓▓▓ ", display.get(0).substring(0, 8));
-            assertEquals("▓     ▓ ", display.get(1).substring(0, 8));
-            assertEquals("▓ ▓▓▓ ▓ ", display.get(2).substring(0, 8));
-            assertNotEquals("X", display.get(0).substring(8, 9));
-            assertNotEquals("X", display.get(2).substring(8, 9));
+            SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
+            SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
+            SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
+            GridArray<SquareDisplayData> expectedFinder = new GridArray<>(7, 3,
+                    new ArrayList<>(Arrays.asList(
+                            wall, wall, wall, wall, wall, wall, wall,
+                            wall, pass, pass, pass, pass, pass, wall,
+                            wall, pass, wall, wall, wall, pass, wall)));
+            GridArray<SquareDisplayData> display = layout.display();
+            for (int x = 0; x < 7; x++) {
+                for (int y = 0; y < 3; y++) {
+                    assertEquals(expectedFinder.get(x, y), display.get(x, y));
+                }
+            }
+            assertNotEquals(empty, display.get(8, 0));
+            assertNotEquals(empty, display.get(8, 2));
+//            assertEquals("▓▓▓▓▓▓▓ ", display.get(0).substring(0, 8));
+//            assertEquals("▓     ▓ ", display.get(1).substring(0, 8));
+//            assertEquals("▓ ▓▓▓ ▓ ", display.get(2).substring(0, 8));
+//            assertNotEquals("X", display.get(0).substring(8, 9));
+//            assertNotEquals("X", display.get(2).substring(8, 9));
 //            for (String row : display) {
 //                System.out.println(row);
 //            }

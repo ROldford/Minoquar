@@ -2,11 +2,14 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ui.SquareDisplayData;
+import utils.GridArray;
 import utils.Utilities;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class LayoutTest {
     Layout singleSquare;
@@ -122,14 +125,26 @@ public class LayoutTest {
 
     @Test
     public void testDisplay() {
-        List<String> alignDisplay = alignmentPattern.display();
-        assertEquals("▓▓▓▓▓", alignDisplay.get(0).substring(0,5));
-        assertEquals("▓   ▓", alignDisplay.get(1).substring(0,5));
-        assertEquals("▓ ▓ ▓", alignDisplay.get(2).substring(0,5));
-        List<String> emptyDisplay = fiveByThreeEmpty.display();
-        for (String row : emptyDisplay) {
-            assertEquals("XXXXX", row);
-        }
+//        fail("needs implementation");
+        SquareDisplayData wall = new SquareDisplayData(w);
+        SquareDisplayData pass = new SquareDisplayData(p);
+        GridArray<SquareDisplayData> expected = new GridArray<>(5, 5,
+                new ArrayList<>(Arrays.asList(
+                        wall, wall, wall, wall, wall,
+                        wall, pass, pass, pass, wall,
+                        wall, pass, wall, pass, wall,
+                        wall, pass, pass, pass, wall,
+                        wall, wall, wall, wall, wall)));
+        GridArray<SquareDisplayData> actual = alignmentPattern.display();
+        assertEquals(expected, actual);
+        SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
+        expected = new GridArray<>(5, 3,
+                new ArrayList<>(Arrays.asList(
+                        empty, empty, empty, empty, empty,
+                        empty, empty, empty, empty, empty,
+                        empty, empty, empty, empty, empty)));
+        actual = fiveByThreeEmpty.display();
+        assertEquals(expected, actual);
     }
 
 }

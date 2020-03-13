@@ -8,6 +8,8 @@ import model.MazeModel;
 import model.MazeSizeModel;
 import model.PositionModel;
 import org.junit.jupiter.api.Test;
+import ui.SquareDisplayData;
+import utils.GridArray;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,8 +22,9 @@ public class ReaderTest {
     public void testParseMazeListFile1() {
         // xs maze
         try {
-            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList1.txt"));
-            testMaze(mazes.readMaze(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeList1.txt")));
+            testMaze(mazes.getElementAt(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -31,8 +34,9 @@ public class ReaderTest {
     public void testParseMazeListFile2() {
         // xl maze
         try {
-            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList2.txt"));
-            testMaze(mazes.readMaze(0), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeList2.txt")));
+            testMaze(mazes.getElementAt(0), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -42,9 +46,10 @@ public class ReaderTest {
     public void testParseMazeListFile3() {
         // both mazes from before in same file
         try {
-            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeList3.txt"));
-            testMaze(mazes.readMaze(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
-            testMaze(mazes.readMaze(1), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeList3.txt")));
+            testMaze(mazes.getElementAt(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
+            testMaze(mazes.getElementAt(1), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -53,8 +58,9 @@ public class ReaderTest {
     @Test
     public void testParseNonMazeListFile() {
         try {
-            MazeListModel mazes = Reader.readMazeList(new File("./data/test/testMazeListBadFile.txt"));
-            assertEquals(0, mazes.size());
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeListBadFile.txt")));
+            assertEquals(0, mazes.getSize());
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -69,10 +75,8 @@ public class ReaderTest {
         assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(5, 1)));
         assertTrue(maze.isMoveValid(new PositionModel(5, 1), new PositionModel(7,1)));
         assertFalse(maze.isMoveValid(new PositionModel(7,6), new PositionModel(11, 6)));
-        List<String> oneDisplay = maze.displayMaze();
-        assertEquals(oneSideLength, oneDisplay.size());
-        for (String row : oneDisplay) {
-            assertEquals(oneSideLength, row.length());
-        }
+        GridArray<SquareDisplayData> oneDisplay = maze.displayMaze();
+        assertEquals(oneSideLength, oneDisplay.getWidth());
+        assertEquals(oneSideLength, oneDisplay.getHeight());
     }
 }

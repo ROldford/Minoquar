@@ -20,13 +20,12 @@ public class Reader {
     public static final char SAVE_FILE_WALL = "X".charAt(0);
     public static final char SAVE_FILE_PASSAGE = ".".charAt(0);
 
-    // EFFECTS: returns list of maze files to parse from list file
+    // EFFECTS: returns list of mazes read from save file
     //          throws IOException if raised while opening / reading from file
     //          maze list file format: each line is relative file name of a maze file
-    public static MazeListModel readMazeList(File file) throws IOException {
+    public static List<MazeModel> readMazeList(File file) throws IOException {
         List<String> fileContent = readFile(file);
-        List<MazeModel> mazeModels = parseContent(fileContent);
-        return new MazeListModel(mazeModels);
+        return parseContent(fileContent);
     }
 
     // EFFECTS: reads save data from save file

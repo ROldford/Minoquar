@@ -10,7 +10,7 @@ public class GameEntityTest {
 
     @BeforeEach
     public void beforeEach() {
-        entity = new GameEntity(new PositionModel(3, 5));
+        entity = new GameEntity(GameEntity.EntityType.HERO, new PositionModel(3, 5));
     }
 
     @Test
@@ -18,6 +18,7 @@ public class GameEntityTest {
         PositionModel entityPosition = entity.getPosition();
         assertEquals(3, entityPosition.getX());
         assertEquals(5, entityPosition.getY());
+        assertEquals(GameEntity.EntityType.HERO, entity.getEntityType());
     }
 
     @Test

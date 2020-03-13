@@ -214,12 +214,14 @@ public class MazeLayoutModel extends Layout {
     // EFFECTS: fills remaining EMPTY squares in maze layout with WALL or PASSAGE
     //          random chance of either, based on PERCENT_WALL
     private void fillRemainingSquares() {
-        for (int i = 0; i < layout.size(); i++) {
-            if (layout.get(i) == MazeSquare.EMPTY) {
-                if (Math.random() < PERCENT_WALL) {
-                    layout.set(i, MazeSquare.WALL);
-                } else {
-                    layout.set(i, MazeSquare.PASSAGE);
+        for (int x = 0; x < layout.getWidth(); x++) {
+            for (int y = 0; y < layout.getHeight(); y++) {
+                if (layout.get(x, y) == MazeSquare.EMPTY) {
+                    if (Math.random() < PERCENT_WALL) {
+                        layout.set(x, y, MazeSquare.WALL);
+                    } else {
+                        layout.set(x, y, MazeSquare.PASSAGE);
+                    }
                 }
             }
         }

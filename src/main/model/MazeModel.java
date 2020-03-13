@@ -1,5 +1,8 @@
 package model;
 
+import ui.SquareDisplayData;
+import utils.GridArray;
+
 import java.util.*;
 
 // represents game as maze level, stores layout and other maze data
@@ -79,7 +82,7 @@ public class MazeModel {
     }
 
     // EFFECTS: return list of strings to display the current maze
-    public List<String> displayMaze() {
+    public GridArray<SquareDisplayData> displayMaze() {
         return mazeBoard.display();
     }
 
@@ -102,5 +105,9 @@ public class MazeModel {
         return MazeSizeModel.getSizeCode(mazeBoard.getSize());
     }
 
-
+    // EFFECTS: returns string describing maze
+    @Override
+    public String toString() {
+        return String.format("%s - %s (%dx%d)", name, getSizeName(), getSideLength(), getSideLength());
+    }
 }
