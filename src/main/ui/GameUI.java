@@ -5,6 +5,7 @@ package ui;
 
 import model.GameModel;
 import model.MazeModel;
+import model.PositionModel;
 import utils.GridArray;
 
 import javax.swing.*;
@@ -16,14 +17,16 @@ public class GameUI extends JPanel {
     Minoquar minoquarFrame;
     MazeUIPanel mazeUIPanel;
     GameModel gameModel;
+    boolean canHandleClick;
 
     JButton quitButton;
 
-    // EFFECTS: creates the game's UI panel in app window with given game model
+    // EFFECTS: creates the game's UI panel in app window with given maze
     public GameUI(Minoquar minoquarFrame, MazeModel mazeModel) {
         super(new BorderLayout());
         this.minoquarFrame = minoquarFrame;
         this.gameModel = new GameModel(mazeModel);
+        this.canHandleClick = true;
         createGameUI();
     }
 
@@ -38,6 +41,7 @@ public class GameUI extends JPanel {
     }
 
     private JPanel createBottomPanel() {
+        // TODO: implement message space
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.LINE_AXIS));
         String label = "Quit Game";
@@ -51,8 +55,79 @@ public class GameUI extends JPanel {
 
     private JPanel createMazePanel() {
         GridArray<SquareDisplayData> displayData = gameModel.display();
-        mazeUIPanel = new MazeUIPanel(displayData);
+        mazeUIPanel = new MazeUIPanel(displayData, this);
         return mazeUIPanel;
+    }
+
+    public void handleClickAt(PositionModel clickedPosition) {
+        System.out.printf("Clicked panel at column %d, row %d\n", clickedPosition.getX(), clickedPosition.getY());
+        if (canHandleClick) {
+            this.canHandleClick = false;  // keeps clicks from working while move is processed
+            // TODO: test if this is actually needed
+            boolean updateNeeded = false;
+            boolean keepGoing = getHeroMove(clickedPosition);
+            if (keepGoing) {
+                updateNeeded = true;
+                keepGoing = !checkForWin();
+            }
+            if (keepGoing) {
+                keepGoing = gameModel.moveMinotaur();
+            }
+            if (keepGoing) {
+                checkForLoss();
+            }
+            if (updateNeeded) {
+                updateDisplay();
+            }
+            this.canHandleClick = true;
+        }
+    }
+
+    // MODIFIES: game
+    // EFFECTS: processes game move
+    //          returns true when move is completed
+    //          returns false and prints message to bottom panel otherwise
+    private boolean getHeroMove(PositionModel end) {
+        if (gameModel.moveHero(end)) {
+            return true;
+        } else {
+            // TODO: bottom panel message
+            Toolkit.getDefaultToolkit().beep();
+            return false;
+        }
+    }
+
+    // EFFECTS: checks if game has been won
+    //          if so, displays win message
+    //          also returns true if hero wins, false if not
+    private boolean checkForWin() {
+        if (gameModel.checkForWin()) {
+            // TODO: bottom panel message
+            System.out.println("You win!");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // EFFECTS: checks if game has been lost
+    //          if so, displays loss message
+    //          also returns true if hero loses, false if not
+    private boolean checkForLoss() {
+        if (gameModel.checkForLoss()) {
+            // TODO: bottom panel message
+            System.out.println("Sorry, you lost.");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // EFFECTS: updates the maze panel display
+    private void updateDisplay() {
+        mazeUIPanel.updateDisplay(gameModel.display());
+        // TODO: implement this!
+        // stub
     }
 
     class QuitButtonListener implements ActionListener {
