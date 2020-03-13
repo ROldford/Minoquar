@@ -1,10 +1,13 @@
 package ui;
 
+import model.MazeModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+// TODO: check all classes for missing method documentation
 public class Minoquar extends JFrame {
     private MenuUI menuUI;
     private GameUI gameUI;
@@ -21,7 +24,7 @@ public class Minoquar extends JFrame {
             }
         });
         this.menuUI = new MenuUI(this);
-        this.gameUI = new GameUI(this);
+        this.gameUI = null;
         add(menuUI);
         pack();
         setVisible(true);
@@ -35,26 +38,22 @@ public class Minoquar extends JFrame {
     }
 
     // MODIFIES: this
-    // EFFECTS: swaps UI to game mode
-    public void swapToGameUI() {
-        swapComponentsAndResizeUI(menuUI, gameUI);
+    // EFFECTS: swaps UI to game mode, created with given maze model
+    public void swapToGameUI(MazeModel mazeModel) {
+        gameUI = new GameUI(this, mazeModel);
+        remove(menuUI);
+        add(gameUI);
+        pack();
     }
 
     // MODIFIES: this
     // EFFECTS: swaps UI to menu mode
     public void swapToMenuUI() {
-        swapComponentsAndResizeUI(gameUI, menuUI);
-    }
-
-    // MODIFIES: this
-    // EFFECTS: swaps visible UI component from current to next, resizes UI to match new component size
-    private void swapComponentsAndResizeUI(
-            JComponent current,
-            JComponent next) {
-        remove(current);
-        add(next);
+        remove(gameUI);
+        add(menuUI);
         pack();
     }
+
 
     // EFFECTS: starts app
     public static void main(String[] args) {

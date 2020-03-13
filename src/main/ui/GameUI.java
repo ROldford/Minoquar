@@ -3,31 +3,56 @@
 
 package ui;
 
+import model.GameModel;
+import model.MazeModel;
+import utils.GridArray;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GameUI extends JPanel {
-    JButton quitButton;
     Minoquar minoquarFrame;
+    MazeUIPanel mazeUIPanel;
+    GameModel gameModel;
 
-    // EFFECTS: runs the app's game UI
-    public GameUI(Minoquar minoquarFrame) {
+    JButton quitButton;
+
+    // EFFECTS: creates the game's UI panel in app window with given game model
+    public GameUI(Minoquar minoquarFrame, MazeModel mazeModel) {
         super(new BorderLayout());
         this.minoquarFrame = minoquarFrame;
+        this.gameModel = new GameModel(mazeModel);
         createGameUI();
     }
 
     // MODIFIES: this
     // EFFECTS: sets up game UI panels
     public void createGameUI() {
+        JPanel bottomPanel = createBottomPanel();
+        JPanel mazePanel = createMazePanel();
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        add(mazePanel);
+        add(bottomPanel);
+    }
+
+    private JPanel createBottomPanel() {
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.LINE_AXIS));
         String label = "Quit Game";
         quitButton = new JButton(label);
         QuitButtonListener quitButtonListener = new QuitButtonListener();
         quitButton.setActionCommand(label);
         quitButton.addActionListener(quitButtonListener);
-        add(quitButton);
+        bottomPanel.add(quitButton);
+        return bottomPanel;
+    }
+
+    private JPanel createMazePanel() {
+        GridArray<SquareDisplayData> displayData = gameModel.display();
+        mazeUIPanel = new MazeUIPanel(displayData);
+        return mazeUIPanel;
     }
 
     class QuitButtonListener implements ActionListener {

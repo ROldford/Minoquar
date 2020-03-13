@@ -46,41 +46,13 @@ public class MenuUI extends JPanel implements ListSelectionListener {
 
     private MazeListModel mazeList;
 
-    // EFFECTS: runs the app menu UI
+    // EFFECTS: creates the maze menu's UI panel in app window
     public MenuUI(Minoquar minoquarFrame) {
         super(new BorderLayout());
         this.minoquarFrame = minoquarFrame;
         this.mazeList = new MazeListModel(loadMazes());
         createListUI();
 //        runApp();
-    }
-
-    // MODIFIES: this
-    // EFFECTS: displays menus and processes user input
-    private void runApp() {
-//        boolean keepGoing = true;
-//        String command;
-//        mazeListPage = 0;
-//        input = new Scanner(System.in);
-//
-//        loadMazes();
-//
-//        while (keepGoing) {
-//            // Based on https://stackoverflow.com/a/6857936
-//            System.out.println(String.join("", Collections.nCopies(25, "-")));
-//            displayMazeList(mazeListPage);
-//            displayMenu();
-//            command = input.next().toLowerCase();
-//
-//            if (command.equals(QUIT_COMMAND)) {
-//                saveMazes();
-//                keepGoing = false;
-//            } else {
-//                processCommand(command);
-//            }
-//        }
-
-
     }
 
     // EFFECTS: returns list of mazes loaded from memory
@@ -316,7 +288,7 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         public void actionPerformed(ActionEvent e) {
             // TODO: implement actual game start
 //            Toolkit.getDefaultToolkit().beep();
-            minoquarFrame.swapToGameUI();
+            minoquarFrame.swapToGameUI(mazeList.getElementAt(list.getSelectedIndex()));
         }
     }
 
@@ -519,4 +491,30 @@ public class MenuUI extends JPanel implements ListSelectionListener {
 //    // EFFECTS: returns maze's index in list given it's number in display
 //    private int getListIndexFromDisplayIndex(int displayIndex) {
 //        return mazeListPage * 5 + displayIndex - 1;
+//    }
+
+//    // MODIFIES: this
+//    // EFFECTS: displays menus and processes user input
+//    private void runApp() {
+//        boolean keepGoing = true;
+//        String command;
+//        mazeListPage = 0;
+//        input = new Scanner(System.in);
+//
+//        loadMazes();
+//
+//        while (keepGoing) {
+//            // Based on https://stackoverflow.com/a/6857936
+//            System.out.println(String.join("", Collections.nCopies(25, "-")));
+//            displayMazeList(mazeListPage);
+//            displayMenu();
+//            command = input.next().toLowerCase();
+//
+//            if (command.equals(QUIT_COMMAND)) {
+//                saveMazes();
+//                keepGoing = false;
+//            } else {
+//                processCommand(command);
+//            }
+//        }
 //    }
