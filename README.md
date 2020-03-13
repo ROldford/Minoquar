@@ -26,12 +26,19 @@ implement the more difficult parts of a digital game, such as physics, collision
     - [X] Maze List Panel
         - [X] Add Maze Button
         - [X] Delete Maze Button
-        - [ ] Start Game Button
+        - [X] Start Game Button
         - [X] Save Button
         - [X] Load Button
     - [ ] Game Panel
-        - [ ] Maze Square images
-        - [ ] Entity images
+        - [X] Visuals
+            - [X] Maze Square images
+            - [X] Entity images
+            - Java drawings for now, but I hope to add pixel art images later
+        - [ ] Interactivity
+            - [X] Click mouse on square to move there (if valid)
+            - [ ] Response if move is invalid
+            - [ ] Message on win
+            - [ ] Message on loss
 
 *Other Stories*
 - [ ] As a user, I want to see wins and losses for a given maze.

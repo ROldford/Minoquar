@@ -45,16 +45,21 @@ public class MazeModel {
         return MazeSizeModel.getSideLength(mazeBoard.getSize());
     }
 
-    // REQUIRES: start and end are within maze size
-    //           start and end are on same orthogonal line
-    //           start and end are not same position
+    // REQUIRES: start and end are within maze bounds
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
     public boolean isMoveValid(PositionModel start, PositionModel end) {
-        if (mazeBoard.getSquare(end) == MazeLayoutModel.MazeSquare.WALL) {
+        boolean samePosition = start.equals(end);
+        boolean orthogonal = areSquaresOrthogonal(start, end);
+        boolean endOnWall = mazeBoard.getSquare(end) == Layout.MazeSquare.WALL;
+        if (samePosition || !orthogonal || endOnWall) {
             return false;
         } else {
-            return areSquaresIdentical(mazeBoard.getSquaresBetween(start, end));
+            return areTheseSquaresIdentical(mazeBoard.getSquaresBetween(start, end));
         }
+    }
+
+    private boolean areSquaresOrthogonal(PositionModel start, PositionModel end) {
+        return start.getX() == end.getX() || start.getY() == end.getY();
     }
 
     // EFFECTS: returns list of valid move endpoints from given start position in given direction
@@ -96,7 +101,7 @@ public class MazeModel {
     }
 
     // EFFECTS: returns true if all squares in list are the same type
-    private boolean areSquaresIdentical(List<MazeLayoutModel.MazeSquare> squares) {
+    private boolean areTheseSquaresIdentical(List<MazeLayoutModel.MazeSquare> squares) {
         return squares.isEmpty() || Collections.frequency(squares, squares.get(0)) == squares.size();  //stub
     }
 
