@@ -1,18 +1,25 @@
 package ui;
 
 import model.GameEntity;
+import model.PositionModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 // responsible for displaying the maze square with any overlays, responds to update requests
-public class MazeSquarePanel extends JPanel {
+public class MazeSquarePanel extends JButton {
+    // TODO: switch to extending JButton
     private SquareDisplayData displayData;
+    private MazeUIPanel mazeUIPanel;
 
-    public MazeSquarePanel(SquareDisplayData displayData) {
+    public MazeSquarePanel(SquareDisplayData displayData, MazeUIPanel mazeUIPanel) {
+        this.mazeUIPanel = mazeUIPanel;
         setBorder(BorderFactory.createLineBorder(Color.gray, 1));
         setOpaque(true);
+        addActionListener(new PanelPressListener());
         drawPanel(displayData);
     }
 
@@ -36,13 +43,20 @@ public class MazeSquarePanel extends JPanel {
         repaint();
     }
 
+    // EFFECT: updates panel display if given display data is new
+    public void updateDisplay(SquareDisplayData displayData) {
+        if (this.displayData != displayData) {
+            drawPanel(displayData);
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         List<GameEntity.EntityType> entities = displayData.getEntityTypes();
         Color savedColor = g.getColor();
         // needs fine tuning to work with grid size
-        // TODO: make sizing responsive to grid size
+        // TODO: make margin sizing responsive to grid size
         int entityMargin = 2;
         int entityWidth = getWidth() - 2 * entityMargin;
         int entityHeight = getHeight() - 2 * entityMargin;
@@ -61,6 +75,15 @@ public class MazeSquarePanel extends JPanel {
             int[] pointsX = new int[]{getWidth() / 2, entityMargin, rightMargin};
             int[] pointsY = new int[]{entityMargin, bottomMargin, bottomMargin};
             g.fillPolygon(pointsX, pointsY, 3);
+        }
+    }
+
+    class PanelPressListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+//            System.out.println(e.getSource());  // can use e.getSource to check which panel was clicked
+            mazeUIPanel.handleClick(e);
         }
     }
 }

@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MazeModelTest {
     static final String TEST_NAME = "testmaze";
@@ -40,9 +39,30 @@ public class MazeModelTest {
             assertEquals(sideLength, row.length());
             for (int j = 0; j < row.length(); j++) {
                 char ch = row.charAt(j);
+                // TODO: change to use constants (might be in persistence somewhere?)
                 assertTrue(ch == "X".charAt(0) || ch == ".".charAt(0));
             }
         }
+    }
+
+    @Test
+    void testIsMoveValid() {
+        // corridor moves, all 4 directions: valid
+        assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(1, 5)));
+        assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(5, 1)));
+        assertTrue(maze.isMoveValid(new PositionModel(5, 5), new PositionModel(1, 5)));
+        assertTrue(maze.isMoveValid(new PositionModel(5, 5), new PositionModel(5, 1)));
+        // tunnel moves, all 4 directions: valid
+        assertTrue(maze.isMoveValid(new PositionModel(5, 5), new PositionModel(5, 7)));
+        assertTrue(maze.isMoveValid(new PositionModel(5, 5), new PositionModel(7, 5)));
+        assertTrue(maze.isMoveValid(new PositionModel(5, 7), new PositionModel(5, 5)));
+        assertTrue(maze.isMoveValid(new PositionModel(7, 5), new PositionModel(5, 5)));
+        // invalid moves (same position, diagonal, ending on wall, tunnel and corridor in same move)
+        assertFalse(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(1, 1)));
+        assertFalse(maze.isMoveValid(new PositionModel(1, 5), new PositionModel(5, 1)));
+        assertFalse(maze.isMoveValid(new PositionModel(5, 1), new PositionModel(1, 5)));
+        assertFalse(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(1, 0)));
+        assertFalse(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(7, 1)));
     }
 
     @Test

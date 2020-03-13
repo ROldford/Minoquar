@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.random;
 
 public class GameModel {
     private MazeModel maze;
@@ -64,15 +65,24 @@ public class GameModel {
     //          will move orthogonally towards hero
     //          if diagonal to hero, will move whichever direction has the smallest delta to hero
     //              will end move so it is orthogonal to hero if possible
-    //              if both directions are equal, chooses based on given random number (horizontal if <0.5)
-    public boolean moveMinotaur(double random) {
+    //              if both directions are equal, decides randomly
+    //                  chooses horizontal when randomNumber is < 0.5
+    public boolean moveMinotaur() {
+        return moveMinotaur(random());
+    }
+
+    // MODIFIES: this
+    // EFFECTS: moves minotaur according to minotaur movement rules,
+    //          using given number to make diagonal movement decision instead of random
+    //              horizontal if <0.5, vertical otherwise
+    public boolean moveMinotaur(double randomNumber) {
         PositionModel minotaurPosition = minotaur.getPosition();
         PositionModel heroPosition = hero.getPosition();
         PositionModel delta = heroPosition.subtract(minotaurPosition);
         if (delta.equals(new PositionModel(0, 0))) {
             return true;
         }
-        List<MazeModel.Direction> directions = decideDirection(delta, random);
+        List<MazeModel.Direction> directions = decideDirection(delta, randomNumber);
         for (MazeModel.Direction direction : directions) {
             List<PositionModel> possibleMoves = maze.getValidMoves(minotaurPosition, direction);
             if (possibleMoves.size() > 0) {

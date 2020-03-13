@@ -126,4 +126,28 @@ class GridArrayTest {
         assertNotEquals(gridOne, gridWidthMismatch);
         assertNotEquals(gridOne, gridHeightMismatch);
     }
+
+    @Test
+    void testContains() {
+        assertTrue(intSquareGrid.contains(5));
+        assertFalse(intSquareGrid.contains(0));
+        assertTrue(stringGrid.contains("H"));
+        assertFalse(stringGrid.contains("Z"));
+    }
+
+    @Test
+    void testGetPositionOfElement() {
+        PositionModel notInGrid = new PositionModel(-1, -1);
+        PositionModel origin = new PositionModel(0, 0);
+        assertEquals(origin, intSquareGrid.getPositionOfElement(1));
+        assertEquals(new PositionModel(2, 2), intSquareGrid.getPositionOfElement(9));
+        assertEquals(notInGrid, intSquareGrid.getPositionOfElement(0));
+        assertEquals(origin, stringGrid.getPositionOfElement("A"));
+        assertEquals(new PositionModel(4, 2), stringGrid.getPositionOfElement("O"));
+        assertEquals(notInGrid, stringGrid.getPositionOfElement("Z"));
+        GridArray<String> newStringGrid = new GridArray<>(2, 2, new ArrayList<>(Arrays.asList(
+                "A", "B",
+                "B", "A")));
+        assertEquals(origin, newStringGrid.getPositionOfElement("A"));
+    }
 }
