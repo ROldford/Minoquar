@@ -6,6 +6,9 @@ import java.awt.event.ActionListener;
 
 public class GameControlPanel  extends JPanel {
     public static final String DEFAULT_MESSAGE_LABEL = "Your move!";
+    public static final String BAD_MOVE_MESSAGE_LABEL = "That's not a valid move. Try again!";
+    public static final String GAME_LOSS_MESSAGE_LABEL = "Sorry, you lost";
+    public static final String GAME_WIN_MESSAGE_LABEL = "You win!";
 
     private JButton quitButton;
     private JLabel messageLabel;
@@ -35,6 +38,14 @@ public class GameControlPanel  extends JPanel {
 
     private JLabel setUpMessageLabel() {
         return new JLabel(DEFAULT_MESSAGE_LABEL);
+    }
+
+    public void updateMessageLabel(String message) {
+        this.messageLabel.setText(message);
+    }
+
+    public void resetMessageLabel() {
+        this.messageLabel.setText(DEFAULT_MESSAGE_LABEL);
     }
 
     class QuitButtonListener implements ActionListener {

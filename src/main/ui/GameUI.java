@@ -14,7 +14,7 @@ import java.awt.*;
 public class GameUI extends JPanel {
     Minoquar minoquarFrame;
     MazeUIPanel mazeUIPanel;
-    GameControlPanel bottomPanel;
+    GameControlPanel gameControlPanel;
     GameModel gameModel;
     boolean canHandleClick;
 
@@ -30,11 +30,11 @@ public class GameUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: sets up game UI panels
     public void createGameUI() {
-        this.bottomPanel = createControlPanel();
+        this.gameControlPanel = createControlPanel();
         this.mazeUIPanel = createMazePanel();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         add(mazeUIPanel);
-        add(bottomPanel);
+        add(gameControlPanel);
     }
 
     private GameControlPanel createControlPanel() {
@@ -48,7 +48,6 @@ public class GameUI extends JPanel {
     }
 
     public void handleClickAt(PositionModel clickedPosition) {
-        System.out.printf("Clicked panel at column %d, row %d\n", clickedPosition.getX(), clickedPosition.getY());
         if (canHandleClick) {
             this.canHandleClick = false;  // keeps clicks from working while move is processed
             // TODO: test if this is actually needed
@@ -56,6 +55,7 @@ public class GameUI extends JPanel {
             boolean keepGoing = getHeroMove(clickedPosition);
             if (keepGoing) {
                 updateNeeded = true;
+                gameControlPanel.resetMessageLabel();
                 keepGoing = !checkForWin();
             }
             if (keepGoing) {
@@ -79,8 +79,8 @@ public class GameUI extends JPanel {
         if (gameModel.moveHero(end)) {
             return true;
         } else {
-            // TODO: bottom panel message
             Toolkit.getDefaultToolkit().beep();
+            gameControlPanel.updateMessageLabel(GameControlPanel.BAD_MOVE_MESSAGE_LABEL);
             return false;
         }
     }
@@ -90,8 +90,7 @@ public class GameUI extends JPanel {
     //          also returns true if hero wins, false if not
     private boolean checkForWin() {
         if (gameModel.checkForWin()) {
-            // TODO: bottom panel message
-            System.out.println("You win!");
+            gameControlPanel.updateMessageLabel(GameControlPanel.GAME_WIN_MESSAGE_LABEL);
             return true;
         } else {
             return false;
@@ -103,8 +102,7 @@ public class GameUI extends JPanel {
     //          also returns true if hero loses, false if not
     private boolean checkForLoss() {
         if (gameModel.checkForLoss()) {
-            // TODO: bottom panel message
-            System.out.println("Sorry, you lost.");
+            gameControlPanel.updateMessageLabel(GameControlPanel.GAME_LOSS_MESSAGE_LABEL);
             return true;
         } else {
             return false;
