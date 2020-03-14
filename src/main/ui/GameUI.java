@@ -10,16 +10,13 @@ import utils.GridArray;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class GameUI extends JPanel {
     Minoquar minoquarFrame;
     MazeUIPanel mazeUIPanel;
+    GameControlPanel gameControlPanel;
     GameModel gameModel;
     boolean canHandleClick;
-
-    JButton quitButton;
 
     // EFFECTS: creates the game's UI panel in app window with given maze
     public GameUI(Minoquar minoquarFrame, MazeModel mazeModel) {
@@ -33,34 +30,24 @@ public class GameUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: sets up game UI panels
     public void createGameUI() {
-        JPanel bottomPanel = createBottomPanel();
-        JPanel mazePanel = createMazePanel();
+        this.gameControlPanel = createControlPanel();
+        this.mazeUIPanel = createMazePanel();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        add(mazePanel);
-        add(bottomPanel);
+        add(mazeUIPanel);
+        add(gameControlPanel);
     }
 
-    private JPanel createBottomPanel() {
-        // TODO: implement message space
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.LINE_AXIS));
-        String label = "Quit Game";
-        quitButton = new JButton(label);
-        QuitButtonListener quitButtonListener = new QuitButtonListener();
-        quitButton.setActionCommand(label);
-        quitButton.addActionListener(quitButtonListener);
-        bottomPanel.add(quitButton);
-        return bottomPanel;
+    private GameControlPanel createControlPanel() {
+        return new GameControlPanel(this);
     }
 
-    private JPanel createMazePanel() {
+    private MazeUIPanel createMazePanel() {
         GridArray<SquareDisplayData> displayData = gameModel.display();
         mazeUIPanel = new MazeUIPanel(displayData, this);
         return mazeUIPanel;
     }
 
     public void handleClickAt(PositionModel clickedPosition) {
-        System.out.printf("Clicked panel at column %d, row %d\n", clickedPosition.getX(), clickedPosition.getY());
         if (canHandleClick) {
             this.canHandleClick = false;  // keeps clicks from working while move is processed
             // TODO: test if this is actually needed
@@ -68,6 +55,7 @@ public class GameUI extends JPanel {
             boolean keepGoing = getHeroMove(clickedPosition);
             if (keepGoing) {
                 updateNeeded = true;
+                gameControlPanel.resetMessageLabel();
                 keepGoing = !checkForWin();
             }
             if (keepGoing) {
@@ -91,8 +79,8 @@ public class GameUI extends JPanel {
         if (gameModel.moveHero(end)) {
             return true;
         } else {
-            // TODO: bottom panel message
             Toolkit.getDefaultToolkit().beep();
+            gameControlPanel.updateMessageLabel(GameControlPanel.BAD_MOVE_MESSAGE_LABEL);
             return false;
         }
     }
@@ -102,8 +90,7 @@ public class GameUI extends JPanel {
     //          also returns true if hero wins, false if not
     private boolean checkForWin() {
         if (gameModel.checkForWin()) {
-            // TODO: bottom panel message
-            System.out.println("You win!");
+            gameControlPanel.updateMessageLabel(GameControlPanel.GAME_WIN_MESSAGE_LABEL);
             return true;
         } else {
             return false;
@@ -115,8 +102,7 @@ public class GameUI extends JPanel {
     //          also returns true if hero loses, false if not
     private boolean checkForLoss() {
         if (gameModel.checkForLoss()) {
-            // TODO: bottom panel message
-            System.out.println("Sorry, you lost.");
+            gameControlPanel.updateMessageLabel(GameControlPanel.GAME_LOSS_MESSAGE_LABEL);
             return true;
         } else {
             return false;
@@ -126,17 +112,10 @@ public class GameUI extends JPanel {
     // EFFECTS: updates the maze panel display
     private void updateDisplay() {
         mazeUIPanel.updateDisplay(gameModel.display());
-        // TODO: implement this!
-        // stub
     }
 
-    class QuitButtonListener implements ActionListener {
-
-        // EFFECTS: quits game and goes back to menu UI
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            minoquarFrame.swapToMenuUI();
-        }
+    public void handleGameQuit() {
+        minoquarFrame.swapToMenuUI();
     }
 }
 

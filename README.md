@@ -34,11 +34,11 @@ implement the more difficult parts of a digital game, such as physics, collision
             - [X] Maze Square images
             - [X] Entity images
             - Java drawings for now, but I hope to add pixel art images later
-        - [ ] Interactivity
+        - [X] Interactivity
             - [X] Click mouse on square to move there (if valid)
-            - [ ] Response if move is invalid
-            - [ ] Message on win
-            - [ ] Message on loss
+            - [X] Response if move is invalid
+            - [X] Message on win
+            - [X] Message on loss
 
 *Other Stories*
 - [ ] As a user, I want to see wins and losses for a given maze.
