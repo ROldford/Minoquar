@@ -81,4 +81,11 @@ public class MazeModelTest {
         assertEquals(0, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.UP).size());
         assertEquals(0, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.LEFT).size());
     }
+
+    @Test
+    void testToString() {
+        String sizeName = MazeSizeModel.getSizeName(TEST_SIZE);
+        int sideLength = MazeSizeModel.getSideLength(TEST_SIZE);
+        assertEquals(String.format("%s - %s (%dx%d)", TEST_NAME, sizeName, sideLength, sideLength), maze.toString());
+    }
 }

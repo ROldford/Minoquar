@@ -63,15 +63,23 @@ class SquareDisplayDataTest {
     }
 
     @Test
-    void testEquals() {
+    void testEqualsAndHashCode() {
         SquareDisplayData newEmptyWall = new SquareDisplayData(Layout.MazeSquare.WALL);
         List<GameEntity.EntityType> newEntities = new ArrayList<>(Arrays.asList(
                 GameEntity.EntityType.HERO, GameEntity.EntityType.TREASURE));
         SquareDisplayData newPassageWithEntities = new SquareDisplayData(Layout.MazeSquare.PASSAGE, newEntities);
+        String notDisplayData = "I'm not even the same object type!";
         assertEquals(emptyWall, emptyWall);
+        assertEquals(emptyWall.hashCode(), emptyWall.hashCode());
+        assertNotEquals(emptyWall, null);
+        assertNotEquals(emptyWall, notDisplayData);
         assertEquals(emptyWall, newEmptyWall);
+        assertEquals(emptyWall.hashCode(), newEmptyWall.hashCode());
         assertEquals(passageWithEntities, newPassageWithEntities);
+        assertEquals(passageWithEntities.hashCode(), newPassageWithEntities.hashCode());
         assertNotEquals(emptyWall, emptyPassage);
+        assertNotEquals(emptyWall.hashCode(), emptyPassage.hashCode());
         assertNotEquals(emptyPassage, passageWithEntities);
+        assertNotEquals(emptyPassage.hashCode(), passageWithEntities.hashCode());
     }
 }

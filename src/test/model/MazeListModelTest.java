@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MazeListModelTest {
     MazeListModel mazeList;
@@ -41,9 +41,7 @@ public class MazeListModelTest {
 
     @Test
     public void testDeleteMaze() {
-        mazeList.createRandomMaze("maze 0", TEST_SIZE);
-        mazeList.createRandomMaze("maze 1", TEST_SIZE);
-        mazeList.createRandomMaze("maze 2", TEST_SIZE);
+        populateMazeList();
         mazeList.deleteMaze(1);
         assertEquals(2, mazeList.getSize());
         MazeModel first = mazeList.getElementAt(0);
@@ -60,9 +58,7 @@ public class MazeListModelTest {
         MazeModel maze6 = new MazeModel("maze 6", TEST_SIZE);
         List<MazeModel> newMazeList = new ArrayList<>(Arrays.asList(
                 maze3, maze4, maze5, maze6));
-        mazeList.createRandomMaze("maze 0", TEST_SIZE);
-        mazeList.createRandomMaze("maze 1", TEST_SIZE);
-        mazeList.createRandomMaze("maze 2", TEST_SIZE);
+        populateMazeList();
         assertEquals(3, mazeList.getSize());
         mazeList.updateMazeList(newMazeList);
         assertEquals(4, mazeList.getSize());
@@ -71,4 +67,19 @@ public class MazeListModelTest {
         }
     }
 
+    @Test
+    void testContainsSameName() {
+        populateMazeList();
+        assertTrue(mazeList.containsSameName("maze 0"));
+        assertTrue(mazeList.containsSameName("maze 2"));
+        assertFalse(mazeList.containsSameName("maze 9"));
+    }
+
+    // MODIFIES: mazeList
+    // EFFECTS: adds three mazes to mazeList
+    private void populateMazeList() {
+        mazeList.createRandomMaze("maze 0", TEST_SIZE);
+        mazeList.createRandomMaze("maze 1", TEST_SIZE);
+        mazeList.createRandomMaze("maze 2", TEST_SIZE);
+    }
 }

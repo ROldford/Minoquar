@@ -204,17 +204,19 @@ public class GameModelTest {
 
     private void testMoveMinotaurCase(PositionModel heroStart,
                                       PositionModel expectedDelta) {
+        // moveMinotaur() used, because these moves use the non-random part of the minotaur move rules
         MazeModel maze = generateTestData(MOVE_TESTS_FILE);
         assertNotNull(maze);
         PositionModel minotaurStart = maze.getMinotaurStartPosition();
         GameModel testGame = new GameModel(maze, minotaurStart.add(heroStart));
-        assertTrue(testGame.moveMinotaur(0.0));
+        assertTrue(testGame.moveMinotaur());
         assertEquals(testGame.getMinotaurPosition(), minotaurStart.add(expectedDelta));
     }
 
     private void testMoveMinotaurDiagonalCase(PositionModel heroStart,
                                               PositionModel expectedVertical,
                                               PositionModel expectedHorizontal) {
+        // moveMinotaur(double randomNumber) used, because perfectly diagonal moves depend on randomNumber
         MazeModel maze = generateTestData(MOVE_TESTS_FILE);
         assertNotNull(maze);
         PositionModel minotaurStart = maze.getMinotaurStartPosition();

@@ -120,11 +120,19 @@ class GridArrayTest {
                 7, 8, 9,
                 10, 11, 12
         )));
+        String notDisplayData = "I'm not even the same object type!";
         assertEquals(gridOne, gridOne);
+        assertEquals(gridOne.hashCode(), gridOne.hashCode());
+        assertNotEquals(gridOne, null);
+        assertNotEquals(gridOne, notDisplayData);
         assertEquals(gridOne, gridTwo);
+        assertEquals(gridOne.hashCode(), gridTwo.hashCode());
         assertNotEquals(gridOne, gridDataMismatch);
+        assertNotEquals(gridOne.hashCode(), gridDataMismatch.hashCode());
         assertNotEquals(gridOne, gridWidthMismatch);
+        assertNotEquals(gridOne.hashCode(), gridWidthMismatch.hashCode());
         assertNotEquals(gridOne, gridHeightMismatch);
+        assertNotEquals(gridOne.hashCode(), gridHeightMismatch.hashCode());
     }
 
     @Test
