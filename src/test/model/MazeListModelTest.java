@@ -32,6 +32,11 @@ public class MazeListModelTest {
         MazeModel maze = mazeList.getElementAt(0);
         assertEquals(TEST_NAME, maze.getName());
         assertEquals(testSizeName, maze.getSizeName());
+        String test2 = "test 2";
+        mazeList.createRandomMaze(0, test2, TEST_SIZE);
+        assertEquals(2, mazeList.getSize());
+        assertEquals(test2, mazeList.getElementAt(0).getName());
+        assertEquals(TEST_NAME, mazeList.getElementAt(1).getName());
     }
 
     @Test

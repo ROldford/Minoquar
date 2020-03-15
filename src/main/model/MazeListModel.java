@@ -27,21 +27,10 @@ public class MazeListModel extends AbstractListModel implements Saveable {
         return mazes.size();
     }
 
-    // EFFECTS: returns true if mazeList contains a maze with the same name
-    public boolean containsSameName(String name) {
-        for (int i = 0; i < mazes.size(); i++) {
-            if (mazes.get(i).getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // MODIFIES: this
     // EFFECTS: creates a new random maze with given name and size and adds it to end of list
     public void createRandomMaze(String name, MazeSizeModel.MazeSize size) {
-        mazes.add(new MazeModel(name, size));
-        fireIntervalAdded(this, getSize() - 1, getSize() - 1);
+        createRandomMaze(getSize(), name, size);
     }
 
     // MODIFIES: this
@@ -69,6 +58,16 @@ public class MazeListModel extends AbstractListModel implements Saveable {
     public void deleteMaze(int index) {
         mazes.remove(index);
         fireIntervalRemoved(this, index, index);
+    }
+
+    // EFFECTS: returns true if mazeList contains a maze with the same name
+    public boolean containsSameName(String name) {
+        for (int i = 0; i < mazes.size(); i++) {
+            if (mazes.get(i).getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // EFFECTS: formats save data from all mazes in list and sends to printWriter for saving
