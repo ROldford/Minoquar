@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,16 +26,30 @@ public class MazeModelTest {
         assertTrue(maze.isMoveValid(
                 new PositionModel(1, 1),
                 new PositionModel(1, 2)));
+        assertEquals(0, maze.getWins());
+        assertEquals(0, maze.getLosses());
     }
 
     @Test
     public void testGetSaveData() {
+        addGameHistory();
         List<String> saveData = maze.getSaveData();
+        // part 1: name and size (1 line each)
         assertEquals(TEST_NAME, saveData.get(0));
         assertEquals(MazeSizeModel.getSizeCode(TEST_SIZE), saveData.get(1));
         int sideLength = MazeSizeModel.getSideLength(TEST_SIZE);
-        assertEquals( sideLength + 2, saveData.size());
-        for (int i = 2; i < saveData.size(); i++) {
+        // part 2: game history
+        // 1 line for number of games played
+        // 1 line per hundred games played, most recent game first
+        // example has 104 games, so total of 3 lines
+        assertEquals("104", saveData.get(2));
+        String historyLineTwo = "WWLW";
+        String historyLineOne = String.join("", Collections.nCopies(25, historyLineTwo));
+        assertEquals(historyLineOne, saveData.get(3));
+        assertEquals(historyLineTwo, saveData.get(4));
+        // part 3: maze
+        // 1 line per maze row
+        for (int i = 5; i < saveData.size(); i++) {
             String row = saveData.get(i);
             assertEquals(sideLength, row.length());
             for (int j = 0; j < row.length(); j++) {
@@ -87,5 +102,24 @@ public class MazeModelTest {
         String sizeName = MazeSizeModel.getSizeName(TEST_SIZE);
         int sideLength = MazeSizeModel.getSideLength(TEST_SIZE);
         assertEquals(String.format("%s - %s (%dx%d)", TEST_NAME, sizeName, sideLength, sideLength), maze.toString());
+    }
+
+    @Test
+    void testGameOutcomes() {
+        addGameHistory();
+        assertEquals(78, maze.getWins());
+        assertEquals(26, maze.getLosses());
+        assertEquals(104, maze.getTotalPlays());
+    }
+
+    // EFFECTS: add games to this maze's history
+    // 104 games total, 78 wins, 26 losses, biggest win streak = 3, last win streak = 2
+    private void addGameHistory() {
+        for (int i = 0; i < 26; i++) {
+            maze.registerOutcome(MazeModel.Outcome.WIN);
+            maze.registerOutcome(MazeModel.Outcome.LOSS);
+            maze.registerOutcome(MazeModel.Outcome.WIN);
+            maze.registerOutcome(MazeModel.Outcome.WIN);
+        }
     }
 }

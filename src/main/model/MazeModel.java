@@ -3,13 +3,19 @@ package model;
 import ui.SquareDisplayData;
 import utils.GridArray;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 // represents game as maze level, stores layout and other maze data
 // allows verification of legal moves
 public class MazeModel {
     private MazeBoardModel mazeBoard;
     private String name;
+    // using a list to allow other ways of parsing history (i.e. last 5 games, win streak, etc.)
+    private List<Outcome> pastGameOutcomes;
 
     enum Direction {
         UP,
@@ -18,10 +24,16 @@ public class MazeModel {
         RIGHT
     }
 
+    enum Outcome {
+        WIN,
+        LOSS
+    }
+
     // EFFECTS: Constructs random maze with given name and size
     public MazeModel(String name, MazeSizeModel.MazeSize size) {
         this.name = name;
         this.mazeBoard = new MazeBoardModel(size);
+        this.pastGameOutcomes = new ArrayList<>();
     }
 
     //EFFECTS: Constructs maze with given name, size and layout data
@@ -45,33 +57,19 @@ public class MazeModel {
         return MazeSizeModel.getSideLength(mazeBoard.getSize());
     }
 
-    // REQUIRES: start and end are within maze bounds
-    // EFFECTS: returns true if move follows proper movement rules, false otherwise
-    public boolean isMoveValid(PositionModel start, PositionModel end) {
-        boolean samePosition = start.equals(end);
-        boolean orthogonal = areSquaresOrthogonal(start, end);
-        boolean endOnWall = mazeBoard.getSquare(end) == Layout.MazeSquare.WALL;
-        if (samePosition || !orthogonal || endOnWall) {
-            return false;
-        } else {
-            return areTheseSquaresIdentical(mazeBoard.getSquaresBetween(start, end));
-        }
+    // EFFECTS: returns number of wins on this maze
+    public int getWins() {
+        return Collections.frequency(pastGameOutcomes, Outcome.WIN);
     }
 
-    private boolean areSquaresOrthogonal(PositionModel start, PositionModel end) {
-        return start.getX() == end.getX() || start.getY() == end.getY();
+    // EFFECTS: returns number of losses on this maze
+    public int getLosses() {
+        return Collections.frequency(pastGameOutcomes, Outcome.LOSS);
     }
 
-    // EFFECTS: returns list of valid move endpoints from given start position in given direction
-    public List<PositionModel> getValidMoves(PositionModel start, Direction direction) {
-        List<PositionModel> squaresInDirection = mazeBoard.getSquaresInDirection(start, direction);
-        List<PositionModel> validMoves = new ArrayList<>();
-        for (PositionModel possibleEnd : squaresInDirection) {
-            if (isMoveValid(start, possibleEnd)) {
-                validMoves.add(possibleEnd);
-            }
-        }
-        return validMoves;
+    // EFFECTS: returns number of times this maze has been played
+    public int getTotalPlays() {
+        return pastGameOutcomes.size();
     }
 
     // EFFECTS: returns position of treasure in maze layout
@@ -86,6 +84,36 @@ public class MazeModel {
         return mazeBoard.getMinotaurStartPosition();
     }
 
+    // REQUIRES: start and end are within maze bounds
+    // EFFECTS: returns true if move follows proper movement rules, false otherwise
+    public boolean isMoveValid(PositionModel start, PositionModel end) {
+        boolean samePosition = start.equals(end);
+        boolean orthogonal = areSquaresOrthogonal(start, end);
+        boolean endOnWall = mazeBoard.getSquare(end) == Layout.MazeSquare.WALL;
+        if (samePosition || !orthogonal || endOnWall) {
+            return false;
+        } else {
+            return areTheseSquaresIdentical(mazeBoard.getSquaresBetween(start, end));
+        }
+    }
+
+    // EFFECTS: returns list of valid move endpoints from given start position in given direction
+    public List<PositionModel> getValidMoves(PositionModel start, Direction direction) {
+        List<PositionModel> squaresInDirection = mazeBoard.getSquaresInDirection(start, direction);
+        List<PositionModel> validMoves = new ArrayList<>();
+        for (PositionModel possibleEnd : squaresInDirection) {
+            if (isMoveValid(start, possibleEnd)) {
+                validMoves.add(possibleEnd);
+            }
+        }
+        return validMoves;
+    }
+
+    // EFFECTS: adds outcome of a game on this maze to start of outcomes list (most recent games first)
+    public void registerOutcome(Outcome outcome) {
+        pastGameOutcomes.add(0, outcome);
+    }
+
     // EFFECTS: return list of strings to display the current maze
     public GridArray<SquareDisplayData> displayMaze() {
         return mazeBoard.display();
@@ -96,8 +124,18 @@ public class MazeModel {
         List<String> saveData = new ArrayList<>();
         saveData.add(name);
         saveData.add(getSizeCode());
+        int totalGameOnThisMaze = getTotalPlays();
+        saveData.add(Integer.toString(totalGameOnThisMaze));
+        // TODO: add pastGameOutcome, split into 100 char lines
+        for (int i = 0; i * 100 < totalGameOnThisMaze; i++) {
+            saveData.add(getPastGameOutcomeSaveData(i));
+        }
         saveData.addAll(mazeBoard.getSaveData());
         return saveData;
+    }
+
+    private boolean areSquaresOrthogonal(PositionModel start, PositionModel end) {
+        return start.getX() == end.getX() || start.getY() == end.getY();
     }
 
     // EFFECTS: returns true if all squares in list are the same type
@@ -108,6 +146,24 @@ public class MazeModel {
     // EFFECTS: returns maze's size code
     private String getSizeCode() {
         return MazeSizeModel.getSizeCode(mazeBoard.getSize());
+    }
+
+    // EFFECTS: returns a line of past game outcome history using given index
+    //          each line is 100 games, sorted most recent game first
+    private String getPastGameOutcomeSaveData(int lineIndex) {
+        int start = lineIndex * 100;
+        int end = (lineIndex + 1) * 100;
+        if (end >= pastGameOutcomes.size()) {
+            end = pastGameOutcomes.size();
+        }
+        List<Outcome> subList = pastGameOutcomes.subList(start, end);
+        final Function<Outcome, String> outcomeToString;
+        outcomeToString = (Outcome outcome) -> outcome == Outcome.WIN
+                ? "W"
+                : "L";
+        return subList.stream()
+                .map(outcomeToString)
+                .collect(Collectors.joining(""));
     }
 
     // EFFECTS: returns string describing maze
