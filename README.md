@@ -18,6 +18,49 @@ I don't often see QR codes on paper, a digital version seemed like a better fit.
 development for some time, so being able to develop a tabletop game would be a great challenge, without needing to 
 implement the more difficult parts of a digital game, such as physics, collisions, etc.
 
+### How To Use
+- Menu Screen
+    - The app starts on the Menu screen. You should see a list of mazes, and a lower panel of control buttons.
+        - The mazes show their size, actual dimensions, and win/loss records.
+        - Any saved mazes will already be loaded.
+            - If you don't have your own saved mazes, a set of default mazes should be loaded.
+    - Select a maze in the list and click "Delete Maze" to delete that maze.
+    - Type a maze name in the text box and click "New Maze" to make a new maze (Extra Small size).
+    - Click "Load Mazes" to reload mazes from the save file.
+    - Click "Save Mazes" to save the current mazes to the save file.
+    - Select a maze in the list and click "Start Game" to start a game with that maze.
+    - You can close the window as normal to quit the app.
+        - The current maze list will be automatically saved. 
+- Game Screen
+    - When you start a game, the app shows the Game screen. You should see the maze grid, and a lower panel with some controls.
+        - The maze panel shows a grid of black and white squares (representing walls and passages) in a QR code pattern.
+        - The maze panel also has 3 "entities":
+            - The Hero (blue circle), your character
+            - The Minotaur (red triangle), your enemy
+            - The Treasure (yellow square), your goal
+        - The control panel only has a "Quit Game" button, and a message label, which will show messages during the game.
+    - Click on any square to try to move the Hero.
+        - If the move is not allowed, the message label will change to let you know. (See the Movement Rules section for more details.)
+    - The Minotaur will move after you do, following its movement rules.
+    - Your objective is to move the Hero to the Treasure without being caught by the Minotaur.
+        - If you end your turn on the Treasure, you win!
+        - If the minotaur ends its move on you, you lose.
+        - If either of these happen, clicks on the maze panel won't do anything, but you can click the "Quit Game" button.
+    - You can click the "Quit Game" at any time to quit the game.
+        - If you do this after you've won the game, you should see that the maze you've played has one more win than before.
+        - Otherwise, it will have one more loss.
+        
+### Movement Rules
+- All moves (Hero or Minotaur) must be orthogonal, not diagonal.
+- The Hero has 2 types of moves:
+    - The Hero can move any distance across passages.
+    - The Hero can tunnel through walls if they start next to a wall square. They must move to the nearest passage square in that direction (i.e. on the "other side" of that wall);
+- The Minotaur makes the same kind of moves, but decides which moves to make using these rules:
+    - If the Hero is orthogonal to the Minotaur, the Minotaur moves as far as possible towards them.
+    - If the Hero is diagonal to the Minotaur, the Minotaur chooses between moving horizontally and vertically as follows:
+        - If the Hero is perfectly diagonal (horizontal and vertical distances to the Hero are equal), the Minotaur chooses a direction randomly.
+        - If not, the Minotaur chooses the direction with the smallest distance and moves that way, attempting to "line up" with the Hero if possible.
+
 ## Project Progress
 **User Stories For This Deliverable:**
 
