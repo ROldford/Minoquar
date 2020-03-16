@@ -23,4 +23,15 @@ public final class Utilities {
     public static boolean isEven(int i) {
         return i % 2 == 0;
     }
+
+    // REQUIRES: b >= 0
+    // EFFECTS: returns a divided by b rounded to next integer (towards +inf)
+    public static int divideRoundUp(int a, int b) {
+        int result = a / b;
+        if (a < 0) {
+            return result;
+        } else {
+            return a % b == 0 ? result : result + 1;
+        }
+    }
 }

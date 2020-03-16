@@ -52,4 +52,16 @@ public class UtilitiesTest {
         assertFalse(Utilities.isEven(1));
         assertTrue(Utilities.isEven(2));
     }
+
+    @Test
+    public void testDivideRoundUp() {
+        assertEquals(-1, Utilities.divideRoundUp(-10, 10));
+        assertEquals(0, Utilities.divideRoundUp(-9, 10));
+        assertEquals(0, Utilities.divideRoundUp(-1, 10));
+        assertEquals(0, Utilities.divideRoundUp(0, 10));
+        assertEquals(1, Utilities.divideRoundUp(1, 10));
+        assertEquals(1, Utilities.divideRoundUp(9, 10));
+        assertEquals(1, Utilities.divideRoundUp(10, 10));
+        assertEquals(2, Utilities.divideRoundUp(11, 10));
+    }
 }
