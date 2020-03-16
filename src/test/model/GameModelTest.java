@@ -267,4 +267,10 @@ public class GameModelTest {
         GameModel sameY = new GameModel(emptyMaze, rightOfMinotaur);
         assertFalse(sameY.checkForLoss());
     }
+
+    @Test
+    public void testRegisterOutcome() {
+        assertTrue(game.registerOutcome(MazeModel.Outcome.WIN));
+        assertTrue(game.registerOutcome(MazeModel.Outcome.LOSS));
+    }
 }

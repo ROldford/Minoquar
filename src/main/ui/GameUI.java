@@ -12,11 +12,19 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameUI extends JPanel {
-    Minoquar minoquarFrame;
-    MazeUIPanel mazeUIPanel;
-    GameControlPanel gameControlPanel;
-    GameModel gameModel;
-    boolean canHandleClick;
+    enum GameStatus {
+        WIN,
+        LOSS,
+        ONGOING
+    }
+
+    private Minoquar minoquarFrame;
+    private MazeUIPanel mazeUIPanel;
+    private GameControlPanel gameControlPanel;
+    private GameModel gameModel;
+    private boolean canHandleClick;
+    private GameStatus gameStatus;
+
 
     // EFFECTS: creates the game's UI panel in app window with given maze
     public GameUI(Minoquar minoquarFrame, MazeModel mazeModel) {
@@ -24,6 +32,7 @@ public class GameUI extends JPanel {
         this.minoquarFrame = minoquarFrame;
         this.gameModel = new GameModel(mazeModel);
         this.canHandleClick = true;
+        this.gameStatus = GameStatus.ONGOING;
         createGameUI();
     }
 
@@ -48,7 +57,7 @@ public class GameUI extends JPanel {
     }
 
     public void handleClickAt(PositionModel clickedPosition) {
-        if (canHandleClick) {
+        if (gameStatus == GameStatus.ONGOING && canHandleClick) {
             this.canHandleClick = false;  // keeps clicks from working while move is processed
             // TODO: test if this is actually needed
             boolean updateNeeded = false;
@@ -91,6 +100,7 @@ public class GameUI extends JPanel {
     private boolean checkForWin() {
         if (gameModel.checkForWin()) {
             gameControlPanel.updateMessageLabel(GameControlPanel.GAME_WIN_MESSAGE_LABEL);
+            gameStatus = GameStatus.WIN;
             return true;
         } else {
             return false;
@@ -103,6 +113,7 @@ public class GameUI extends JPanel {
     private boolean checkForLoss() {
         if (gameModel.checkForLoss()) {
             gameControlPanel.updateMessageLabel(GameControlPanel.GAME_LOSS_MESSAGE_LABEL);
+            gameStatus = GameStatus.LOSS;
             return true;
         } else {
             return false;
@@ -115,6 +126,11 @@ public class GameUI extends JPanel {
     }
 
     public void handleGameQuit() {
+        if (gameStatus == GameStatus.WIN) {
+            gameModel.registerOutcome(MazeModel.Outcome.WIN);
+        } else {
+            gameModel.registerOutcome(MazeModel.Outcome.LOSS);
+        }
         minoquarFrame.swapToMenuUI();
     }
 }

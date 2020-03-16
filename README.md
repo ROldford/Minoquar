@@ -29,7 +29,7 @@ implement the more difficult parts of a digital game, such as physics, collision
         - [X] Start Game Button
         - [X] Save Button
         - [X] Load Button
-    - [ ] Game Panel
+    - [X] Game Panel
         - [X] Visuals
             - [X] Maze Square images
             - [X] Entity images
@@ -41,9 +41,9 @@ implement the more difficult parts of a digital game, such as physics, collision
             - [X] Message on loss
 
 *Other Stories*
-- [ ] As a user, I want to see wins and losses for a given maze.
-    - [ ] Saved and read to file
-    - [ ] Visible on GUI
+- [X] As a user, I want to see wins and losses for a given maze.
+    - [X] Saved and read to file
+    - [X] Visible on GUI
 
 **Phase 2 User Stories:**
 - [X] As a user, I want to be able to delete a maze from the maze list.
