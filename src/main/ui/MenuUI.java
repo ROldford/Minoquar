@@ -286,8 +286,6 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         // EFFECTS: processes button press, starts new game with selected maze
         @Override
         public void actionPerformed(ActionEvent e) {
-            // TODO: implement actual game start
-//            Toolkit.getDefaultToolkit().beep();
             minoquarFrame.swapToGameUI(mazeList.getElementAt(list.getSelectedIndex()));
         }
     }

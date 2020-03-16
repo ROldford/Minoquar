@@ -1,7 +1,6 @@
 package ui;
 
 import model.GameEntity;
-import model.PositionModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +10,6 @@ import java.util.List;
 
 // responsible for displaying the maze square with any overlays, responds to update requests
 public class MazeSquarePanel extends JButton {
-    // TODO: switch to extending JButton
     private SquareDisplayData displayData;
     private MazeUIPanel mazeUIPanel;
 
