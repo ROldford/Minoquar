@@ -1,6 +1,7 @@
 -----
 one
 xs
+0
 XXXXXXX.X...XXX...XXXXXXX
 X.....X.XXXXX.....X.....X
 X.XXX.X..XX...X...X.XXX.X
@@ -26,3 +27,4 @@ X.XXX.X.XX.X....XXXXX.XX.
 X.XXX.X.XXX..XXX.......XX
 X.....X...XX...X.........
 XXXXXXX.X.XX...XXXX.XX..X
+-----

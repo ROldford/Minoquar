@@ -1,6 +1,7 @@
 -----
 starttest1
 xs
+0
 XXXXXXX...........XXXXXXX
 X.....X...........X.....X
 X.XXX.X...........X.XXX.X
@@ -29,6 +30,7 @@ XXXXXXX..................
 -----
 starttest2
 xs
+0
 XXXXXXX...........XXXXXXX
 X.....X...........X.....X
 X.XXX.X...........X.XXX.X
@@ -57,6 +59,7 @@ XXXXXXX..................
 -----
 starttest3
 xs
+0
 XXXXXXX...........XXXXXXX
 X.....X...........X.....X
 X.XXX.X...........X.XXX.X
@@ -85,6 +88,7 @@ XXXXXXX..................
 -----
 starttest4
 xs
+0
 XXXXXXX...........XXXXXXX
 X.....X...........X.....X
 X.XXX.X...........X.XXX.X
@@ -113,6 +117,7 @@ XXXXXXX..................
 -----
 starttest5
 xs
+0
 XXXXXXX...........XXXXXXX
 X.....X...........X.....X
 X.XXX.X...........X.XXX.X
@@ -141,6 +146,7 @@ XXXXXXX..................
 -----
 starttest6
 xs
+0
 XXXXXXX...........XXXXXXX
 X.....X...........X.....X
 X.XXX.X...........X.XXX.X
@@ -169,6 +175,7 @@ XXXXXXX..................
 -----
 starttest7
 xs
+0
 XXXXXXX...........XXXXXXX
 X.....X...........X.....X
 X.XXX.X...........X.XXX.X
@@ -194,3 +201,4 @@ X.XXX.X..................
 X.XXX.X..................
 X.....X..................
 XXXXXXX..................
+-----
