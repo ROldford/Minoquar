@@ -3,15 +3,16 @@
 
 package persistence;
 
-import model.MazeListModel;
 import model.MazeModel;
 import model.MazeSizeModel;
+import utils.Utilities;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class Reader {
     private Reader() {}
@@ -34,33 +35,58 @@ public class Reader {
     }
 
     // EFFECTS: parses save data based on save file format to make saved mazes
-    //          each maze is saved as 3 lines, plus lines for maze data
-    //              Line 1: SEPARATOR_LINE
-    //              Line 2: maze name
-    //              Line 3: maze size code
-    //              Line 4+: maze data, stored as text grid
-    //                       each char in grid is matching maze square
-    //                       X == WALL, . == PASSAGE
+    //          each maze's save data starts with SEPARATOR_LINE
     private static List<MazeModel> parseContent(List<String> fileContent) {
         List<MazeModel> parsedMazes = new ArrayList<>();
-        int i = 0;
-        while (i < fileContent.size()) {
-            if (fileContent.get(i).equals("-----")) {
-                String name = fileContent.get(i + 1);
-                String sizeCode = fileContent.get(i + 2);
-                MazeSizeModel.MazeSize size = MazeSizeModel.getSizeForSizeCode(sizeCode);
-                int sideLength = MazeSizeModel.getSideLength(size);
-                List<String> mazeData = new ArrayList<>();
-                for (int line = i + 3; line < i + sideLength + 3; line++) {
-                    mazeData.add(fileContent.get(line));
+        ListIterator<String> contentIterator = fileContent.listIterator();
+        List<String> currentMazeData = new ArrayList<>();
+        while (contentIterator.hasNext()) {
+            String currentLine = contentIterator.next();
+            if (currentLine.equals(SEPARATOR_LINE)) {
+                if (currentMazeData.size() != 0) {
+                    // send data off to parse maze
+                    MazeModel parsedMaze = parseMaze(currentMazeData);
+                    // add to parsed mazes
+                    parsedMazes.add(parsedMaze);
+                    currentMazeData.clear();
                 }
-                parsedMazes.add(new MazeModel(name, size, mazeData));
-                i = i + 3 + sideLength;
             } else {
-                i++;
+                currentMazeData.add(currentLine);
             }
         }
         return parsedMazes;
+    }
+
+    // EFFECTS: parses maze save data based on save file format to make saved maze
+    //      1. maze name (1 line)
+    //      2. maze size (1 line)
+    //      3. total games played (1 line)
+    //      4. game history (1 line per 100 games played)
+    //      5. maze data (1 line per maze row)
+    //          stored at text grid
+    //          each char in grid is matching maze square
+    //          X == WALL, . == PASSAGE
+    private static MazeModel parseMaze(List<String> mazeData) {
+        ListIterator<String> iterator = mazeData.listIterator();
+        // name and size
+        String name = iterator.next();
+        String sizeCode = iterator.next();
+        MazeSizeModel.MazeSize size = MazeSizeModel.getSizeForSizeCode(sizeCode);
+        // game history
+        List<String> savedOutcomeHistory = new ArrayList<>();
+        int totalPlays = Integer.parseInt(iterator.next());
+        int totalLines = Utilities.divideRoundUp(totalPlays, 100);
+        for (int i = 0; i < totalLines; i++) {
+            savedOutcomeHistory.add(iterator.next());
+        }
+        // maze data
+        List<String> savedLayout = new ArrayList<>();
+        int sideLength = MazeSizeModel.getSideLength(size);
+        for (int i = 0; i < sideLength; i++) {
+            savedLayout.add(iterator.next());
+        }
+        // TODO: throw exception if there's more data (if hasNext() is true)
+        return new MazeModel(name, size, savedOutcomeHistory, savedLayout);
     }
 
 }

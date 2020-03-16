@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WriterTest {
-    private static final String TEST_READ_FILE = "./data/test/testMazeList3.txt";
+    private static final String TEST_READ_FILE = "./data/test/testMazeListMultipleLists.txt";
     private static final String TEST_WRITE_FILE = "./data/test/testMazeListWrite.txt";
 
     private MazeListModel testData;

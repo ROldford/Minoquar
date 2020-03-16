@@ -13,7 +13,6 @@ import utils.GridArray;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,8 +22,12 @@ public class ReaderTest {
         // xs maze
         try {
             MazeListModel mazes = new MazeListModel(
-                    Reader.readMazeList(new File("./data/test/testMazeList1.txt")));
-            testMaze(mazes.getElementAt(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
+                    Reader.readMazeList(new File("./data/test/testMazeListXS.txt")));
+            testMaze(mazes.getElementAt(0),
+                    "one",
+                    MazeSizeModel.MazeSize.EXTRA_SMALL,
+                    0,
+                    0);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -35,8 +38,12 @@ public class ReaderTest {
         // xl maze
         try {
             MazeListModel mazes = new MazeListModel(
-                    Reader.readMazeList(new File("./data/test/testMazeList2.txt")));
-            testMaze(mazes.getElementAt(0), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
+                    Reader.readMazeList(new File("./data/test/testMazeListXL.txt")));
+            testMaze(mazes.getElementAt(0),
+                    "two",
+                    MazeSizeModel.MazeSize.EXTRA_LARGE,
+                    5,
+                    5);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -47,9 +54,17 @@ public class ReaderTest {
         // both mazes from before in same file
         try {
             MazeListModel mazes = new MazeListModel(
-                    Reader.readMazeList(new File("./data/test/testMazeList3.txt")));
-            testMaze(mazes.getElementAt(0), "one", MazeSizeModel.MazeSize.EXTRA_SMALL);
-            testMaze(mazes.getElementAt(1), "two", MazeSizeModel.MazeSize.EXTRA_LARGE);
+                    Reader.readMazeList(new File("./data/test/testMazeListMultipleLists.txt")));
+            testMaze(mazes.getElementAt(0),
+                    "one",
+                    MazeSizeModel.MazeSize.EXTRA_SMALL,
+                    0,
+                    0);
+            testMaze(mazes.getElementAt(1),
+                    "two",
+                    MazeSizeModel.MazeSize.EXTRA_LARGE,
+                    5,
+                    5);
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
@@ -66,15 +81,42 @@ public class ReaderTest {
         }
     }
 
-    private void testMaze(MazeModel maze, String expectedName, MazeSizeModel.MazeSize expectedSize) {
+    @Test
+    public void testParseLongHistory() {
+        try {
+            MazeListModel mazes = new MazeListModel(
+                    Reader.readMazeList(new File("./data/test/testMazeListLongGameHistory.txt")));
+            testMaze(mazes.getElementAt(0),
+                    "long history",
+                    MazeSizeModel.MazeSize.EXTRA_SMALL,
+                    55,
+                    55);
+        } catch (IOException e) {
+            fail("IOException should not have been thrown");
+        }
+    }
+
+    private void testMaze(MazeModel maze,
+                          String expectedName,
+                          MazeSizeModel.MazeSize expectedSize,
+                          int expectedWins,
+                          int expectedLosses) {
+        // name check
         assertEquals(expectedName, maze.getName());
+        // size check
         int oneSideLength = MazeSizeModel.getSideLength(expectedSize);
         assertEquals(MazeSizeModel.getSizeName(expectedSize), maze.getSizeName());
         assertEquals(MazeSizeModel.getSideLength(expectedSize), oneSideLength);
+        // play history check
+        assertEquals(expectedWins, maze.getWins());
+        assertEquals(expectedLosses, maze.getLosses());
+        assertEquals(expectedWins + expectedLosses, maze.getTotalPlays());
+        // valid maze check
         assertFalse(maze.isMoveValid(new PositionModel(7,0), new PositionModel(0,0)));
         assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(5, 1)));
         assertTrue(maze.isMoveValid(new PositionModel(5, 1), new PositionModel(7,1)));
         assertFalse(maze.isMoveValid(new PositionModel(7,6), new PositionModel(11, 6)));
+        // valid display data check
         GridArray<SquareDisplayData> oneDisplay = maze.displayMaze();
         assertEquals(oneSideLength, oneDisplay.getWidth());
         assertEquals(oneSideLength, oneDisplay.getHeight());

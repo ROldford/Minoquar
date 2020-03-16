@@ -99,9 +99,14 @@ public class MazeModelTest {
 
     @Test
     void testToString() {
+        addGameHistory();
         String sizeName = MazeSizeModel.getSizeName(TEST_SIZE);
         int sideLength = MazeSizeModel.getSideLength(TEST_SIZE);
-        assertEquals(String.format("%s - %s (%dx%d)", TEST_NAME, sizeName, sideLength, sideLength), maze.toString());
+        int plays = maze.getTotalPlays();
+        int wins = maze.getWins();
+        int losses = maze.getLosses();
+        assertEquals(String.format("%s - %s (%dx%d) - Games played: %d, Wins: %d, Losses: %d",
+                TEST_NAME, sizeName, sideLength, sideLength, plays, wins, losses), maze.toString());
     }
 
     @Test

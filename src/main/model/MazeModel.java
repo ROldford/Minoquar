@@ -24,10 +24,13 @@ public class MazeModel {
         RIGHT
     }
 
-    enum Outcome {
+    public enum Outcome {
         WIN,
         LOSS
     }
+
+    private static final String WIN_LETTER = "W";
+    private static final String LOSS_LETTER = "L";
 
     // EFFECTS: Constructs random maze with given name and size
     public MazeModel(String name, MazeSizeModel.MazeSize size) {
@@ -36,10 +39,15 @@ public class MazeModel {
         this.pastGameOutcomes = new ArrayList<>();
     }
 
-    //EFFECTS: Constructs maze with given name, size and layout data
-    public MazeModel(String name, MazeSizeModel.MazeSize size, List<String> savedLayout) {
+    //EFFECTS: Constructs maze with given name, size, game outcome history and layout data
+    public MazeModel(String name,
+                     MazeSizeModel.MazeSize size,
+                     List<String> savedOutcomeHistory,
+                     List<String> savedLayout) {
+        // TODO: update tests
         this.name = name;
         this.mazeBoard = new MazeBoardModel(size, savedLayout);
+        this.pastGameOutcomes = parseSavedOutcomes(savedOutcomeHistory);
     }
 
     // EFFECTS: returns name of maze
@@ -109,6 +117,21 @@ public class MazeModel {
         return validMoves;
     }
 
+    // EFFECTS:
+    private List<Outcome> parseSavedOutcomes(List<String> savedOutcomeHistory) {
+        List<Outcome> outcomes = new ArrayList<>();
+        for (String line : savedOutcomeHistory) {
+            for (String letter : line.split("")) {
+                if (letter.equals(WIN_LETTER)) {
+                    outcomes.add(Outcome.WIN);
+                } else {
+                    outcomes.add(Outcome.LOSS);
+                }
+            }
+        }
+        return outcomes;
+    }
+
     // EFFECTS: adds outcome of a game on this maze to start of outcomes list (most recent games first)
     public void registerOutcome(Outcome outcome) {
         pastGameOutcomes.add(0, outcome);
@@ -158,8 +181,8 @@ public class MazeModel {
         List<Outcome> subList = pastGameOutcomes.subList(start, end);
         final Function<Outcome, String> outcomeToString;
         outcomeToString = (Outcome outcome) -> outcome == Outcome.WIN
-                ? "W"
-                : "L";
+                ? WIN_LETTER
+                : LOSS_LETTER;
         return subList.stream()
                 .map(outcomeToString)
                 .collect(Collectors.joining(""));
@@ -168,6 +191,7 @@ public class MazeModel {
     // EFFECTS: returns string describing maze
     @Override
     public String toString() {
-        return String.format("%s - %s (%dx%d)", name, getSizeName(), getSideLength(), getSideLength());
+        return String.format("%s - %s (%dx%d) - Games played: %d, Wins: %d, Losses: %d",
+                name, getSizeName(), getSideLength(), getSideLength(), getTotalPlays(), getWins(), getLosses());
     }
 }

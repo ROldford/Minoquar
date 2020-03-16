@@ -80,5 +80,6 @@ public class MazeListModel extends AbstractListModel implements Saveable {
                 printWriter.println(line);
             }
         }
+        printWriter.println(Reader.SEPARATOR_LINE);
     }
 }
