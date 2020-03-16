@@ -126,7 +126,6 @@ public class MazeModel {
         saveData.add(getSizeCode());
         int totalGameOnThisMaze = getTotalPlays();
         saveData.add(Integer.toString(totalGameOnThisMaze));
-        // TODO: add pastGameOutcome, split into 100 char lines
         for (int i = 0; i * 100 < totalGameOnThisMaze; i++) {
             saveData.add(getPastGameOutcomeSaveData(i));
         }
