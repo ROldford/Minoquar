@@ -270,7 +270,7 @@ public class GameModelTest {
 
     @Test
     public void testRegisterOutcome() {
-        assertTrue(game.registerOutcome(MazeModel.Outcome.WIN));
-        assertTrue(game.registerOutcome(MazeModel.Outcome.LOSS));
+        assertEquals(1, game.registerOutcome(MazeModel.Outcome.WIN));
+        assertEquals(2, game.registerOutcome(MazeModel.Outcome.LOSS));
     }
 }

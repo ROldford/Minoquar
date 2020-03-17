@@ -182,16 +182,10 @@ public class GameModel {
         return (hero.getPosition().equals(minotaur.getPosition()));
     }
 
-    // EFFECTS: registers outcome of this game to this maze for storage; returns true if successful
-    public boolean registerOutcome(MazeModel.Outcome outcome) {
-        int previousWins = maze.getWins();
-        int previousLosses = maze.getLosses();
+    // EFFECTS: registers outcome of this game to this maze for storage, then returns total plays on this maze
+    public int registerOutcome(MazeModel.Outcome outcome) {
         maze.registerOutcome(outcome);
-        if (outcome.equals(MazeModel.Outcome.WIN)) {
-            return maze.getWins() > previousWins;
-        } else {
-            return maze.getLosses() > previousLosses;
-        }
+        return maze.getTotalPlays();
     }
 
     // EFFECTS: return list of SquareDisplayData instances to display the current game state
