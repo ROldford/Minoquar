@@ -62,10 +62,12 @@ implement the more difficult parts of a digital game, such as physics, collision
         - If not, the Minotaur chooses the direction with the smallest distance and moves that way, attempting to "line up" with the Hero if possible.
 
 ## Project Progress
-**User Stories For This Deliverable:**
+**Requirements For This Deliverable:**
+*Phase 4: Task 2*
+- Test and design a class that is robust.
 
-*Required Stories*
-- [ ] As a user, I want to interact with the game through a GUI.
+**Phase 3 User Stories:**
+- [X] As a user, I want to interact with the game through a GUI.
     - [X] Maze List Panel
         - [X] Add Maze Button
         - [X] Delete Maze Button
@@ -82,8 +84,6 @@ implement the more difficult parts of a digital game, such as physics, collision
             - [X] Response if move is invalid
             - [X] Message on win
             - [X] Message on loss
-
-*Other Stories*
 - [X] As a user, I want to see wins and losses for a given maze.
     - [X] Saved and read to file
     - [X] Visible on GUI
