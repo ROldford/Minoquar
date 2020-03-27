@@ -1,5 +1,6 @@
 package utils;
 
+import exceptions.GridPositionOutOfBoundsException;
 import model.PositionModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -95,14 +96,45 @@ class GridArrayTest {
 
     @Test
     void testGet() {
-        assertNull(nullGrid.get(ORIGIN));
-        assertNull(nullGrid.get(4, 2));
-        assertNull(nullSquareGrid.get(ORIGIN));
-        assertNull(nullSquareGrid.get(4, 4));
-        assertEquals("A", stringGrid.get(ORIGIN));
-        assertEquals("O", stringGrid.get(4, 2));
-        assertEquals(1, intSquareGrid.get(ORIGIN));
-        assertEquals(9, intSquareGrid.get(2, 2));
+        String failOnException = String.format("%s, checking in grid bounds", FAIL_ON_EXCEPTION);
+        try {
+            assertNull(nullGrid.get(ORIGIN));
+            assertNull(nullGrid.get(4, 2));
+            assertNull(nullSquareGrid.get(ORIGIN));
+            assertNull(nullSquareGrid.get(4, 4));
+            assertEquals("A", stringGrid.get(ORIGIN));
+            assertEquals("O", stringGrid.get(4, 2));
+            assertEquals(1, intSquareGrid.get(ORIGIN));
+            assertEquals(9, intSquareGrid.get(2, 2));
+        } catch (GridPositionOutOfBoundsException e) {
+            fail(failOnException);
+        }
+
+    }
+
+    @Test
+    void testGetException() {
+        outOfBoundExceptionThrownCase(-1, -1, stringGrid);
+        outOfBoundExceptionThrownCase(stringGrid.getWidth(), stringGrid.getHeight(), stringGrid);
+        outOfBoundExceptionThrownCase(new PositionModel(-1, -1), stringGrid);
+        outOfBoundExceptionThrownCase(new PositionModel(stringGrid.getWidth(), stringGrid.getHeight()), stringGrid);
+    }
+
+    private void outOfBoundExceptionThrownCase(int x, int y, GridArray grid) {
+        String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
+        String expectedExceptionMessage = String.format(
+                GridPositionOutOfBoundsException.OUT_OF_BOUNDS_EXCEPTION_MESSAGE_TEMPLATE,
+                x, y);
+        try {
+            grid.get(new PositionModel(x, y));
+            fail(failIfNoException);
+        } catch (GridPositionOutOfBoundsException e) {
+            assertEquals(expectedExceptionMessage, e.getMessage());
+        }
+    }
+
+    private void outOfBoundExceptionThrownCase(PositionModel position, GridArray grid) {
+        outOfBoundExceptionThrownCase(position.getX(), position.getY(), grid);
     }
 
     @Test

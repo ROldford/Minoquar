@@ -67,7 +67,7 @@ implement the more difficult parts of a digital game, such as physics, collision
 - Test and design a class that is robust
     - [ ] GridArray
         - [X] Constructor (rectangle and square versions)
-        - [ ] get() (coordinates and PositionModel versions)
+        - [X] get() (coordinates and PositionModel versions)
         - [ ] set() (coordinates and PositionModel versions)
         - [ ] coordinatesToListIndex()
         - [ ] getPositionOfElement()

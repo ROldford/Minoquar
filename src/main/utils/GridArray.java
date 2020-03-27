@@ -1,5 +1,6 @@
 package utils;
 
+import exceptions.GridPositionOutOfBoundsException;
 import model.PositionModel;
 
 import java.util.ArrayList;
@@ -55,16 +56,25 @@ public class GridArray<T> {
         return width;
     }
 
-    // REQUIRES: x and y are in grid bounds
     // EFFECTS: returns element at given x and y coordinates
-    public T get(int x, int y) {
-        return data.get(coordinatesToListIndex(x, y));
+    //          throws exception if coordinates are out of bounds
+    public T get(int x, int y) throws GridPositionOutOfBoundsException {
+        if (isInBounds(x, y)) {
+            return data.get(coordinatesToListIndex(x, y));
+        } else {
+            throw new GridPositionOutOfBoundsException(x, y);
+        }
     }
 
-    // REQUIRES: position is in grid bounds
     // EFFECTS: returns element at given position
-    public T get(PositionModel position) {
-        return get(position.getX(), position.getY());
+    //          throws exception if position is out of bounds
+    public T get(PositionModel position) throws GridPositionOutOfBoundsException {
+        if (isInBounds(position)) {
+            return get(position.getX(), position.getY());
+        } else {
+            throw new GridPositionOutOfBoundsException(position);
+        }
+
     }
 
     // TODO: throw exception when out of bounds

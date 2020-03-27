@@ -43,6 +43,7 @@ public class Layout {
         this.layout = new GridArray<>(width, height, presetLayout);
     }
 
+    // TODO: update test to check proper GridPositionOutOfBoundsException production
     // REQUIRES: position is not outside of layout
     // EFFECTS: returns status of square at given position
     public MazeSquare getSquare(PositionModel position) {
