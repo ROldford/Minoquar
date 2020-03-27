@@ -23,6 +23,7 @@ public class Layout {
 //    int height;
     GridArray<MazeSquare> layout;
 
+    // TODO: update test to check that no exception thrown from this (shouldn't ever happen!)
     // EFFECTS: construct grid layout of given width and height with all squares empty
     public Layout(int width, int height) {
 //        this.width = width;
@@ -34,7 +35,7 @@ public class Layout {
         this.layout = new GridArray<>(width, height, layoutEmpty);
     }
 
-    // REQUIRES: presetLayout's size must equal width * height
+    // TODO: update test to check proper IllegalArgumentException production
     // EFFECTS: construct grid layout of given width and height using squares from preset layout
     public Layout(int width, int height, List<MazeSquare> presetLayout) {
 //        this.width = width;

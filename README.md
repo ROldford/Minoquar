@@ -64,7 +64,17 @@ implement the more difficult parts of a digital game, such as physics, collision
 ## Project Progress
 **Requirements For This Deliverable:**
 *Phase 4: Task 2*
-- Test and design a class that is robust.
+- Test and design a class that is robust
+    - [ ] GridArray
+        - [X] Constructor (rectangle and square versions)
+        - [ ] get() (coordinates and PositionModel versions)
+        - [ ] set() (coordinates and PositionModel versions)
+        - [ ] coordinatesToListIndex()
+        - [ ] getPositionOfElement()
+    - [ ] Reader
+    - [ ] Layout
+    - [ ] MazeLayoutModel
+    - [ ] MazeSquarePanel(?)
 
 **Phase 3 User Stories:**
 - [X] As a user, I want to interact with the game through a GUI.

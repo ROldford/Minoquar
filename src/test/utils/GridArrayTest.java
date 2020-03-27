@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,6 +17,8 @@ class GridArrayTest {
     GridArray<Integer> intSquareGrid;
 
     private static PositionModel ORIGIN = new PositionModel(0, 0);
+    private static String FAIL_ON_EXCEPTION = "Exception not expected";
+    private static String FAIL_IF_NO_EXCEPTION = "Exception expected";
 
     @BeforeEach
     void beforeEach() {
@@ -43,6 +46,51 @@ class GridArrayTest {
         assertEquals(3, stringGrid.getHeight());
         assertEquals(3, intSquareGrid.getWidth());
         assertEquals(3, intSquareGrid.getHeight());
+    }
+
+    @Test
+    void testInitException() {
+        constructorFailOnExceptionCase(3, 2, new ArrayList<>(Arrays.asList(
+                1, 2, 3,
+                4, 5, 6)));
+        constructorFailOnExceptionCase(2, 2, new ArrayList<>(Arrays.asList(
+                1, 2,
+                3, 4)));
+        constructorExceptionThrownCase(3, 2, new ArrayList<>(Arrays.asList(
+                1, 2, 3,
+                4, 5, 6, 7)));
+        constructorExceptionThrownCase(2, 2, new ArrayList<>(Arrays.asList(
+                1, 2,
+                3)));
+    }
+
+    private <T> void constructorExceptionThrownCase(int width, int height, List<T> data) {
+        String failIfNoException = String.format("%s, data size doesn't match grid", FAIL_IF_NO_EXCEPTION);
+        try {
+            if (width == height) {  // square grid
+                GridArray<T> grid = new GridArray<>(width, data);
+            } else {                // rectangle grid
+                GridArray<T> grid = new GridArray<>(width, height, data);
+            }
+            fail(failIfNoException);
+        } catch (IllegalArgumentException e) {
+            assertEquals(
+                    GridArray.CONSTRUCTOR_EXCEPTION_MESSAGE,
+                    e.getMessage());
+        }
+    }
+
+    private <T> void constructorFailOnExceptionCase(int width, int height, List<T> data) {
+        String failOnException = String.format("%s, data size matches grid", FAIL_ON_EXCEPTION);
+        try {
+            if (width == height) {  // square grid
+                GridArray<T> grid = new GridArray<>(width, data);
+            } else {                // rectangle grid
+                GridArray<T> grid = new GridArray<>(width, height, data);
+            }
+        } catch (IllegalArgumentException e) {
+            fail(failOnException);
+        }
     }
 
     @Test

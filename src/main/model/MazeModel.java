@@ -44,7 +44,6 @@ public class MazeModel {
                      MazeSizeModel.MazeSize size,
                      List<String> savedOutcomeHistory,
                      List<String> savedLayout) {
-        // TODO: update tests
         this.name = name;
         this.mazeBoard = new MazeBoardModel(size, savedLayout);
         this.pastGameOutcomes = parseSavedOutcomes(savedOutcomeHistory);

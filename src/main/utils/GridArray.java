@@ -11,34 +11,40 @@ import java.util.Objects;
 // x increases left to right
 // y increases top to bottom
 public class GridArray<T> {
-    private int width;
-    private int height;
+    public static final String CONSTRUCTOR_EXCEPTION_MESSAGE = "Data list size does not match grid dimensions";
+
+    private final int width;
+    private final int height;
     private List<T> data;
 
     // EFFECTS: create GridArray of given dimensions with all null elements
     public GridArray(int width, int height) {
-        setDimensions(width, height);
+        this.width = width;
+        this.height = height;
         this.data = makeNullList(width * height);
     }
 
     // EFFECTS: create square GridArray of given side length with all null elements
     public GridArray(int sideLength) {
-        setDimensions(sideLength, sideLength);
-        this.data = makeNullList(sideLength * sideLength);
+        this(sideLength, sideLength);
     }
 
-    // REQUIRES: data.size() = width * height
     // EFFECTS: create GridArray of given dimensions with given data
-    public GridArray(int width, int height, List<T> data) {
-        setDimensions(width, height);
-        this.data = data;
+    //          throws exception if data.size() != width * height
+    public GridArray(int width, int height, List<T> data) throws IllegalArgumentException {
+        if (data.size() == width * height) {
+            this.width = width;
+            this.height = height;
+            this.data = data;
+        } else {
+            throw new IllegalArgumentException(CONSTRUCTOR_EXCEPTION_MESSAGE);
+        }
     }
 
-    // REQUIRES: data.size() = sideLength * sideLength
     // EFFECTS: create square GridArray of given side length with given data
-    public GridArray(int sideLength, List<T> data) {
-        setDimensions(sideLength, sideLength);
-        this.data = data;
+    //          throws exception if data.size() != sideLength * sideLength
+    public GridArray(int sideLength, List<T> data) throws IllegalArgumentException {
+        this(sideLength, sideLength, data);
     }
 
     public int getHeight() {
@@ -61,10 +67,14 @@ public class GridArray<T> {
         return get(position.getX(), position.getY());
     }
 
+    // TODO: throw exception when out of bounds
+    // TODO: document method
     public void set(int x, int y, T element) {
         data.set(coordinatesToListIndex(x, y), element);
     }
 
+    // TODO: throw exception when out of bounds
+    // TODO: document method
     public void set(PositionModel position, T element) {
         set(position.getX(), position.getY(), element);
     }
@@ -108,13 +118,6 @@ public class GridArray<T> {
         return y * width + x;
     }
 
-    // MODIFIES: this
-    // EFFECTS: sets grid array dimensions
-    private void setDimensions(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
     private List<T> makeNullList(int length) {
         List<T> nullList = new ArrayList<>();
         for (int i = 0; i < length; i++) {
@@ -123,12 +126,15 @@ public class GridArray<T> {
         return nullList;
     }
 
+    // TODO: this might only be used in tests, see if I can safely remove it
     // REQUIRES: element is not null;
     // EFFECTS: returns true if element is in grid
     public boolean contains(T element) {
         return data.contains(element);
     }
 
+    // TODO: throw exception on null argument
+    // TODO: document method
     // REQUIRES: element is not null
     // EFFECTS: returns position of first occurrence of element in grid, or (-1, -1) if not present
     public PositionModel getPositionOfElement(T element) {
