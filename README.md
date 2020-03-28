@@ -65,14 +65,17 @@ implement the more difficult parts of a digital game, such as physics, collision
 **Requirements For This Deliverable:**
 *Phase 4: Task 2*
 - Test and design a class that is robust
-    - [ ] GridArray
+    - [X] GridArray
         - [X] Constructor (rectangle and square versions)
         - [X] get() (coordinates and PositionModel versions)
-        - [ ] set() (coordinates and PositionModel versions)
-        - [ ] coordinatesToListIndex()
-        - [ ] getPositionOfElement()
-    - [ ] Reader
+        - [X] set() (coordinates and PositionModel versions)
     - [ ] Layout
+        - [ ] Constructor(int, int) [should never throw IllegalArgumentException normally]
+        - [ ] Constructor(int, int, List<MazeSquare>)
+        - [ ] getSquare
+        - [ ] display [should never throw GridOperationOutOfBounds normally]
+        - [ ] overwrite 
+    - [ ] Reader
     - [ ] MazeLayoutModel
     - [ ] MazeSquarePanel(?)
 
