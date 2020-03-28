@@ -219,6 +219,11 @@ class GridArrayTest {
         assertFalse(gridArray.isInBounds(width, 0));
         assertFalse(gridArray.isInBounds(0, height));
         assertFalse(gridArray.isInBounds(width, height));
+        assertTrue(gridArray.isInBounds(ORIGIN, ORIGIN.add(new PositionModel(1, 1))));  // area in bounds
+        assertFalse(gridArray.isInBounds(new PositionModel(-1, -1), ORIGIN));  // out of bounds, NW corner
+        assertFalse(gridArray.isInBounds(
+                new PositionModel(width - 1, height - 1),
+                new PositionModel(width, height)));   // out of bounds, SE corner
     }
 
     @Test

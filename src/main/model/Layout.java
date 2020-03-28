@@ -24,7 +24,6 @@ public class Layout {
 //    int height;
     GridArray<MazeSquare> layout;
 
-    // TODO: update test to check that no exception thrown from this (shouldn't ever happen!)
     // EFFECTS: construct grid layout of given width and height with all squares empty
     public Layout(int width, int height) {
 //        this.width = width;
@@ -36,7 +35,6 @@ public class Layout {
         this.layout = new GridArray<>(width, height, layoutEmpty);
     }
 
-    // TODO: update test to check proper IllegalArgumentException production
     // EFFECTS: construct grid layout of given width and height using squares from preset layout
     public Layout(int width, int height, List<MazeSquare> presetLayout) {
 //        this.width = width;
@@ -44,8 +42,6 @@ public class Layout {
         this.layout = new GridArray<>(width, height, presetLayout);
     }
 
-    // TODO: update test to check proper GridPositionOutOfBoundsException production
-    // REQUIRES: position is not outside of layout
     // EFFECTS: returns status of square at given position
     public MazeSquare getSquare(PositionModel position) throws GridOperationOutOfBoundsException {
         return layout.get(position);
@@ -74,25 +70,33 @@ public class Layout {
         return displayData;
     }
 
-    // TODO: have this method check that entire other Layout fits
-    //       right now, it can fail partway through overwriting. Not good!
-    // REQUIRES: other layout does not fall outside of this pattern's dimensions
-    //           any squares being added to are EMPTY
     // MODIFIES: this
-    // EFFECTS: overwrites other layout on top of EMPTY squares on this layout
-    public void overwrite(PositionModel cornerPosition, Layout other) throws GridOperationOutOfBoundsException {
-        for (int x = 0; x < other.getWidth(); x++) {
-            for (int y = 0; y < other.getHeight(); y++) {
-                layout.set(
-                        cornerPosition.add(new PositionModel(x, y)),
-                        other.getSquare(new PositionModel(x, y)));
+    // EFFECTS: overwrites other layout on top of squares on this layout
+    public void overwrite(PositionModel overwriteStart, Layout other) throws GridOperationOutOfBoundsException {
+        PositionModel overwriteEnd = overwriteStart.add(
+                new PositionModel(other.getWidth() - 1, other.getHeight() - 1));
+        if (isInBounds(overwriteStart, overwriteEnd)) {
+            for (int x = 0; x < other.getWidth(); x++) {
+                for (int y = 0; y < other.getHeight(); y++) {
+                    layout.set(
+                            overwriteStart.add(new PositionModel(x, y)),
+                            other.getSquare(new PositionModel(x, y)));
+                }
             }
+        } else {
+            throw new GridOperationOutOfBoundsException(overwriteStart, overwriteEnd);
         }
+
     }
 
-    // TODO: use this to throw exceptions in getSquare
     // EFFECTS: return true if position lies in bounds of layout
     public boolean isInBounds(PositionModel position) {
         return layout.isInBounds(position);
+    }
+
+    // EFFECTS: return true if area lies in bounds of layout
+    //          start = NW corner, end = SE corner
+    public boolean isInBounds(PositionModel start, PositionModel end) {
+        return layout.isInBounds(start, end);
     }
 }

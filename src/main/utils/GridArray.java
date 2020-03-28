@@ -139,7 +139,6 @@ public class GridArray<T> {
         return Objects.hash(width, height, data);
     }
 
-    // REQUIRES: position is not outside of layout
     // EFFECTS: converts positions to index number for "flattened" 2D grid list of given width
     // Example: if grid width = 5, positionToListIndex(2, 4) -> 14
     private int coordinatesToListIndex(int x, int y) {

@@ -69,12 +69,12 @@ implement the more difficult parts of a digital game, such as physics, collision
         - [X] Constructor (rectangle and square versions)
         - [X] get() (coordinates and PositionModel versions)
         - [X] set() (coordinates and PositionModel versions)
-    - [ ] Layout
-        - [ ] Constructor(int, int) [should never throw IllegalArgumentException normally]
-        - [ ] Constructor(int, int, List<MazeSquare>)
-        - [ ] getSquare
-        - [ ] display [should never throw GridOperationOutOfBounds normally]
-        - [ ] overwrite 
+    - [X] Layout
+        - [X] Constructor(int, int) [should never throw IllegalArgumentException normally]
+        - [X] Constructor(int, int, List<MazeSquare>)
+        - [X] getSquare
+        - [X] display [should never throw GridOperationOutOfBounds normally]
+        - [X] overwrite 
     - [ ] Reader
     - [ ] MazeLayoutModel
     - [ ] MazeSquarePanel(?)

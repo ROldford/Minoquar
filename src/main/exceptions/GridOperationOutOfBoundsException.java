@@ -29,6 +29,6 @@ public class GridOperationOutOfBoundsException extends Exception {
     }
 
     private static String generateMessage(int startX, int startY, int endX, int endY) {
-        return String.format(MESSAGE_TEMPLATE_POSITION, startX, startY, endX, endY);
+        return String.format(MESSAGE_TEMPLATE_AREA, startX, startY, endX, endY);
     }
 }
