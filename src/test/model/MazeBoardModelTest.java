@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.GridOperationOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Utilities;
@@ -14,7 +15,7 @@ public class MazeBoardModelTest {
     List<MazeBoardModel> boards;
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws GridOperationOutOfBoundsException {
         boards = new ArrayList<>();
         boards.add(new MazeBoardModel(MazeSizeModel.MazeSize.EXTRA_SMALL));
         boards.add(new MazeBoardModel(MazeSizeModel.MazeSize.SMALL));
@@ -44,7 +45,7 @@ public class MazeBoardModelTest {
     }
 
     @Test
-    public void testGetSquaresBetweenAllPassages() {
+    public void testGetSquaresBetweenAllPassages() throws GridOperationOutOfBoundsException {
         PositionModel topLeft = new PositionModel(1, 1);
         PositionModel topRight = new PositionModel(5, 1);
         PositionModel bottomLeft = new PositionModel(1, 5);
@@ -62,7 +63,7 @@ public class MazeBoardModelTest {
     }
 
     @Test
-    public void testGetSquaresBetweenAllWalls() {
+    public void testGetSquaresBetweenAllWalls() throws GridOperationOutOfBoundsException {
         PositionModel topLeft = new PositionModel(0, 0);
         PositionModel topRight = new PositionModel(6, 0);
         PositionModel bottomLeft = new PositionModel(0, 6);
@@ -80,7 +81,7 @@ public class MazeBoardModelTest {
     }
 
     @Test
-    public void testGetSquaresBetweenBothTypes() {
+    public void testGetSquaresBetweenBothTypes() throws GridOperationOutOfBoundsException {
         PositionModel leftSide = new PositionModel(8, 6);
         PositionModel rightSide = new PositionModel(11, 6);
         PositionModel topSide = new PositionModel(6, 8);

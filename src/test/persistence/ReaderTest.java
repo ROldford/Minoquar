@@ -3,6 +3,7 @@
 
 package persistence;
 
+import exceptions.GridOperationOutOfBoundsException;
 import model.MazeListModel;
 import model.MazeModel;
 import model.MazeSizeModel;
@@ -28,8 +29,8 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_SMALL,
                     0,
                     0);
-        } catch (IOException e) {
-            fail("IOException should not have been thrown");
+        } catch (IOException | GridOperationOutOfBoundsException e) {
+            fail("Exception should not have been thrown");
         }
     }
 
@@ -44,8 +45,8 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_LARGE,
                     5,
                     5);
-        } catch (IOException e) {
-            fail("IOException should not have been thrown");
+        } catch (IOException | GridOperationOutOfBoundsException e) {
+            fail("Exception should not have been thrown");
         }
     }
 
@@ -65,8 +66,8 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_LARGE,
                     5,
                     5);
-        } catch (IOException e) {
-            fail("IOException should not have been thrown");
+        } catch (IOException | GridOperationOutOfBoundsException e) {
+            fail("Exception should not have been thrown");
         }
     }
 
@@ -77,7 +78,7 @@ public class ReaderTest {
                     Reader.readMazeList(new File("./data/test/testMazeListBadFile.txt")));
             assertEquals(0, mazes.getSize());
         } catch (IOException e) {
-            fail("IOException should not have been thrown");
+            fail("Exception should not have been thrown");
         }
     }
 
@@ -91,7 +92,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_SMALL,
                     55,
                     55);
-        } catch (IOException e) {
+        } catch (IOException | GridOperationOutOfBoundsException e) {
             fail("IOException should not have been thrown");
         }
     }
@@ -100,7 +101,7 @@ public class ReaderTest {
                           String expectedName,
                           MazeSizeModel.MazeSize expectedSize,
                           int expectedWins,
-                          int expectedLosses) {
+                          int expectedLosses) throws GridOperationOutOfBoundsException {
         // name check
         assertEquals(expectedName, maze.getName());
         // size check

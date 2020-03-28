@@ -3,6 +3,7 @@
 
 package persistence;
 
+import exceptions.GridOperationOutOfBoundsException;
 import model.MazeModel;
 import model.MazeSizeModel;
 import utils.Utilities;
@@ -86,7 +87,12 @@ public class Reader {
             savedLayout.add(iterator.next());
         }
         // TODO: throw exception if there's more data (if hasNext() is true)
-        return new MazeModel(name, size, savedOutcomeHistory, savedLayout);
+        try {
+            return new MazeModel(name, size, savedOutcomeHistory, savedLayout);
+        } catch (GridOperationOutOfBoundsException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

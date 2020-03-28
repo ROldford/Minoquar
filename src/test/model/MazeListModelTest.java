@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.GridOperationOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ public class MazeListModelTest {
     }
 
     @Test
-    public void testCreateRandomMaze() {
+    public void testCreateRandomMaze() throws GridOperationOutOfBoundsException {
         String testSizeName = MazeSizeModel.getSizeName(TEST_SIZE);
         mazeList.createRandomMaze(TEST_NAME, TEST_SIZE);
         assertEquals(1, mazeList.getSize());
@@ -40,7 +41,7 @@ public class MazeListModelTest {
     }
 
     @Test
-    public void testDeleteMaze() {
+    public void testDeleteMaze() throws GridOperationOutOfBoundsException {
         populateMazeList();
         mazeList.deleteMaze(1);
         assertEquals(2, mazeList.getSize());
@@ -51,7 +52,7 @@ public class MazeListModelTest {
     }
 
     @Test
-    public void testUpdateList(){
+    public void testUpdateList() throws GridOperationOutOfBoundsException {
         MazeModel maze3 = new MazeModel("maze 3", TEST_SIZE);
         MazeModel maze4 = new MazeModel("maze 4", TEST_SIZE);
         MazeModel maze5 = new MazeModel("maze 5", TEST_SIZE);
@@ -68,7 +69,7 @@ public class MazeListModelTest {
     }
 
     @Test
-    void testContainsSameName() {
+    void testContainsSameName() throws GridOperationOutOfBoundsException {
         populateMazeList();
         assertTrue(mazeList.containsSameName("maze 0"));
         assertTrue(mazeList.containsSameName("maze 2"));
@@ -77,7 +78,7 @@ public class MazeListModelTest {
 
     // MODIFIES: mazeList
     // EFFECTS: adds three mazes to mazeList
-    private void populateMazeList() {
+    private void populateMazeList() throws GridOperationOutOfBoundsException {
         mazeList.createRandomMaze("maze 0", TEST_SIZE);
         mazeList.createRandomMaze("maze 1", TEST_SIZE);
         mazeList.createRandomMaze("maze 2", TEST_SIZE);

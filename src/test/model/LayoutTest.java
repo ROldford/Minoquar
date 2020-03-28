@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.GridOperationOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ui.SquareDisplayData;
@@ -82,7 +83,7 @@ public class LayoutTest {
     }
 
     @Test
-    public void testGetSquare() {
+    public void testGetSquare() throws GridOperationOutOfBoundsException {
         assertEquals(w, singleSquare.getSquare(new PositionModel(0, 0)));
         for (int i = 0; i < 5; i++) {
             if (Utilities.isEven(i)) {
@@ -103,7 +104,7 @@ public class LayoutTest {
     }
 
     @Test
-    public void testOverwritePattern() {
+    public void testOverwritePattern() throws GridOperationOutOfBoundsException {
         List<Layout.MazeSquare> patternList = new ArrayList<>(Arrays.asList(
                 w, p,
                 p, w
@@ -119,12 +120,19 @@ public class LayoutTest {
         fiveByThreeEmpty.overwrite(startPosition, twoByTwoPattern);
         Utilities.iterateSimultaneously(
                 patternList, patternPositions,
-                (Layout.MazeSquare patternSquare, PositionModel position) -> assertEquals(
-                        patternSquare, fiveByThreeEmpty.getSquare(position)));
+                (Layout.MazeSquare patternSquare, PositionModel position) -> {
+                    try {
+                        assertEquals(
+                                patternSquare, fiveByThreeEmpty.getSquare(position));
+                    } catch (GridOperationOutOfBoundsException e) {
+                        e.printStackTrace();
+                        fail("Out of bounds");
+                    }
+                });
     }
 
     @Test
-    public void testDisplay() {
+    public void testDisplay() throws GridOperationOutOfBoundsException {
 //        fail("needs implementation");
         SquareDisplayData wall = new SquareDisplayData(w);
         SquareDisplayData pass = new SquareDisplayData(p);

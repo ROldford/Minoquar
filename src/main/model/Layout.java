@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.GridOperationOutOfBoundsException;
 import ui.SquareDisplayData;
 import utils.GridArray;
 
@@ -46,7 +47,7 @@ public class Layout {
     // TODO: update test to check proper GridPositionOutOfBoundsException production
     // REQUIRES: position is not outside of layout
     // EFFECTS: returns status of square at given position
-    public MazeSquare getSquare(PositionModel position) {
+    public MazeSquare getSquare(PositionModel position) throws GridOperationOutOfBoundsException {
         return layout.get(position);
     }
 
@@ -61,7 +62,7 @@ public class Layout {
     }
 
     // EFFECTS: return GridArray of SquareDisplayData to display the current layout
-    public GridArray<SquareDisplayData> display() {
+    public GridArray<SquareDisplayData> display() throws GridOperationOutOfBoundsException {
         GridArray<SquareDisplayData> displayData = new GridArray<>(getWidth(), getHeight());
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
@@ -73,11 +74,13 @@ public class Layout {
         return displayData;
     }
 
+    // TODO: have this method check that entire other Layout fits
+    //       right now, it can fail partway through overwriting. Not good!
     // REQUIRES: other layout does not fall outside of this pattern's dimensions
     //           any squares being added to are EMPTY
     // MODIFIES: this
     // EFFECTS: overwrites other layout on top of EMPTY squares on this layout
-    public void overwrite(PositionModel cornerPosition, Layout other) {
+    public void overwrite(PositionModel cornerPosition, Layout other) throws GridOperationOutOfBoundsException {
         for (int x = 0; x < other.getWidth(); x++) {
             for (int y = 0; y < other.getHeight(); y++) {
                 layout.set(

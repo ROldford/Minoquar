@@ -3,6 +3,7 @@
 
 package ui;
 
+import exceptions.GridOperationOutOfBoundsException;
 import model.MazeListModel;
 import model.MazeModel;
 import model.MazeSizeModel;
@@ -203,7 +204,11 @@ public class MenuUI extends JPanel implements ListSelectionListener {
                 index++;
             }
 
-            mazeList.createRandomMaze(index, name, MazeSizeModel.MazeSize.EXTRA_SMALL);
+            try {
+                mazeList.createRandomMaze(index, name, MazeSizeModel.MazeSize.EXTRA_SMALL);
+            } catch (GridOperationOutOfBoundsException ex) {
+                ex.printStackTrace(); // TODO: properly catch this!
+            }
 
             // Reset text field
             mazeName.requestFocusInWindow();
@@ -286,7 +291,11 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         // EFFECTS: processes button press, starts new game with selected maze
         @Override
         public void actionPerformed(ActionEvent e) {
-            minoquarFrame.swapToGameUI(mazeList.getElementAt(list.getSelectedIndex()));
+            try {
+                minoquarFrame.swapToGameUI(mazeList.getElementAt(list.getSelectedIndex()));
+            } catch (GridOperationOutOfBoundsException ex) {
+                ex.printStackTrace(); // TODO: properly catch this!
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 package utils;
 
-import exceptions.GridPositionOutOfBoundsException;
+import exceptions.GridOperationOutOfBoundsException;
 import model.PositionModel;
 
 import java.util.ArrayList;
@@ -58,48 +58,66 @@ public class GridArray<T> {
 
     // EFFECTS: returns element at given x and y coordinates
     //          throws exception if coordinates are out of bounds
-    public T get(int x, int y) throws GridPositionOutOfBoundsException {
+    public T get(int x, int y) throws GridOperationOutOfBoundsException {
         if (isInBounds(x, y)) {
             return data.get(coordinatesToListIndex(x, y));
         } else {
-            throw new GridPositionOutOfBoundsException(x, y);
+            throw new GridOperationOutOfBoundsException(x, y);
         }
     }
 
     // EFFECTS: returns element at given position
     //          throws exception if position is out of bounds
-    public T get(PositionModel position) throws GridPositionOutOfBoundsException {
+    public T get(PositionModel position) throws GridOperationOutOfBoundsException {
         if (isInBounds(position)) {
             return get(position.getX(), position.getY());
         } else {
-            throw new GridPositionOutOfBoundsException(position);
+            throw new GridOperationOutOfBoundsException(position);
         }
 
     }
 
-    // TODO: throw exception when out of bounds
     // TODO: document method
-    public void set(int x, int y, T element) {
-        data.set(coordinatesToListIndex(x, y), element);
+    public void set(int x, int y, T element) throws GridOperationOutOfBoundsException {
+        if (isInBounds(x, y)) {
+            data.set(coordinatesToListIndex(x, y), element);
+        } else {
+            throw new GridOperationOutOfBoundsException(x, y);
+        }
+
     }
 
-    // TODO: throw exception when out of bounds
     // TODO: document method
-    public void set(PositionModel position, T element) {
-        set(position.getX(), position.getY(), element);
+    public void set(PositionModel position, T element) throws GridOperationOutOfBoundsException{
+        if (isInBounds(position)) {
+            set(position.getX(), position.getY(), element);
+        } else {
+            throw new GridOperationOutOfBoundsException(position);
+        }
     }
 
-    // EFFECTS: return true if x and y lie in bounds of grid
-    public boolean isInBounds(int x, int y) {
-        boolean validX = (0 <= x && x < width);
-        boolean validY = (0 <= y && y < height);
-        return validX && validY;
+    // EFFECTS: return true if area lies in bounds of grid
+    //          area is out of bounds if origin or end corner are out of bounds
+    //          origin = top left, end = bottom right
+    public boolean isInBounds(int originX, int originY, int endX, int endY) {
+        boolean validOriginX = (0 <= originX && originX < width);
+        boolean validOriginY = (0 <= originY && originY < height);
+        boolean validEndX = (0 <= endX && endX < width);
+        boolean validEndY = (0 <= endY && endY < height);
+        return validOriginX && validOriginY && validEndX && validEndY;
     }
 
-    // TODO: use this to throw exceptions
     // EFFECTS: return true if position lies in bounds of grid
+    public boolean isInBounds(PositionModel start, PositionModel end) {
+        return isInBounds(start.getX(), start.getY(), end.getX(), end.getY());
+    }
+
+    public boolean isInBounds(int posX, int posY) {
+        return isInBounds(posX, posY, posX, posY);
+    }
+
     public boolean isInBounds(PositionModel position) {
-        return isInBounds(position.getX(), position.getY());
+        return isInBounds(position, position);
     }
 
     @Override
@@ -143,9 +161,6 @@ public class GridArray<T> {
         return data.contains(element);
     }
 
-    // TODO: throw exception on null argument
-    // TODO: document method
-    // REQUIRES: element is not null
     // EFFECTS: returns position of first occurrence of element in grid, or (-1, -1) if not present
     public PositionModel getPositionOfElement(T element) {
         int index = data.indexOf(element);

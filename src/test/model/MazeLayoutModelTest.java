@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.GridOperationOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
@@ -20,7 +21,7 @@ public class MazeLayoutModelTest {
     List<MazeLayoutModel> layouts;
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws GridOperationOutOfBoundsException {
         layouts = new ArrayList<>();
         layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_SMALL));
         layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.SMALL));
@@ -50,7 +51,7 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testHasRecognitionPatternsAndMargins() {
+    public void testHasRecognitionPatternsAndMargins() throws GridOperationOutOfBoundsException {
         for (MazeLayoutModel layout : layouts) {
             int corner = MazeSizeModel.getSideLength(layout.getSize()) - 1;
             // I'm only testing the corner, one square diagonal inwards, and the margin. THIS IS INTENTIONAL.
@@ -68,7 +69,7 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testHasAlignmentPattern() {
+    public void testHasAlignmentPattern() throws GridOperationOutOfBoundsException {
         for (MazeLayoutModel layout : layouts) {
             int alignCorner = MazeSizeModel.getSideLength(layout.getSize()) - 9;
             assertEquals(
@@ -84,7 +85,7 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testHasTimingPatterns() {
+    public void testHasTimingPatterns() throws GridOperationOutOfBoundsException {
         for (MazeLayoutModel layout : layouts) {
             int timingPosition = 6;
             int timingStart = 8;
@@ -110,7 +111,7 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testHasDarkModule() {
+    public void testHasDarkModule() throws GridOperationOutOfBoundsException {
         int darkModX = 8;
         for (MazeLayoutModel layout : layouts) {
             assertEquals(
@@ -120,7 +121,7 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testGetSquare() {
+    public void testGetSquare() throws GridOperationOutOfBoundsException {
         PositionModel position = new PositionModel(1, 1);
         for (MazeLayoutModel layout : layouts) {
             assertEquals(
@@ -130,7 +131,7 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testDisplay() {
+    public void testDisplay() throws GridOperationOutOfBoundsException {
         for (MazeLayoutModel layout : layouts) {
             SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
             SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
@@ -177,7 +178,12 @@ public class MazeLayoutModelTest {
         Utilities.iterateSimultaneously(
                 expectedSideLengths, layouts,
                 (Integer expected, MazeLayoutModel layout) -> {
-                    List<String> saveData = layout.getSaveData();
+                    List<String> saveData = null;
+                    try {
+                        saveData = layout.getSaveData();
+                    } catch (GridOperationOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
                     assertEquals(expected, saveData.size());
                     for (String row : saveData) {
                         assertEquals(expected, row.length());
@@ -186,7 +192,7 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testInitFromSavedData() {
+    public void testInitFromSavedData() throws GridOperationOutOfBoundsException {
         List<String> testData = generateTestData();
         MazeLayoutModel testMazeLayout = MazeLayoutModel.createMazeFromMazeContent(
                 MazeSizeModel.MazeSize.EXTRA_SMALL, testData);

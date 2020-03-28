@@ -1,6 +1,6 @@
 package utils;
 
-import exceptions.GridPositionOutOfBoundsException;
+import exceptions.GridOperationOutOfBoundsException;
 import model.PositionModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -106,7 +106,7 @@ class GridArrayTest {
             assertEquals("O", stringGrid.get(4, 2));
             assertEquals(1, intSquareGrid.get(ORIGIN));
             assertEquals(9, intSquareGrid.get(2, 2));
-        } catch (GridPositionOutOfBoundsException e) {
+        } catch (GridOperationOutOfBoundsException e) {
             fail(failOnException);
         }
 
@@ -114,44 +114,93 @@ class GridArrayTest {
 
     @Test
     void testGetException() {
-        outOfBoundExceptionThrownCase(-1, -1, stringGrid);
-        outOfBoundExceptionThrownCase(stringGrid.getWidth(), stringGrid.getHeight(), stringGrid);
-        outOfBoundExceptionThrownCase(new PositionModel(-1, -1), stringGrid);
-        outOfBoundExceptionThrownCase(new PositionModel(stringGrid.getWidth(), stringGrid.getHeight()), stringGrid);
+        getExceptionThrownCase(-1, -1, stringGrid);
+        getExceptionThrownCase(stringGrid.getWidth(), stringGrid.getHeight(), stringGrid);
+        getExceptionThrownCase(new PositionModel(-1, -1), stringGrid);
+        getExceptionThrownCase(new PositionModel(stringGrid.getWidth(), stringGrid.getHeight()), stringGrid);
     }
 
-    private void outOfBoundExceptionThrownCase(int x, int y, GridArray grid) {
+    private void getExceptionThrownCase(int x, int y, GridArray grid) {
         String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
         String expectedExceptionMessage = String.format(
-                GridPositionOutOfBoundsException.OUT_OF_BOUNDS_EXCEPTION_MESSAGE_TEMPLATE,
+                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
                 x, y);
         try {
-            grid.get(new PositionModel(x, y));
+            grid.get(x, y);
             fail(failIfNoException);
-        } catch (GridPositionOutOfBoundsException e) {
+        } catch (GridOperationOutOfBoundsException e) {
             assertEquals(expectedExceptionMessage, e.getMessage());
         }
     }
 
-    private void outOfBoundExceptionThrownCase(PositionModel position, GridArray grid) {
-        outOfBoundExceptionThrownCase(position.getX(), position.getY(), grid);
+    private void getExceptionThrownCase(PositionModel position, GridArray grid) {
+        String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
+        String expectedExceptionMessage = String.format(
+                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
+                position.getX(), position.getY());
+        try {
+            grid.get(position);
+            fail(failIfNoException);
+        } catch (GridOperationOutOfBoundsException e) {
+            assertEquals(expectedExceptionMessage, e.getMessage());
+        }
     }
 
     @Test
-    void testSet() {
-        testCaseSet(nullGrid, "test");
-        testCaseSet(nullSquareGrid, "test");
-        testCaseSet(stringGrid, "test");
-        testCaseSet(intSquareGrid, 99);
+    void testSet() throws GridOperationOutOfBoundsException {
+        setFailOnExceptionCase(nullGrid, "test");
+        setFailOnExceptionCase(nullSquareGrid, "test");
+        setFailOnExceptionCase(stringGrid, "test");
+        setFailOnExceptionCase(intSquareGrid, 99);
     }
 
-    private <T> void testCaseSet(GridArray<T> gridArray, T testData) {
-        gridArray.set(ORIGIN, testData);
-        assertEquals(testData, gridArray.get(ORIGIN));
-        int cornerX = gridArray.getWidth() - 1;
-        int cornerY = gridArray.getHeight() - 1;
-        gridArray.set(cornerX, cornerY, testData);
-        assertEquals(testData, gridArray.get(cornerX, cornerY));
+    private <T> void setFailOnExceptionCase(GridArray<T> gridArray, T testData) {
+        String failOnException = String.format("%s, checking in grid bounds", FAIL_ON_EXCEPTION);
+        try {
+            gridArray.set(ORIGIN, testData);
+            assertEquals(testData, gridArray.get(ORIGIN));
+            int cornerX = gridArray.getWidth() - 1;
+            int cornerY = gridArray.getHeight() - 1;
+            gridArray.set(cornerX, cornerY, testData);
+            assertEquals(testData, gridArray.get(cornerX, cornerY));
+        } catch (GridOperationOutOfBoundsException e) {
+            fail(failOnException);
+        }
+    }
+
+    @Test
+    void testSetException() {
+        String testString = "A";
+        setExceptionThrownCase(-1, -1, stringGrid, testString);
+        setExceptionThrownCase(stringGrid.getWidth(), stringGrid.getHeight(), stringGrid, testString);
+        setExceptionThrownCase(new PositionModel(-1, -1), stringGrid, testString);
+        setExceptionThrownCase(new PositionModel(stringGrid.getWidth(), stringGrid.getHeight()), stringGrid, testString);
+    }
+
+    private <T> void setExceptionThrownCase(int x, int y, GridArray grid, T element) {
+        String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
+        String expectedExceptionMessage = String.format(
+                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
+                x, y);
+        try {
+            grid.set(x, y, element);
+            fail(failIfNoException);
+        } catch (GridOperationOutOfBoundsException e) {
+            assertEquals(expectedExceptionMessage, e.getMessage());
+        }
+    }
+
+    private <T> void setExceptionThrownCase(PositionModel position, GridArray grid, T element) {
+        String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
+        String expectedExceptionMessage = String.format(
+                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
+                position.getX(), position.getY());
+        try {
+            grid.set(position, element);
+            fail(failIfNoException);
+        } catch (GridOperationOutOfBoundsException e) {
+            assertEquals(expectedExceptionMessage, e.getMessage());
+        }
     }
 
     @Test

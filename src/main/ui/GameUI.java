@@ -3,6 +3,7 @@
 
 package ui;
 
+import exceptions.GridOperationOutOfBoundsException;
 import model.GameModel;
 import model.MazeModel;
 import model.PositionModel;
@@ -27,7 +28,7 @@ public class GameUI extends JPanel {
 
 
     // EFFECTS: creates the game's UI panel in app window with given maze
-    public GameUI(Minoquar minoquarFrame, MazeModel mazeModel) {
+    public GameUI(Minoquar minoquarFrame, MazeModel mazeModel) throws GridOperationOutOfBoundsException {
         super(new BorderLayout());
         this.minoquarFrame = minoquarFrame;
         this.gameModel = new GameModel(mazeModel);
@@ -38,7 +39,7 @@ public class GameUI extends JPanel {
 
     // MODIFIES: this
     // EFFECTS: sets up game UI panels
-    public void createGameUI() {
+    public void createGameUI() throws GridOperationOutOfBoundsException {
         this.gameControlPanel = createControlPanel();
         this.mazeUIPanel = createMazePanel();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -50,13 +51,13 @@ public class GameUI extends JPanel {
         return new GameControlPanel(this);
     }
 
-    private MazeUIPanel createMazePanel() {
+    private MazeUIPanel createMazePanel() throws GridOperationOutOfBoundsException {
         GridArray<SquareDisplayData> displayData = gameModel.display();
         mazeUIPanel = new MazeUIPanel(displayData, this);
         return mazeUIPanel;
     }
 
-    public void handleClickAt(PositionModel clickedPosition) {
+    public void handleClickAt(PositionModel clickedPosition) throws GridOperationOutOfBoundsException {
         if (gameStatus == GameStatus.ONGOING && canHandleClick) {
             this.canHandleClick = false;  // keeps clicks from working while move is processed
             // TODO: test if this is actually needed
@@ -84,7 +85,7 @@ public class GameUI extends JPanel {
     // EFFECTS: processes game move
     //          returns true when move is completed
     //          returns false and prints message to bottom panel otherwise
-    private boolean getHeroMove(PositionModel end) {
+    private boolean getHeroMove(PositionModel end) throws GridOperationOutOfBoundsException {
         if (gameModel.moveHero(end)) {
             return true;
         } else {
@@ -121,7 +122,7 @@ public class GameUI extends JPanel {
     }
 
     // EFFECTS: updates the maze panel display
-    private void updateDisplay() {
+    private void updateDisplay() throws GridOperationOutOfBoundsException {
         mazeUIPanel.updateDisplay(gameModel.display());
     }
 

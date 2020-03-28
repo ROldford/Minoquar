@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.GridOperationOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
@@ -24,7 +25,7 @@ public class GameModelTest {
     MazeModel emptyMaze;
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws GridOperationOutOfBoundsException {
         game = new GameModel(
                 new MazeModel("test", MazeSizeModel.MazeSize.EXTRA_SMALL));
         try {
@@ -47,7 +48,7 @@ public class GameModelTest {
     }
 
     @Test
-    public void testDisplay() {
+    public void testDisplay() throws GridOperationOutOfBoundsException {
         SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
         SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
         SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
@@ -83,7 +84,7 @@ public class GameModelTest {
     }
 
     @Test
-    public void testMoveHeroValid() {
+    public void testMoveHeroValid() throws GridOperationOutOfBoundsException {
         // one space passage move
         assertTrue(game.moveHero(new PositionModel(7, 1)));
         // one space tunnel move
@@ -98,7 +99,7 @@ public class GameModelTest {
     }
 
     @Test
-    public void testMoveHeroInvalid() {
+    public void testMoveHeroInvalid() throws GridOperationOutOfBoundsException {
         // move west into wall
         assertFalse(game.moveHero(new PositionModel(6, 0)));
         // TODO: add test for out of bounds move when exceptions are implemented
@@ -146,13 +147,20 @@ public class GameModelTest {
         Utilities.iterateSimultaneously(
                 expectedMinotaurStartPositions, startTestGames,
                 (PositionModel expected, GameModel game) -> {
-                    GridArray<SquareDisplayData> display = game.display();
-                    assertEquals(minotaur, display.get(expected));
+                    GridArray<SquareDisplayData> display = null;
+                    try {
+                        display = game.display();
+                        assertEquals(minotaur, display.get(expected));
+                    } catch (GridOperationOutOfBoundsException e) {
+                        e.printStackTrace();
+                        fail("Out of bounds");
+                    }
+
                 });
     }
 
     @Test
-    public void testMoveMinotaurOrthogonal() {
+    public void testMoveMinotaurOrthogonal() throws GridOperationOutOfBoundsException {
         // orthogonal tests
         // hero is already on minotaur: minotaur doesn't move
         testMoveMinotaurCase(new PositionModel(0, 0), new PositionModel(0, 0));
@@ -171,7 +179,7 @@ public class GameModelTest {
     }
 
     @Test
-    public void testMoveMinotaurDiagonal() {
+    public void testMoveMinotaurDiagonal() throws GridOperationOutOfBoundsException {
         // diagonal tests
         // hero 1 square up, 3 squares right of minotaur: minotaur moves 1 square up
         testMoveMinotaurCase(new PositionModel(3, -1), new PositionModel(0, -1));
@@ -194,7 +202,7 @@ public class GameModelTest {
     }
 
     @Test
-    public void testMoveMinotaurInvalid() {
+    public void testMoveMinotaurInvalid() throws GridOperationOutOfBoundsException {
         MazeModel maze = generateTestData(NO_VALID_MOVES_TEST_FILE);
         assertNotNull(maze);
         assertEquals(new PositionModel(12, 12), maze.getMinotaurStartPosition());
@@ -203,7 +211,7 @@ public class GameModelTest {
     }
 
     private void testMoveMinotaurCase(PositionModel heroStart,
-                                      PositionModel expectedDelta) {
+                                      PositionModel expectedDelta) throws GridOperationOutOfBoundsException {
         // moveMinotaur() used, because these moves use the non-random part of the minotaur move rules
         MazeModel maze = generateTestData(MOVE_TESTS_FILE);
         assertNotNull(maze);
@@ -215,7 +223,7 @@ public class GameModelTest {
 
     private void testMoveMinotaurDiagonalCase(PositionModel heroStart,
                                               PositionModel expectedVertical,
-                                              PositionModel expectedHorizontal) {
+                                              PositionModel expectedHorizontal) throws GridOperationOutOfBoundsException {
         // moveMinotaur(double randomNumber) used, because perfectly diagonal moves depend on randomNumber
         MazeModel maze = generateTestData(MOVE_TESTS_FILE);
         assertNotNull(maze);
@@ -240,7 +248,7 @@ public class GameModelTest {
     }
 
     @Test
-    public void testCheckForWin() {
+    public void testCheckForWin() throws GridOperationOutOfBoundsException {
         assertFalse(game.checkForWin());
         MazeSizeModel.MazeSize size = MazeSizeModel.MazeSize.EXTRA_SMALL;
         PositionModel treasurePosition = MazeSizeModel.getTreasurePosition(size);
