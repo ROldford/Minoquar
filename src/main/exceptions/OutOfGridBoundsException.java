@@ -2,25 +2,31 @@ package exceptions;
 
 import model.PositionModel;
 
-public class GridOperationOutOfBoundsException extends Exception {
+public class OutOfGridBoundsException extends Exception {
     public static final String MESSAGE_TEMPLATE_POSITION =
-            "Position is out of range : %d, %d";
+            "Position is out of grid bounds : %d, %d";
     public static final String MESSAGE_TEMPLATE_AREA =
-            "Area is out of range : %d, %d to %d, %d";
+            "Area is out of grid bounds : %d, %d to %d, %d";
+    public static final String DEFAULT_MESSAGE =
+            "Position or area is out of grid bounds";
 
-    public GridOperationOutOfBoundsException(PositionModel position) {
+    public OutOfGridBoundsException() {
+        super(DEFAULT_MESSAGE);
+    }
+
+    public OutOfGridBoundsException(PositionModel position) {
         super(generateMessage(position.getX(), position.getY()));
     }
 
-    public GridOperationOutOfBoundsException(int posX, int posY) {
+    public OutOfGridBoundsException(int posX, int posY) {
         super(generateMessage(posX, posY));
     }
 
-    public GridOperationOutOfBoundsException(PositionModel startCorner, PositionModel endCorner) {
+    public OutOfGridBoundsException(PositionModel startCorner, PositionModel endCorner) {
         super(generateMessage(startCorner.getX(), startCorner.getY(), endCorner.getX(), endCorner.getY()));
     }
 
-    public GridOperationOutOfBoundsException(int startX, int startY, int endX, int endY) {
+    public OutOfGridBoundsException(int startX, int startY, int endX, int endY) {
         super(generateMessage(startX, startY, endX, endY));
     }
 

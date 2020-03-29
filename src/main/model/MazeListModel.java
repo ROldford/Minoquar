@@ -1,6 +1,7 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import persistence.Reader;
 import persistence.Saveable;
 
@@ -30,14 +31,14 @@ public class MazeListModel extends AbstractListModel implements Saveable {
 
     // MODIFIES: this
     // EFFECTS: creates a new random maze with given name and size and adds it to end of list
-    public void createRandomMaze(String name, MazeSizeModel.MazeSize size) throws GridOperationOutOfBoundsException {
+    public void createRandomMaze(String name, MazeSizeModel.MazeSize size) throws Exception {
         createRandomMaze(getSize(), name, size);
     }
 
     // MODIFIES: this
     // EFFECTS: creates a new random maze with given name and size and adds it at given index
     public void createRandomMaze(int index, String name, MazeSizeModel.MazeSize size)
-            throws GridOperationOutOfBoundsException {
+            throws Exception {
         mazes.add(index, new MazeModel(name, size));
         fireIntervalAdded(this, index, index);
     }
@@ -80,7 +81,7 @@ public class MazeListModel extends AbstractListModel implements Saveable {
             List<String> mazeData = null;
             try {
                 mazeData = maze.getSaveData();
-            } catch (GridOperationOutOfBoundsException e) {
+            } catch (IncorrectGridIterationException e) {
                 e.printStackTrace();  // TODO: properly catch this!
             }
             for (String line : mazeData) {

@@ -1,6 +1,7 @@
 package utils;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IllegalGridDataSizeException;
+import exceptions.OutOfGridBoundsException;
 import model.PositionModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,10 +75,11 @@ class GridArrayTest {
                 GridArray<T> grid = new GridArray<>(width, height, data);
             }
             fail(failIfNoException);
-        } catch (IllegalArgumentException e) {
-            assertEquals(
-                    GridArray.CONSTRUCTOR_EXCEPTION_MESSAGE,
-                    e.getMessage());
+        } catch (IllegalGridDataSizeException e) {
+            String expectedMessage = String.format(
+                    IllegalGridDataSizeException.MESSAGE_TEMPLATE,
+                    data.size(), width, height, width * height);
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -89,7 +91,7 @@ class GridArrayTest {
             } else {                // rectangle grid
                 GridArray<T> grid = new GridArray<>(width, height, data);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalGridDataSizeException e) {
             fail(failOnException);
         }
     }
@@ -106,7 +108,7 @@ class GridArrayTest {
             assertEquals("O", stringGrid.get(4, 2));
             assertEquals(1, intSquareGrid.get(ORIGIN));
             assertEquals(9, intSquareGrid.get(2, 2));
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (OutOfGridBoundsException e) {
             fail(failOnException);
         }
 
@@ -123,12 +125,12 @@ class GridArrayTest {
     private void getExceptionThrownCase(int x, int y, GridArray grid) {
         String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
         String expectedExceptionMessage = String.format(
-                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
+                OutOfGridBoundsException.MESSAGE_TEMPLATE_POSITION,
                 x, y);
         try {
             grid.get(x, y);
             fail(failIfNoException);
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (OutOfGridBoundsException e) {
             assertEquals(expectedExceptionMessage, e.getMessage());
         }
     }
@@ -136,18 +138,18 @@ class GridArrayTest {
     private void getExceptionThrownCase(PositionModel position, GridArray grid) {
         String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
         String expectedExceptionMessage = String.format(
-                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
+                OutOfGridBoundsException.MESSAGE_TEMPLATE_POSITION,
                 position.getX(), position.getY());
         try {
             grid.get(position);
             fail(failIfNoException);
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (OutOfGridBoundsException e) {
             assertEquals(expectedExceptionMessage, e.getMessage());
         }
     }
 
     @Test
-    void testSet() throws GridOperationOutOfBoundsException {
+    void testSet() throws OutOfGridBoundsException {
         setFailOnExceptionCase(nullGrid, "test");
         setFailOnExceptionCase(nullSquareGrid, "test");
         setFailOnExceptionCase(stringGrid, "test");
@@ -163,7 +165,7 @@ class GridArrayTest {
             int cornerY = gridArray.getHeight() - 1;
             gridArray.set(cornerX, cornerY, testData);
             assertEquals(testData, gridArray.get(cornerX, cornerY));
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (OutOfGridBoundsException e) {
             fail(failOnException);
         }
     }
@@ -180,12 +182,12 @@ class GridArrayTest {
     private <T> void setExceptionThrownCase(int x, int y, GridArray grid, T element) {
         String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
         String expectedExceptionMessage = String.format(
-                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
+                OutOfGridBoundsException.MESSAGE_TEMPLATE_POSITION,
                 x, y);
         try {
             grid.set(x, y, element);
             fail(failIfNoException);
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (OutOfGridBoundsException e) {
             assertEquals(expectedExceptionMessage, e.getMessage());
         }
     }
@@ -193,12 +195,12 @@ class GridArrayTest {
     private <T> void setExceptionThrownCase(PositionModel position, GridArray grid, T element) {
         String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
         String expectedExceptionMessage = String.format(
-                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
+                OutOfGridBoundsException.MESSAGE_TEMPLATE_POSITION,
                 position.getX(), position.getY());
         try {
             grid.set(position, element);
             fail(failIfNoException);
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (OutOfGridBoundsException e) {
             assertEquals(expectedExceptionMessage, e.getMessage());
         }
     }

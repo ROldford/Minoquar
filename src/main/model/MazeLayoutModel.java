@@ -1,6 +1,6 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.*;
 import persistence.Reader;
 import utils.Utilities;
 
@@ -42,35 +42,61 @@ public class MazeLayoutModel extends Layout {
 
     // MODIFIES: this
     // EFFECTS: create random maze layout of given size
+    // TODO: document exceptions (should not normally be thrown)
     public static MazeLayoutModel createRandomMaze(MazeSizeModel.MazeSize size)
-            throws GridOperationOutOfBoundsException {
+            throws OutOfGridBoundsException, IncorrectGridIterationException, IncompleteMazeException {
         MazeLayoutModel randomMaze = new MazeLayoutModel(size);
         randomMaze.addQRCodeElements();
         randomMaze.fillRemainingSquares();
-        return randomMaze;
+        if (isMazeComplete(randomMaze)) {
+            return randomMaze;
+        } else {
+            throw new IncompleteMazeException();
+        }
+    }
+
+    private static boolean isMazeComplete(MazeLayoutModel randomMaze) throws IncorrectGridIterationException {
+        int sideLength = randomMaze.getWidth();
+        if (sideLength != randomMaze.getHeight()) {  // ensuring only square mazes
+            return false;
+        } else {
+            for (int x = 0; x < sideLength; x++) {
+                for (int y = 0; y < sideLength; y++) {
+                    PositionModel position = new PositionModel(x, y);
+                    try {
+                        if (randomMaze.getSquare(position) == MazeSquare.EMPTY) {
+                            return false;  // EMPTY squares are illegal
+                        }
+                    } catch (OutOfGridBoundsException e) {
+                        throw new IncorrectGridIterationException(position);
+                    }
+                }
+            }
+            return true;
+        }
     }
 
     // MODIFIES: this
     // EFFECTS: create maze layout of given size from maze content list
-    //          TODO: document IllegalArgumentException
+    //          TODO: document Exceptions
     public static MazeLayoutModel createMazeFromMazeContent(MazeSizeModel.MazeSize size, List<String> savedLayout)
-            throws GridOperationOutOfBoundsException {
+            throws IncorrectGridIterationException,
+            OutOfGridBoundsException,
+            IncompleteMazeException,
+            InvalidMazeSaveDataException {
         int sideLength = MazeSizeModel.getSideLength(size);
-//        if (savedLayout.size() == sideLength * sideLength) {
-//
-//        } else {
-//            throw new IllegalArgumentException();  // TODO: add message string to exception
-//        }
         MazeLayoutModel newMaze = new MazeLayoutModel(size);
-        Layout mazeLayout = new Layout(
-                MazeSizeModel.getSideLength(size),
-                MazeSizeModel.getSideLength(size),
-                parseSavedLayout(savedLayout));
+        List<MazeSquare> parsedLayoutData = parseSavedLayout(savedLayout);
+        Layout mazeLayout = new Layout(sideLength, sideLength, parsedLayoutData);
         newMaze.overwrite(new PositionModel(0, 0), mazeLayout);
-        return newMaze;
+        if (isMazeComplete(newMaze)) {
+            return newMaze;
+        } else {
+            throw new IncompleteMazeException();
+        }
     }
 
-    // EFFECTS: returns name of this layout's size
+    // EFFECTS: returns this maze layout's size
     public MazeSizeModel.MazeSize getSize() {
         return size;
     }
@@ -91,11 +117,12 @@ public class MazeLayoutModel extends Layout {
         List<PositionModel> done = new ArrayList<>();
         while (todo.size() > 0) {
             PositionModel checking = todo.remove();
-            try {  // if this checks out of bounds, just ignore it
+            try {  // shouldn't check out of bounds
                 if (getSquare(checking) == MazeSquare.PASSAGE) {
                     return checking;
                 } else {
                     done.add(checking);
+                    // this should never return out of bounds
                     List<PositionModel> neighbors = findNeighbourPositions(checking);
                     for (PositionModel position : neighbors) {
                         if (!todo.contains(position) && !done.contains(position)) {
@@ -103,7 +130,7 @@ public class MazeLayoutModel extends Layout {
                         }
                     }
                 }
-            } catch (GridOperationOutOfBoundsException e) {
+            } catch (OutOfGridBoundsException e) {  // skipping out of bounds should be safe, but log anyway
                 System.out.printf("Skipped out of bounds position: %d, %d", checking.getX(), checking.getY());
                 e.printStackTrace();
             }
@@ -128,15 +155,19 @@ public class MazeLayoutModel extends Layout {
         return neighbours;
     }
 
-    // REQUIRES: maze layout only consists of WALL and PASSAGE
     // EFFECTS: returns maze layout's data in save file format (see Reader)
-    public List<String> getSaveData() throws GridOperationOutOfBoundsException {
-        // TODO: check for SAVE_FILE_PASSAGE, final else (for invalid square) throws exception
+    // TODO: document exceptions
+    public List<String> getSaveData() throws IncorrectGridIterationException {
         List<String> saveData = new ArrayList<>();
         for (int y = 0; y < MazeSizeModel.getSideLength(size); y++) {
             StringBuilder row = new StringBuilder();
             for (int x = 0; x < MazeSizeModel.getSideLength(size); x++) {
-                MazeSquare square = getSquare(new PositionModel(x, y));
+                MazeSquare square = null;
+                try {
+                    square = getSquare(new PositionModel(x, y));
+                } catch (OutOfGridBoundsException e) {
+                    throw new IncorrectGridIterationException(x, y);
+                }
                 if (square == MazeSquare.WALL) {
                     row.append(Reader.SAVE_FILE_WALL);
                 } else  {
@@ -150,7 +181,8 @@ public class MazeLayoutModel extends Layout {
 
     // MODIFIES: this
     // EFFECTS: adds static QR code elements to maze layout (finder/alignment/timing patterns)
-    private void addQRCodeElements() throws GridOperationOutOfBoundsException {
+    // TODO: document exceptions
+    private void addQRCodeElements() throws OutOfGridBoundsException, IncorrectGridIterationException {
         addFinderPatterns();
         addFinderMargins();
         addAlignmentPattern();
@@ -160,7 +192,8 @@ public class MazeLayoutModel extends Layout {
 
     // MODIFIES: this
     // EFFECTS: adds finder patterns to maze layout at top-left, top-right, and bottom-left corners
-    private void addFinderPatterns() throws GridOperationOutOfBoundsException {
+    // TODO: document exceptions
+    private void addFinderPatterns() throws OutOfGridBoundsException, IncorrectGridIterationException {
         List<PositionModel> finderStartPositions = MazeSizeModel.getFinderPatternPositions(size);
         for (PositionModel position : finderStartPositions) {
             addFinderPattern(position);
@@ -169,13 +202,15 @@ public class MazeLayoutModel extends Layout {
 
     // MODIFIES: this
     // EFFECTS: adds finder patterns to maze layout at given position (starting at top-left corner)
-    private void addFinderPattern(PositionModel corner) throws GridOperationOutOfBoundsException {
+    private void addFinderPattern(PositionModel corner)
+            throws OutOfGridBoundsException, IncorrectGridIterationException {
         overwrite(corner, FINDER_PATTERN);
     }
 
     // MODIFIES: this
     // EFFECTS: adds margins around finder patterns in maze layout
-    private void addFinderMargins() throws GridOperationOutOfBoundsException {
+    // TODO: document exceptions
+    private void addFinderMargins() throws OutOfGridBoundsException, IncorrectGridIterationException {
         List<PositionModel> marginStartPositions = MazeSizeModel.getFinderMarginPositions(size);
         for (int i = 0; i < marginStartPositions.size(); i++) {
             // even index is vertical margin, odd is horizontal margin
@@ -189,13 +224,15 @@ public class MazeLayoutModel extends Layout {
 
     // MODIFIES: this
     // EFFECTS: adds alignment pattern to maze layout at appropriate location for maze size
-    private void addAlignmentPattern() throws GridOperationOutOfBoundsException {
+    // TODO: document exceptions
+    private void addAlignmentPattern() throws OutOfGridBoundsException, IncorrectGridIterationException {
         overwrite(MazeSizeModel.getAlignPatternPosition(size), ALIGNMENT_PATTERN);
     }
 
     // MODIFIES: this
     // EFFECTS: adds timing patterns to maze layout between finder patterns
-    private void addTimingPatterns() throws GridOperationOutOfBoundsException {
+    // TODO: document exceptions
+    private void addTimingPatterns() throws OutOfGridBoundsException, IncorrectGridIterationException {
         int length = MazeSizeModel.getTimingPatternLength(size);
         List<PositionModel> positions = MazeSizeModel.getTimingPatternPositions();
         // build preset for timing pattern
@@ -221,14 +258,16 @@ public class MazeLayoutModel extends Layout {
 
     // MODIFIES: this
     // EFFECTS: adds one "dark square" (WALL) to maze layout near bottom-left finder pattern
-    private void addDarkModule() throws GridOperationOutOfBoundsException {
+    // TODO: document exceptions
+    private void addDarkModule() throws OutOfGridBoundsException, IncorrectGridIterationException {
         overwrite(MazeSizeModel.getDarkModulePosition(size), DARK_MODULE);
     }
 
     // MODIFIES: this
     // EFFECTS: fills remaining EMPTY squares in maze layout with WALL or PASSAGE
     //          random chance of either, based on PERCENT_WALL
-    private void fillRemainingSquares() throws GridOperationOutOfBoundsException {
+    // TODO: document exceptions
+    private void fillRemainingSquares() throws OutOfGridBoundsException {
         for (int x = 0; x < layout.getWidth(); x++) {
             for (int y = 0; y < layout.getHeight(); y++) {
                 if (layout.get(x, y) == MazeSquare.EMPTY) {
@@ -244,15 +283,17 @@ public class MazeLayoutModel extends Layout {
 
     // REQUIRES: layout only consists of SAVE_FILE_WALL and SAVE_FILE_PASSAGE
     // EFFECTS: converts saved layout (in list of string format) to maze layout format
-    private static List<MazeSquare> parseSavedLayout(List<String> savedLayout) {
-        // TODO: check for SAVE_FILE_PASSAGE, final else (for invalid square) throws exception
+    // TODO: document exceptions
+    private static List<MazeSquare> parseSavedLayout(List<String> savedLayout) throws InvalidMazeSaveDataException {
         List<MazeSquare> layoutData = new ArrayList<>();
         for (String row : savedLayout) {
             for (char ch : row.toCharArray()) {
                 if (ch == Reader.SAVE_FILE_WALL) {
                     layoutData.add(MazeSquare.WALL);
-                } else {
+                } else if (ch == Reader.SAVE_FILE_PASSAGE) {
                     layoutData.add(MazeSquare.PASSAGE);
+                } else {
+                    throw new InvalidMazeSaveDataException(ch);
                 }
             }
         }

@@ -23,4 +23,3 @@ X.XXX.X.XX.X....XXXXX.XX.
 X.XXX.X.XXX..XXX.......XX
 X.....X...XX...X.........
 XXXXXXX.X.XX...XXXX.XX..X
------

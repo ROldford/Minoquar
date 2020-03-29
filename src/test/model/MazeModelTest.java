@@ -1,6 +1,7 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +16,12 @@ public class MazeModelTest {
     MazeModel maze;
 
     @BeforeEach
-    public void beforeEach() throws GridOperationOutOfBoundsException {
+    public void beforeEach() throws Exception {
         maze = new MazeModel(TEST_NAME, TEST_SIZE);
     }
 
     @Test
-    public void testInit() throws GridOperationOutOfBoundsException {
+    public void testInit() throws OutOfGridBoundsException {
         assertEquals(TEST_NAME, maze.getName());
         assertEquals(MazeSizeModel.getSizeName(TEST_SIZE), maze.getSizeName());
         assertEquals(MazeSizeModel.getSideLength(TEST_SIZE), maze.getSideLength());
@@ -32,7 +33,7 @@ public class MazeModelTest {
     }
 
     @Test
-    public void testGetSaveData() throws GridOperationOutOfBoundsException {
+    public void testGetSaveData() throws IncorrectGridIterationException {
         addGameHistory();
         List<String> saveData = maze.getSaveData();
         // part 1: name and size (1 line each)
@@ -62,7 +63,7 @@ public class MazeModelTest {
     }
 
     @Test
-    void testIsMoveValid() throws GridOperationOutOfBoundsException {
+    void testIsMoveValid() throws OutOfGridBoundsException {
         // corridor moves, all 4 directions: valid
         assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(1, 5)));
         assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(5, 1)));
@@ -82,7 +83,7 @@ public class MazeModelTest {
     }
 
     @Test
-    public void testGetValidMoves() throws GridOperationOutOfBoundsException {
+    public void testGetValidMoves() throws OutOfGridBoundsException {
         // corridors of top-left finder pattern: 4-size list
         assertEquals(4, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.DOWN).size());
         assertEquals(4, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.RIGHT).size());

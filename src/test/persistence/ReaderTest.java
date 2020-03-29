@@ -3,7 +3,8 @@
 
 package persistence;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import model.MazeListModel;
 import model.MazeModel;
 import model.MazeSizeModel;
@@ -29,7 +30,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_SMALL,
                     0,
                     0);
-        } catch (IOException | GridOperationOutOfBoundsException e) {
+        } catch (IOException | OutOfGridBoundsException | IncorrectGridIterationException e) {
             fail("Exception should not have been thrown");
         }
     }
@@ -45,7 +46,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_LARGE,
                     5,
                     5);
-        } catch (IOException | GridOperationOutOfBoundsException e) {
+        } catch (IOException | OutOfGridBoundsException | IncorrectGridIterationException e) {
             fail("Exception should not have been thrown");
         }
     }
@@ -66,7 +67,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_LARGE,
                     5,
                     5);
-        } catch (IOException | GridOperationOutOfBoundsException e) {
+        } catch (IOException | OutOfGridBoundsException | IncorrectGridIterationException e) {
             fail("Exception should not have been thrown");
         }
     }
@@ -92,7 +93,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_SMALL,
                     55,
                     55);
-        } catch (IOException | GridOperationOutOfBoundsException e) {
+        } catch (IOException | OutOfGridBoundsException | IncorrectGridIterationException e) {
             fail("IOException should not have been thrown");
         }
     }
@@ -101,7 +102,7 @@ public class ReaderTest {
                           String expectedName,
                           MazeSizeModel.MazeSize expectedSize,
                           int expectedWins,
-                          int expectedLosses) throws GridOperationOutOfBoundsException {
+                          int expectedLosses) throws OutOfGridBoundsException, IncorrectGridIterationException {
         // name check
         assertEquals(expectedName, maze.getName());
         // size check

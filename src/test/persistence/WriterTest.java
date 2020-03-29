@@ -3,7 +3,8 @@
 
 package persistence;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import model.MazeListModel;
 import model.MazeModel;
 import org.junit.jupiter.api.Assertions;
@@ -38,12 +39,13 @@ public class WriterTest {
             MazeListModel writeResult = new MazeListModel(Reader.readMazeList(new File(TEST_WRITE_FILE)));
             testWriteResultMatchesTestData(testData.getElementAt(0), writeResult.getElementAt(0));
             testWriteResultMatchesTestData(testData.getElementAt(1), writeResult.getElementAt(1));
-        } catch (IOException | GridOperationOutOfBoundsException e) {
+        } catch (IOException | IncorrectGridIterationException e) {
             fail("Should not throw Exception");
         }
     }
 
-    private void testWriteResultMatchesTestData(MazeModel expected, MazeModel actual) throws GridOperationOutOfBoundsException {
+    private void testWriteResultMatchesTestData(MazeModel expected, MazeModel actual)
+            throws IncorrectGridIterationException {
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getSizeName(), actual.getSizeName());
         List<String> expectedSaveData = expected.getSaveData();

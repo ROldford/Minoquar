@@ -1,7 +1,7 @@
 package ui;
 
-import exceptions.GridOperationOutOfBoundsException;
-import model.GameEntity;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import model.PositionModel;
 import utils.GridArray;
 
@@ -22,7 +22,7 @@ public class MazeUIPanel extends JPanel {
     // REQUIRES: displayData is square (width = height)
     // EFFECTS: creates new MazeUIPanel with grid of maze squares of given side length
     public MazeUIPanel(GridArray<SquareDisplayData> displayData, GameUI gameUI)
-            throws GridOperationOutOfBoundsException {  // TODO: replace throw with actual handling
+            throws OutOfGridBoundsException {  // TODO: replace throw with actual handling
         int sideLength = displayData.getWidth();
         this.panelList = new GridArray<>(sideLength);
         this.gameUI = gameUI;
@@ -47,7 +47,7 @@ public class MazeUIPanel extends JPanel {
             gameUI.handleClickAt(position);
         } catch (ClassCastException cce) {
             System.out.println("Click on maze panel could not be cast properly");
-        } catch (GridOperationOutOfBoundsException ex) {
+        } catch (OutOfGridBoundsException | IncorrectGridIterationException ex) {
             ex.printStackTrace();  // TODO: properly catch this!
         }
     }
@@ -55,7 +55,7 @@ public class MazeUIPanel extends JPanel {
     // REQUIRES: displayData has same dimensions as panelList
     // EFFECTS: updates maze display
     public void updateDisplay(GridArray<SquareDisplayData> displayData)
-            throws GridOperationOutOfBoundsException {  // TODO: any way to handle this properly?
+            throws OutOfGridBoundsException {  // TODO: any way to handle this properly?
         for (int x = 0; x < displayData.getWidth(); x++) {
             for (int y = 0; y < displayData.getHeight(); y++) {
                 panelList.get(x, y).updateDisplay(displayData.get(x, y));

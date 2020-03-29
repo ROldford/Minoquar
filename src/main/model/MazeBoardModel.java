@@ -1,6 +1,9 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncompleteMazeException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.InvalidMazeSaveDataException;
+import exceptions.OutOfGridBoundsException;
 import ui.SquareDisplayData;
 import utils.GridArray;
 
@@ -13,14 +16,13 @@ public class MazeBoardModel {
     private MazeLayoutModel mazeLayout;
 
     // EFFECTS: Construct random board (only PASSAGE) of given size
-    public MazeBoardModel(MazeSizeModel.MazeSize size) throws GridOperationOutOfBoundsException {
+    public MazeBoardModel(MazeSizeModel.MazeSize size) throws Exception {
         this.mazeLayout = MazeLayoutModel.createRandomMaze(size);
     }
 
     // EFFECTS: Constructs maze with given size and layout data
     //          TODO: document IllegalArgumentException
-    public MazeBoardModel(MazeSizeModel.MazeSize size, List<String> savedLayout)
-            throws GridOperationOutOfBoundsException {
+    public MazeBoardModel(MazeSizeModel.MazeSize size, List<String> savedLayout) throws Exception {
         this.mazeLayout = MazeLayoutModel.createMazeFromMazeContent(size, savedLayout);
     }
 
@@ -30,7 +32,7 @@ public class MazeBoardModel {
     }
 
     // EFFECTS: return state of board square at given position
-    public MazeLayoutModel.MazeSquare getSquare(PositionModel position) throws GridOperationOutOfBoundsException {
+    public MazeLayoutModel.MazeSquare getSquare(PositionModel position) throws OutOfGridBoundsException {
         return mazeLayout.getSquare(position);
     }
 
@@ -39,7 +41,7 @@ public class MazeBoardModel {
     //           start and end are not same position
     // EFFECTS: returns list of squares between start and end (exclusive)
     public List<MazeLayoutModel.MazeSquare> getSquaresBetween(PositionModel start, PositionModel end)
-            throws GridOperationOutOfBoundsException {
+            throws OutOfGridBoundsException {
         List<MazeLayoutModel.MazeSquare> betweenList = new ArrayList<>();
         int deltaX = end.getX() - start.getX();
         int deltaY = end.getY() - start.getY();
@@ -70,12 +72,12 @@ public class MazeBoardModel {
     }
 
     // EFFECTS: return list of strings to display the current maze board
-    public GridArray<SquareDisplayData> display() throws GridOperationOutOfBoundsException {
+    public GridArray<SquareDisplayData> display() throws IncorrectGridIterationException {
         return mazeLayout.display();
     }
 
     // EFFECTS: returns maze board's data in save file format (see Reader)
-    public List<String> getSaveData() throws GridOperationOutOfBoundsException {
+    public List<String> getSaveData() throws IncorrectGridIterationException {
         return mazeLayout.getSaveData();
     }
 

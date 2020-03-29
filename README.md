@@ -75,9 +75,16 @@ implement the more difficult parts of a digital game, such as physics, collision
         - [X] getSquare
         - [X] display [should never throw GridOperationOutOfBounds normally]
         - [X] overwrite 
-    - [ ] Reader
-    - [ ] MazeLayoutModel
+    - [X] MazeLayoutModel
+        - [X] Constructors
+            - [X] maze completeness (no empty maze squares)
+            - [X] passing on other exceptions
+        - [X] getMinotaurStartPosition [skips out of bounds squares safely]
+        - [X] getSaveData
+        - [X] methods for generating QR patterns (i.e. addFinderPatterns)
+        - [X] parseSavedLayout [check that saved data is valid]
     - [ ] MazeSquarePanel(?)
+    - [ ] Reader
 
 **Phase 3 User Stories:**
 - [X] As a user, I want to interact with the game through a GUI.

@@ -1,6 +1,6 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.OutOfGridBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ public class MazeListModelTest {
     }
 
     @Test
-    public void testCreateRandomMaze() throws GridOperationOutOfBoundsException {
+    public void testCreateRandomMaze() throws Exception {
         String testSizeName = MazeSizeModel.getSizeName(TEST_SIZE);
         mazeList.createRandomMaze(TEST_NAME, TEST_SIZE);
         assertEquals(1, mazeList.getSize());
@@ -41,7 +41,7 @@ public class MazeListModelTest {
     }
 
     @Test
-    public void testDeleteMaze() throws GridOperationOutOfBoundsException {
+    public void testDeleteMaze() throws Exception {
         populateMazeList();
         mazeList.deleteMaze(1);
         assertEquals(2, mazeList.getSize());
@@ -52,7 +52,7 @@ public class MazeListModelTest {
     }
 
     @Test
-    public void testUpdateList() throws GridOperationOutOfBoundsException {
+    public void testUpdateList() throws Exception {
         MazeModel maze3 = new MazeModel("maze 3", TEST_SIZE);
         MazeModel maze4 = new MazeModel("maze 4", TEST_SIZE);
         MazeModel maze5 = new MazeModel("maze 5", TEST_SIZE);
@@ -69,7 +69,7 @@ public class MazeListModelTest {
     }
 
     @Test
-    void testContainsSameName() throws GridOperationOutOfBoundsException {
+    void testContainsSameName() throws Exception {
         populateMazeList();
         assertTrue(mazeList.containsSameName("maze 0"));
         assertTrue(mazeList.containsSameName("maze 2"));
@@ -78,7 +78,7 @@ public class MazeListModelTest {
 
     // MODIFIES: mazeList
     // EFFECTS: adds three mazes to mazeList
-    private void populateMazeList() throws GridOperationOutOfBoundsException {
+    private void populateMazeList() throws Exception {
         mazeList.createRandomMaze("maze 0", TEST_SIZE);
         mazeList.createRandomMaze("maze 1", TEST_SIZE);
         mazeList.createRandomMaze("maze 2", TEST_SIZE);

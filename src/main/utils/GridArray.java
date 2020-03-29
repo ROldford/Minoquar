@@ -1,6 +1,7 @@
 package utils;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IllegalGridDataSizeException;
+import exceptions.OutOfGridBoundsException;
 import model.PositionModel;
 
 import java.util.ArrayList;
@@ -12,8 +13,6 @@ import java.util.Objects;
 // x increases left to right
 // y increases top to bottom
 public class GridArray<T> {
-    public static final String CONSTRUCTOR_EXCEPTION_MESSAGE = "Data list size does not match grid dimensions";
-
     private final int width;
     private final int height;
     private List<T> data;
@@ -38,7 +37,7 @@ public class GridArray<T> {
             this.height = height;
             this.data = data;
         } else {
-            throw new IllegalArgumentException(CONSTRUCTOR_EXCEPTION_MESSAGE);
+            throw new IllegalGridDataSizeException(width, height, data.size());
         }
     }
 
@@ -58,41 +57,41 @@ public class GridArray<T> {
 
     // EFFECTS: returns element at given x and y coordinates
     //          throws exception if coordinates are out of bounds
-    public T get(int x, int y) throws GridOperationOutOfBoundsException {
+    public T get(int x, int y) throws OutOfGridBoundsException {
         if (isInBounds(x, y)) {
             return data.get(coordinatesToListIndex(x, y));
         } else {
-            throw new GridOperationOutOfBoundsException(x, y);
+            throw new OutOfGridBoundsException(x, y);
         }
     }
 
     // EFFECTS: returns element at given position
     //          throws exception if position is out of bounds
-    public T get(PositionModel position) throws GridOperationOutOfBoundsException {
+    public T get(PositionModel position) throws OutOfGridBoundsException {
         if (isInBounds(position)) {
             return get(position.getX(), position.getY());
         } else {
-            throw new GridOperationOutOfBoundsException(position);
+            throw new OutOfGridBoundsException(position);
         }
 
     }
 
     // TODO: document method
-    public void set(int x, int y, T element) throws GridOperationOutOfBoundsException {
+    public void set(int x, int y, T element) throws OutOfGridBoundsException {
         if (isInBounds(x, y)) {
             data.set(coordinatesToListIndex(x, y), element);
         } else {
-            throw new GridOperationOutOfBoundsException(x, y);
+            throw new OutOfGridBoundsException(x, y);
         }
 
     }
 
     // TODO: document method
-    public void set(PositionModel position, T element) throws GridOperationOutOfBoundsException{
+    public void set(PositionModel position, T element) throws OutOfGridBoundsException {
         if (isInBounds(position)) {
             set(position.getX(), position.getY(), element);
         } else {
-            throw new GridOperationOutOfBoundsException(position);
+            throw new OutOfGridBoundsException(position);
         }
     }
 

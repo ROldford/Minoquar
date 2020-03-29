@@ -1,6 +1,7 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import ui.SquareDisplayData;
 import utils.GridArray;
 
@@ -50,7 +51,7 @@ public class GameModel {
 
     // EFFECTS: if move is valid, move hero to end location and return true
     //          return false if move is not valid
-    public boolean moveHero(PositionModel end) throws GridOperationOutOfBoundsException {
+    public boolean moveHero(PositionModel end) throws OutOfGridBoundsException {
         if (maze.isMoveValid(hero.getPosition(), end)) {
             hero.setPosition(end);
             return true;
@@ -68,7 +69,7 @@ public class GameModel {
     //              will end move so it is orthogonal to hero if possible
     //              if both directions are equal, decides randomly
     //                  chooses horizontal when randomNumber is < 0.5
-    public boolean moveMinotaur() throws GridOperationOutOfBoundsException {
+    public boolean moveMinotaur() throws OutOfGridBoundsException {
         return moveMinotaur(random());
     }
 
@@ -77,7 +78,7 @@ public class GameModel {
     //          using given number to make diagonal movement decision instead of random
     //              horizontal if <0.5, vertical otherwise
     public boolean moveMinotaur(double randomNumber)
-            throws GridOperationOutOfBoundsException { // TODO: needs proper handling
+            throws OutOfGridBoundsException { // TODO: needs proper handling
         PositionModel minotaurPosition = minotaur.getPosition();
         PositionModel heroPosition = hero.getPosition();
         PositionModel delta = heroPosition.subtract(minotaurPosition);
@@ -191,7 +192,7 @@ public class GameModel {
     }
 
     // EFFECTS: return list of SquareDisplayData instances to display the current game state
-    public GridArray<SquareDisplayData> display() throws GridOperationOutOfBoundsException {
+    public GridArray<SquareDisplayData> display() throws OutOfGridBoundsException, IncorrectGridIterationException {
         GridArray<SquareDisplayData> display = maze.displayMaze();
         overlayGameElement(treasure, display);
         overlayGameElement(hero, display);
@@ -202,7 +203,7 @@ public class GameModel {
     // MODIFIES: display
     // EFFECTS: return new list of display data with game element added at given position
     private void overlayGameElement(GameEntity entity, GridArray<SquareDisplayData> display)
-            throws GridOperationOutOfBoundsException {
+            throws OutOfGridBoundsException {
         PositionModel position = entity.getPosition();
         SquareDisplayData squareDisplay = display.get(position);
         squareDisplay.addEntityType(entity.getEntityType());

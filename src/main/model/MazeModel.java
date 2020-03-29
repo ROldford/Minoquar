@@ -1,6 +1,8 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncompleteMazeException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import ui.SquareDisplayData;
 import utils.GridArray;
 
@@ -34,7 +36,7 @@ public class MazeModel {
     private static final String LOSS_LETTER = "L";
 
     // EFFECTS: Constructs random maze with given name and size
-    public MazeModel(String name, MazeSizeModel.MazeSize size) throws GridOperationOutOfBoundsException {
+    public MazeModel(String name, MazeSizeModel.MazeSize size) throws Exception {
         this.name = name;
         this.mazeBoard = new MazeBoardModel(size);
         this.pastGameOutcomes = new ArrayList<>();
@@ -44,7 +46,7 @@ public class MazeModel {
     public MazeModel(String name,
                      MazeSizeModel.MazeSize size,
                      List<String> savedOutcomeHistory,
-                     List<String> savedLayout) throws GridOperationOutOfBoundsException {
+                     List<String> savedLayout) throws Exception {
         this.name = name;
         this.mazeBoard = new MazeBoardModel(size, savedLayout);
         this.pastGameOutcomes = parseSavedOutcomes(savedOutcomeHistory);
@@ -94,7 +96,7 @@ public class MazeModel {
 
     // REQUIRES: start and end are within maze bounds
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
-    public boolean isMoveValid(PositionModel start, PositionModel end) throws GridOperationOutOfBoundsException {
+    public boolean isMoveValid(PositionModel start, PositionModel end) throws OutOfGridBoundsException {
         boolean samePosition = start.equals(end);
         boolean orthogonal = areSquaresOrthogonal(start, end);
         boolean endOnWall = mazeBoard.getSquare(end) == Layout.MazeSquare.WALL;
@@ -107,7 +109,7 @@ public class MazeModel {
 
     // EFFECTS: returns list of valid move endpoints from given start position in given direction
     public List<PositionModel> getValidMoves(PositionModel start, Direction direction)
-            throws GridOperationOutOfBoundsException {
+            throws OutOfGridBoundsException {
         List<PositionModel> squaresInDirection = mazeBoard.getSquaresInDirection(start, direction);
         List<PositionModel> validMoves = new ArrayList<>();
         for (PositionModel possibleEnd : squaresInDirection) {
@@ -139,12 +141,12 @@ public class MazeModel {
     }
 
     // EFFECTS: return list of strings to display the current maze
-    public GridArray<SquareDisplayData> displayMaze() throws GridOperationOutOfBoundsException {
+    public GridArray<SquareDisplayData> displayMaze() throws IncorrectGridIterationException {
         return mazeBoard.display();
     }
 
     // EFFECTS: returns maze's data in save file format (see Reader)
-    public List<String> getSaveData() throws GridOperationOutOfBoundsException {
+    public List<String> getSaveData() throws IncorrectGridIterationException {
         List<String> saveData = new ArrayList<>();
         saveData.add(name);
         saveData.add(getSizeCode());

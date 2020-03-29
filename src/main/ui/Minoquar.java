@@ -1,6 +1,7 @@
 package ui;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import model.MazeModel;
 
 import javax.swing.*;
@@ -41,7 +42,7 @@ public class Minoquar extends JFrame {
     // MODIFIES: this
     // EFFECTS: swaps UI to game mode, created with given maze model
     public void swapToGameUI(MazeModel mazeModel)
-            throws GridOperationOutOfBoundsException {  // TODO: needs proper catching
+            throws OutOfGridBoundsException, IncorrectGridIterationException {  // TODO: needs proper catching
         gameUI = new GameUI(this, mazeModel);
         remove(menuUI);
         add(gameUI);

@@ -1,6 +1,8 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IllegalGridDataSizeException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ui.SquareDisplayData;
@@ -73,7 +75,7 @@ public class LayoutTest {
         try {
             this.fiveByThreeEmpty = new Layout(5, 3);
         } catch (IllegalArgumentException e) {
-            fail(String.format("%s, empty grid should always get properly sized data", FAIL_ON_EXCEPTION));
+            fail(String.format("%s, empty grid should always be constructed with correct number of squares", FAIL_ON_EXCEPTION));
         }
     }
 
@@ -98,14 +100,20 @@ public class LayoutTest {
     @Test
     public void testInitException() {
         String failIfNoException = String.format("%s, data size doesn't match grid", FAIL_IF_NO_EXCEPTION);
+        int width = 2;
+        int height = 3;
+        List<Layout.MazeSquare> badLayoutData = new ArrayList<>(Arrays.asList(
+                p, w, p,
+                p, w));
         try {
-            new Layout(2, 3, new ArrayList<>(Arrays.asList(
-                    p, w, p,
-                    p, w)));
+            new Layout(width, height, badLayoutData);
             fail(failIfNoException);
         } catch (IllegalArgumentException e) {
+            String expectedMessage = String.format(
+                    IllegalGridDataSizeException.MESSAGE_TEMPLATE,
+                    badLayoutData.size(), width, height, width * height);
             assertEquals(
-                    GridArray.CONSTRUCTOR_EXCEPTION_MESSAGE,
+                    expectedMessage,
                     e.getMessage());
         }
     }
@@ -130,7 +138,7 @@ public class LayoutTest {
                     assertEquals(Layout.MazeSquare.EMPTY, fiveByThreeEmpty.getSquare(new PositionModel(x, y)));
                 }
             }
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (OutOfGridBoundsException e) {
             String failOnException = String.format("%s, checking in grid bounds", FAIL_ON_EXCEPTION);
         }
     }
@@ -156,12 +164,12 @@ public class LayoutTest {
     private void getSquareExceptionThrownCase(PositionModel position, Layout layout) {
         String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
         String expectedExceptionMessage = String.format(
-                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_POSITION,
+                OutOfGridBoundsException.MESSAGE_TEMPLATE_POSITION,
                 position.getX(), position.getY());
         try {
             layout.getSquare(position);
             fail(failIfNoException);
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (OutOfGridBoundsException e) {
             assertEquals(expectedExceptionMessage, e.getMessage());
         }
     }
@@ -182,7 +190,7 @@ public class LayoutTest {
                             wall, wall, wall, wall, wall)));
             GridArray<SquareDisplayData> actual = alignmentPattern.display();
             assertEquals(expected, actual);
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (IncorrectGridIterationException e) {
             fail(failOnException);
         }
         try {
@@ -193,14 +201,15 @@ public class LayoutTest {
                             empty, empty, empty, empty, empty)));
             GridArray<SquareDisplayData> actual = fiveByThreeEmpty.display();
             assertEquals(expected, actual);
-        } catch (GridOperationOutOfBoundsException e) {
+        } catch (IncorrectGridIterationException e) {
             fail(failOnException);
         }
     }
 
     @Test
     public void testOverwrite() {
-        String failOnException = String.format("%s, checking in grid bounds", FAIL_ON_EXCEPTION);
+        String failOnBoundsException = String.format("%s, overlay is in grid bounds", FAIL_ON_EXCEPTION);
+        String failOnGridIterException = String.format("%s, iteration should be correct", FAIL_ON_EXCEPTION);
         List<Layout.MazeSquare> patternList = new ArrayList<>(Arrays.asList(
                 w, p,
                 p, w
@@ -215,8 +224,10 @@ public class LayoutTest {
         Layout twoByTwoPattern = new Layout(2, 2, patternList);
         try {
             fiveByThreeEmpty.overwrite(startPosition, twoByTwoPattern);
-        } catch (GridOperationOutOfBoundsException e) {
-            fail(failOnException);
+        } catch (OutOfGridBoundsException e) {
+            fail(failOnBoundsException);
+        } catch (IncorrectGridIterationException e) {
+            fail(failOnGridIterException);
         }
         Utilities.iterateSimultaneously(
                 patternList, patternPositions,
@@ -224,7 +235,7 @@ public class LayoutTest {
                     try {
                         assertEquals(
                                 patternSquare, fiveByThreeEmpty.getSquare(position));
-                    } catch (GridOperationOutOfBoundsException e) {
+                    } catch (OutOfGridBoundsException e) {
                         e.printStackTrace();
                         fail(String.format("Position checked (%d, %d) out of bounds",
                                 position.getX(), position.getY()));
@@ -246,15 +257,18 @@ public class LayoutTest {
 
     private void overwriteExceptionThrownCase(PositionModel cornerPosition, Layout overwriter, Layout overwritten) {
         String failIfNoException = String.format("%s, overlay region out of bounds", FAIL_IF_NO_EXCEPTION);
-        String expectedExceptionMessage = String.format(
-                GridOperationOutOfBoundsException.MESSAGE_TEMPLATE_AREA,
+        String failOnGridIterException = String.format("%s, iteration should be correct", FAIL_ON_EXCEPTION);
+        String expectedBoundsExceptionMessage = String.format(
+                OutOfGridBoundsException.MESSAGE_TEMPLATE_AREA,
                 cornerPosition.getX(), cornerPosition.getY(),
                 cornerPosition.getX() + overwriter.getWidth() - 1, cornerPosition.getY() + overwriter.getHeight() - 1);
         try {
             overwritten.overwrite(cornerPosition, overwriter);
             fail(failIfNoException);
-        } catch (GridOperationOutOfBoundsException e) {
-            assertEquals(expectedExceptionMessage, e.getMessage());
+        } catch (OutOfGridBoundsException e) {
+            assertEquals(expectedBoundsExceptionMessage, e.getMessage());
+        } catch (IncorrectGridIterationException e) {
+            fail(failOnGridIterException);
         }
     }
 

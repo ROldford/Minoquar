@@ -1,6 +1,7 @@
 package model;
 
-import exceptions.GridOperationOutOfBoundsException;
+import exceptions.IncorrectGridIterationException;
+import exceptions.OutOfGridBoundsException;
 import ui.SquareDisplayData;
 import utils.GridArray;
 
@@ -25,6 +26,7 @@ public class Layout {
     GridArray<MazeSquare> layout;
 
     // EFFECTS: construct grid layout of given width and height with all squares empty
+    //          TODO: document IllegalGridDataSizeException
     public Layout(int width, int height) {
 //        this.width = width;
 //        this.height = height;
@@ -36,6 +38,7 @@ public class Layout {
     }
 
     // EFFECTS: construct grid layout of given width and height using squares from preset layout
+    //          TODO: document IllegalGridDataSizeException
     public Layout(int width, int height, List<MazeSquare> presetLayout) {
 //        this.width = width;
 //        this.height = height;
@@ -43,7 +46,7 @@ public class Layout {
     }
 
     // EFFECTS: returns status of square at given position
-    public MazeSquare getSquare(PositionModel position) throws GridOperationOutOfBoundsException {
+    public MazeSquare getSquare(PositionModel position) throws OutOfGridBoundsException {
         return layout.get(position);
     }
 
@@ -58,13 +61,18 @@ public class Layout {
     }
 
     // EFFECTS: return GridArray of SquareDisplayData to display the current layout
-    public GridArray<SquareDisplayData> display() throws GridOperationOutOfBoundsException {
+    public GridArray<SquareDisplayData> display() throws IncorrectGridIterationException {
         GridArray<SquareDisplayData> displayData = new GridArray<>(getWidth(), getHeight());
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
                 PositionModel position = new PositionModel(x, y);
-                SquareDisplayData squareDisplay = new SquareDisplayData(layout.get(position), new ArrayList<>());
-                displayData.set(x, y, squareDisplay);
+                SquareDisplayData squareDisplay = null;
+                try {
+                    squareDisplay = new SquareDisplayData(layout.get(position), new ArrayList<>());
+                    displayData.set(x, y, squareDisplay);
+                } catch (OutOfGridBoundsException e) {
+                    throw new IncorrectGridIterationException(position);
+                }
             }
         }
         return displayData;
@@ -72,19 +80,24 @@ public class Layout {
 
     // MODIFIES: this
     // EFFECTS: overwrites other layout on top of squares on this layout
-    public void overwrite(PositionModel overwriteStart, Layout other) throws GridOperationOutOfBoundsException {
+    public void overwrite(PositionModel overwriteStart, Layout other)
+            throws IncorrectGridIterationException, OutOfGridBoundsException {
         PositionModel overwriteEnd = overwriteStart.add(
                 new PositionModel(other.getWidth() - 1, other.getHeight() - 1));
         if (isInBounds(overwriteStart, overwriteEnd)) {
             for (int x = 0; x < other.getWidth(); x++) {
                 for (int y = 0; y < other.getHeight(); y++) {
-                    layout.set(
-                            overwriteStart.add(new PositionModel(x, y)),
-                            other.getSquare(new PositionModel(x, y)));
+                    try {
+                        layout.set(
+                                overwriteStart.add(new PositionModel(x, y)),
+                                other.getSquare(new PositionModel(x, y)));
+                    } catch (OutOfGridBoundsException e) {
+                        throw new IncorrectGridIterationException(x, y);
+                    }
                 }
             }
         } else {
-            throw new GridOperationOutOfBoundsException(overwriteStart, overwriteEnd);
+            throw new OutOfGridBoundsException(overwriteStart, overwriteEnd);
         }
 
     }
