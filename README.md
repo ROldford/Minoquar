@@ -63,28 +63,32 @@ implement the more difficult parts of a digital game, such as physics, collision
 
 ## Project Progress
 **Requirements For This Deliverable:**
-*Phase 4: Task 2*
-- Test and design a class that is robust
-    - [X] GridArray
-        - [X] Constructor (rectangle and square versions)
-        - [X] get() (coordinates and PositionModel versions)
-        - [X] set() (coordinates and PositionModel versions)
-    - [X] Layout
-        - [X] Constructor(int, int) [should never throw IllegalArgumentException normally]
-        - [X] Constructor(int, int, List<MazeSquare>)
-        - [X] getSquare
-        - [X] display [should never throw GridOperationOutOfBounds normally]
-        - [X] overwrite 
-    - [X] MazeLayoutModel
-        - [X] Constructors
-            - [X] maze completeness (no empty maze squares)
-            - [X] passing on other exceptions
-        - [X] getMinotaurStartPosition [skips out of bounds squares safely]
-        - [X] getSaveData
-        - [X] methods for generating QR patterns (i.e. addFinderPatterns)
-        - [X] parseSavedLayout [check that saved data is valid]
-    - [ ] MazeSquarePanel(?)
-    - [ ] Reader
+*Phase 4: Task 2 - Test and design a class that is robust*
+
+Several classes will throw unchecked exceptions to represent more fundamental code issues that can't be fixed at runtime. UI can handle them more gracefully than just crashing, but they have more severe consequences.
+
+- OutOfGridBoundsException: indicates that a method tried to access a position outside of a grid-like data structures (i.e. maze board)
+    - Consequences: quit current game to menu, maybe close app (gracefully, i.e. with data save)
+- IllegalArgumentException: indicates that an argument is illegal for that method (ex. incorrectly sized data list used to create a maze instance)
+    - Consequences: quit current game to menu, possibly remove maze entirely, may have to close app (gracefully)
+- IncompleteMazeException: indicates that a maze layout was created with empty squares (i.e. not walls or passages), and is unusable
+    - Consequences: maze will not be added to list, close app (gracefully)
+    
+Temporary checklist    
+- [ ] GridArray
+- [ ] MazeSizeModel
+- [ ] Layout
+- [ ] MazeLayoutModel
+- [ ] MazeBoardModel
+- [ ] MazeModel
+- [ ] MazeListModel
+- [ ] GameModel
+        
+Classes dealing with data will use checked exceptions, because these are issues with outside save files, not internal code. Bad save data can be stored in a separate file for later analysis or manual save recovery.
+
+- [ ] MazeLayoutModel
+- [ ] MazeModel
+- [ ] Reader
 
 **Phase 3 User Stories:**
 - [X] As a user, I want to interact with the game through a GUI.
