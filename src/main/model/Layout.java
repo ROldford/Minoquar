@@ -28,7 +28,6 @@ public class Layout implements Iterable<Layout.MazeSquare> {
     Grid<MazeSquare> grid;
 
     // EFFECTS: construct grid layout of given width and height with all squares empty
-    //          TODO: document IllegalGridDataSizeException
     public Layout(int width, int height) {
 //        this.width = width;
 //        this.height = height;
@@ -40,11 +39,18 @@ public class Layout implements Iterable<Layout.MazeSquare> {
     }
 
     // EFFECTS: construct grid layout of given width and height using squares from preset layout
-    //          TODO: document IllegalGridDataSizeException
-    public Layout(int width, int height, List<MazeSquare> presetLayout) {
+    //          TODO: document IllegalArgumentException
+    public Layout(int width, int height, List<MazeSquare> presetLayout) throws IllegalArgumentException {
 //        this.width = width;
 //        this.height = height;
-        this.grid = new GridArray<>(width, height, presetLayout);
+        if (presetLayout.size() == width * height) {
+            this.grid = new GridArray<>(width, height, presetLayout);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "presetLayout is wrong size (%d for %dx%d grid)",
+                    presetLayout.size(), width, height));
+        }
+
     }
 
     // EFFECTS: returns status of square at given position
@@ -98,12 +104,12 @@ public class Layout implements Iterable<Layout.MazeSquare> {
 
     // MODIFIES: this
     // EFFECTS: overwrites source layout on top of squares on this layout
-    // TODO: rewrite to use GridArray subGrid (like List's subList)
+    // TODO: document GridPositionOutOfBoundsException
     public void overwrite(GridPosition overwriteStart, Layout source) {
         // subgrid setup
         GridPosition overwriteEnd = overwriteStart.add(
                 new GridPosition(source.getWidth() - 1, source.getHeight() - 1));
-        Grid<MazeSquare> target = subLayout(overwriteStart, overwriteEnd);
+        Grid<MazeSquare> target = getSubGrid(overwriteStart, overwriteEnd);
         // iteration over source and target
         GridIterator<MazeSquare> targetIterator = target.gridCellIterator();
         GridIterator<MazeSquare> sourceIterator = source.gridCellIterator();
@@ -132,7 +138,7 @@ public class Layout implements Iterable<Layout.MazeSquare> {
 //        }
     }
 
-    private Grid<MazeSquare> subLayout(GridPosition start, GridPosition end) {
+    private Grid<MazeSquare> getSubGrid(GridPosition start, GridPosition end) {
         return grid.subGrid(start, end);
     }
 
