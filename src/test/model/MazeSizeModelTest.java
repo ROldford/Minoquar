@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class MazeSizeModelTest {
     private List<MazeSizeModel.MazeSize> sizes;
@@ -25,7 +26,7 @@ class MazeSizeModelTest {
         sizes.add(MazeSizeModel.MazeSize.LARGE);
         sizes.add(MazeSizeModel.MazeSize.EXTRA_LARGE);
         sizeCodes = new ArrayList<>(Arrays.asList(
-                "xs", "sm", "md", "lg", "xl", "no"
+                "xs", "sm", "md", "lg", "xl"
         ));
     }
 
@@ -68,13 +69,18 @@ class MazeSizeModelTest {
                 MazeSizeModel.MazeSize.SMALL,
                 MazeSizeModel.MazeSize.MEDIUM,
                 MazeSizeModel.MazeSize.LARGE,
-                MazeSizeModel.MazeSize.EXTRA_LARGE,
-                null
+                MazeSizeModel.MazeSize.EXTRA_LARGE
         ));
         Utilities.iterateSimultaneously(
                 expectedSizes, sizeCodes,
                 (MazeSizeModel.MazeSize expectedSize, String sizeCode) -> assertEquals(
                         expectedSize, MazeSizeModel.getSizeForSizeCode(sizeCode)));
+        try {
+            MazeSizeModel.getSizeForSizeCode("no");
+            fail("Exception expected, size code is invalid");
+        } catch (IllegalArgumentException e) {
+            // expected exception
+        }
     }
 
     @Test
