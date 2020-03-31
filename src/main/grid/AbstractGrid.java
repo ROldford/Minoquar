@@ -135,9 +135,9 @@ public abstract class AbstractGrid<T> implements Grid<T> {
         }
 
         public boolean hasNext() {
-            return cursor.getX() < getWidth()
-                    && cursor.getY() < getHeight()
-                    && !(cursor.getX() == getWidth() - 1 && cursor.getY() == getHeight() - 1);
+            int linearizedIndex = cursor.getY() * getWidth() + cursor.getX();
+            int linearizedSize = getWidth() * getHeight();
+            return linearizedIndex < linearizedSize;
         }
 
         public T next() {
@@ -148,7 +148,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
                 if (cursor.getX() >= getWidth() - 1) {
                     cursor = new GridPosition(0, cursor.getY() + 1);
                 } else {
-                    cursor.add(new GridPosition(1, 0));
+                    cursor = cursor.add(new GridPosition(1, 0));
                 }
                 return next;
             } catch (IndexOutOfBoundsException e) {

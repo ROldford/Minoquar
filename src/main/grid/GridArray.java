@@ -70,16 +70,16 @@ public class GridArray<T> extends AbstractGrid<T> {
 
     // Positional Access Operations
 
-    // EFFECTS: returns element at given x and y coordinates
-    //          throws exception if coordinates are out of bounds
-    public T get(int x, int y) throws GridPositionOutOfBoundsException {
-//        if (isInBounds(x, y)) {
-//            return data.get(coordinatesToListIndex(x, y));
-//        } else {
-//            throw new GridPositionOutOfBoundsException(outOfBoundsMessage(x, y));
-//        }
-        return get(new GridPosition(x, y));
-    }
+//    // EFFECTS: returns element at given x and y coordinates
+//    //          throws exception if coordinates are out of bounds
+//    public T get(int x, int y) throws GridPositionOutOfBoundsException {
+////        if (isInBounds(x, y)) {
+////            return data.get(coordinatesToListIndex(x, y));
+////        } else {
+////            throw new GridPositionOutOfBoundsException(outOfBoundsMessage(x, y));
+////        }
+//        return get(new GridPosition(x, y));
+//    }
 
     // EFFECTS: returns element at given position
     //          throws exception if position is out of bounds
@@ -93,15 +93,15 @@ public class GridArray<T> extends AbstractGrid<T> {
         return data.get(positionToListIndex(position));
     }
 
-    // TODO: document method
-    public void set(int x, int y, T element) throws GridPositionOutOfBoundsException {
-//        if (isInBounds(x, y)) {
-//            data.set(coordinatesToListIndex(x, y), element);
-//        } else {
-//            throw new GridPositionOutOfBoundsException(outOfBoundsMessage(x, y));
-//        }
-        set(new GridPosition(x, y), element);
-    }
+//    // TODO: document method
+//    public void set(int x, int y, T element) throws GridPositionOutOfBoundsException {
+////        if (isInBounds(x, y)) {
+////            data.set(coordinatesToListIndex(x, y), element);
+////        } else {
+////            throw new GridPositionOutOfBoundsException(outOfBoundsMessage(x, y));
+////        }
+//        set(new GridPosition(x, y), element);
+//    }
 
     // TODO: document method
     public void set(GridPosition position, T element) throws GridPositionOutOfBoundsException {
