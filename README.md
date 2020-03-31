@@ -79,7 +79,7 @@ Temporary checklist
     - [X] Grid
     - [X] AbstractGrid
     - [X] GridArray
-- [ ] MazeSizeModel
+- [X] MazeSizeModel
 - [ ] Layout
 - [ ] MazeLayoutModel
 - [ ] MazeBoardModel

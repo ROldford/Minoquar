@@ -77,14 +77,15 @@ public final class MazeSizeModel {
     }
 
     // EFFECTS: return MazeSize for given size code, or null if not a valid code
-    public static MazeSize getSizeForSizeCode(String sizeCode) {
+    //          throws IllegalArgumentException if not a valid code
+    public static MazeSize getSizeForSizeCode(String sizeCode) throws IllegalArgumentException {
         Set<Map.Entry<MazeSize, String>> entrySet = CODE_MAP.entrySet();
         for (Map.Entry<MazeSize, String> entry : entrySet) {
             if (entry.getValue().equals(sizeCode)) {
                 return entry.getKey();
             }
         }
-        return null;
+        throw new IllegalArgumentException(String.format("Size code: %s", sizeCode));
     }
 
     // EFFECTS: return positions of each recognition pattern's top left corner
