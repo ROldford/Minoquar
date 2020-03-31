@@ -30,7 +30,7 @@ public class GridArray<T> extends AbstractGrid<T> {
     }
 
     // EFFECTS: create GridArray of given dimensions with given data
-    //          throws exception if data.size() != width * height  TODO: test for exception throw
+    //          throws exception if data.size() != width * height
     public GridArray(int width, int height, List<T> data) throws IllegalArgumentException {
         if (data.size() == width * height) {
             this.width = width;
@@ -114,9 +114,13 @@ public class GridArray<T> extends AbstractGrid<T> {
     }
 
     public List<T> getRow(int rowIndex) throws GridPositionOutOfBoundsException {
-        int rowStart = positionToListIndex(new GridPosition(0, rowIndex));
-        int rowEnd = positionToListIndex(new GridPosition(getWidth() - 1, rowIndex));
-        List<T> rowView = data.subList(rowStart, rowEnd + 1);
+        GridPosition rowStartPosition = new GridPosition(0, rowIndex);
+        GridPosition rowEndPosition = new GridPosition(getWidth() - 1, rowIndex);
+        boundsCheck(rowStartPosition);
+        boundsCheck(rowEndPosition);
+        int rowStartIndex = positionToListIndex(rowStartPosition);
+        int rowEndIndex = positionToListIndex(rowEndPosition);
+        List<T> rowView = data.subList(rowStartIndex, rowEndIndex + 1);
         return new ArrayList<>(rowView);  // making new ArrayList so removals have no effect
     }
 

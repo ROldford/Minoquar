@@ -5,7 +5,6 @@ import exceptions.GridPositionOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -115,23 +114,11 @@ class GridArrayTest {
 
     @Test
     void testGetException() {
-        getExceptionThrownCase(-1, -1, stringGrid);
-        getExceptionThrownCase(stringGrid.getWidth(), stringGrid.getHeight(), stringGrid);
-        getExceptionThrownCase(new GridPosition(-1, -1), stringGrid);
-        getExceptionThrownCase(new GridPosition(stringGrid.getWidth(), stringGrid.getHeight()), stringGrid);
+        getExceptionThrownCase(stringGrid, new GridPosition(-1, -1));
+        getExceptionThrownCase(stringGrid, new GridPosition(stringGrid.getWidth(), stringGrid.getHeight()));
     }
 
-    private <T> void getExceptionThrownCase(int x, int y, Grid<T> grid) {
-        String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
-        try {
-            grid.get(new GridPosition(x, y));
-            fail(failIfNoException);
-        } catch (GridPositionOutOfBoundsException e) {
-            assertNotNull(e.getMessage());
-        }
-    }
-
-    private <T> void getExceptionThrownCase(GridPosition position, Grid<T> grid) {
+    private <T> void getExceptionThrownCase(Grid<T> grid, GridPosition position) {
         String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
         try {
             grid.get(position);
@@ -149,16 +136,16 @@ class GridArrayTest {
         setFailOnExceptionCase(intSquareGrid, 99);
     }
 
-    private <T> void setFailOnExceptionCase(Grid<T> gridArray, T expected) {
+    private <T> void setFailOnExceptionCase(Grid<T> grid, T expected) {
         String failOnException = String.format("%s, checking in grid bounds", FAIL_ON_EXCEPTION);
         try {
-            gridArray.set(ORIGIN, expected);
-            assertEquals(expected, gridArray.get(ORIGIN));
-            int cornerX = gridArray.getWidth() - 1;
-            int cornerY = gridArray.getHeight() - 1;
+            grid.set(ORIGIN, expected);
+            assertEquals(expected, grid.get(ORIGIN));
+            int cornerX = grid.getWidth() - 1;
+            int cornerY = grid.getHeight() - 1;
             GridPosition corner = new GridPosition(cornerX, cornerY);
-            gridArray.set(corner, expected);
-            assertEquals(expected, gridArray.get(corner));
+            grid.set(corner, expected);
+            assertEquals(expected, grid.get(corner));
         } catch (GridPositionOutOfBoundsException e) {
             fail(failOnException);
         }
@@ -167,8 +154,8 @@ class GridArrayTest {
     @Test
     void testSetException() {
         String testString = "A";
-        setExceptionThrownCase(new GridPosition(-1, -1), stringGrid, testString);
-        setExceptionThrownCase(new GridPosition(stringGrid.getWidth(), stringGrid.getHeight()), stringGrid, testString);
+        setExceptionThrownCase(stringGrid, new GridPosition(-1, -1), testString);
+        setExceptionThrownCase(stringGrid, new GridPosition(stringGrid.getWidth(), stringGrid.getHeight()), testString);
     }
 
 //    private <T> void setExceptionThrownCase(int x, int y, Grid<T> grid, T element) {
@@ -182,11 +169,44 @@ class GridArrayTest {
 //        }
 //    }
 
-    private <T> void setExceptionThrownCase(GridPosition position, Grid<T> grid, T element) {
+    private <T> void setExceptionThrownCase(Grid<T> grid, GridPosition position, T element) {
         String failIfNoException = String.format("%s, checking out of bounds", FAIL_IF_NO_EXCEPTION);
         try {
             grid.set(position, element);
             fail(failIfNoException);
+        } catch (GridPositionOutOfBoundsException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
+
+    @Test
+    void testGetRow() {
+        getRowCase((GridArray<String>) stringGrid, new ArrayList<>(Arrays.asList(
+                new ArrayList<>(Arrays.asList("A", "B", "C", "D", "E")),
+                new ArrayList<>(Arrays.asList("F", "G", "H", "I", "J")),
+                new ArrayList<>(Arrays.asList("K", "L", "M", "N", "O")))));
+        getRowCase((GridArray<Integer>) intSquareGrid, new ArrayList<>(Arrays.asList(
+                new ArrayList<>(Arrays.asList(1, 2, 3)),
+                new ArrayList<>(Arrays.asList(4, 5, 6)),
+                new ArrayList<>(Arrays.asList(7, 8, 9)))));
+    }
+
+    private <T> void getRowCase(GridArray<T> grid, List<List<T>> expectedRows) {
+        for (int i = 0; i < grid.getHeight(); i++) {
+            try {
+                List<T> expected = expectedRows.get(i);
+                List<T> actual = grid.getRow(i);
+                assertEquals(expected, actual);
+            } catch (GridPositionOutOfBoundsException e) {
+                String reason = String.format("row %d is in grid bounds", i);
+                fail(generateFailMessage(true, reason));
+            }
+        }
+        try {
+            int badRowIndex = grid.getHeight();
+            grid.getRow(badRowIndex);
+            grid.getRow(-1);
+            fail(generateFailMessage(false, "row is out of bounds"));
         } catch (GridPositionOutOfBoundsException e) {
             assertNotNull(e.getMessage());
         }
@@ -604,4 +624,14 @@ class GridArrayTest {
                 "B", "A")));
         assertEquals(origin, newStringGrid.positionOf("A"));
     }
+
+    private String generateFailMessage(boolean failOnException, String reason) {
+        if (failOnException) {
+            return String.format("%s, %s", FAIL_ON_EXCEPTION, reason);
+        } else {
+            return String.format("%s, %s", FAIL_IF_NO_EXCEPTION, reason);
+        }
+    }
+
+
 }
