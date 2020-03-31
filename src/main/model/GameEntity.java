@@ -1,5 +1,7 @@
 package model;
 
+import grid.GridPosition;
+
 public class GameEntity {
 
     public enum EntityType {
@@ -8,22 +10,22 @@ public class GameEntity {
         TREASURE
     }
 
-    private PositionModel position;
+    private GridPosition position;
     private EntityType entityType;
 
-    public GameEntity(EntityType entityType, PositionModel start) {
+    public GameEntity(EntityType entityType, GridPosition start) {
         this.position = start;
         this.entityType = entityType;
     }
 
     // EFFECTS: returns current position of entity
-    public PositionModel getPosition() {
+    public GridPosition getPosition() {
         return position;
     }
 
     // MODIFIES: this
     // EFFECTS: sets position of entity
-    public void setPosition(PositionModel position) {
+    public void setPosition(GridPosition position) {
         this.position = position;
     }
 

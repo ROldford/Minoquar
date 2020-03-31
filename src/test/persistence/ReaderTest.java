@@ -4,14 +4,15 @@
 package persistence;
 
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.Grid;
 import model.MazeListModel;
 import model.MazeModel;
 import model.MazeSizeModel;
-import model.PositionModel;
+import grid.GridPosition;
 import org.junit.jupiter.api.Test;
 import ui.SquareDisplayData;
-import utils.GridArray;
+import grid.GridArray;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_SMALL,
                     0,
                     0);
-        } catch (IOException | OutOfGridBoundsException | IncorrectGridIterationException e) {
+        } catch (IOException | GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
             fail("Exception should not have been thrown");
         }
     }
@@ -46,7 +47,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_LARGE,
                     5,
                     5);
-        } catch (IOException | OutOfGridBoundsException | IncorrectGridIterationException e) {
+        } catch (IOException | GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
             fail("Exception should not have been thrown");
         }
     }
@@ -67,7 +68,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_LARGE,
                     5,
                     5);
-        } catch (IOException | OutOfGridBoundsException | IncorrectGridIterationException e) {
+        } catch (IOException | GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
             fail("Exception should not have been thrown");
         }
     }
@@ -93,7 +94,7 @@ public class ReaderTest {
                     MazeSizeModel.MazeSize.EXTRA_SMALL,
                     55,
                     55);
-        } catch (IOException | OutOfGridBoundsException | IncorrectGridIterationException e) {
+        } catch (IOException | GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
             fail("IOException should not have been thrown");
         }
     }
@@ -102,7 +103,7 @@ public class ReaderTest {
                           String expectedName,
                           MazeSizeModel.MazeSize expectedSize,
                           int expectedWins,
-                          int expectedLosses) throws OutOfGridBoundsException, IncorrectGridIterationException {
+                          int expectedLosses) throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         // name check
         assertEquals(expectedName, maze.getName());
         // size check
@@ -114,12 +115,12 @@ public class ReaderTest {
         assertEquals(expectedLosses, maze.getLosses());
         assertEquals(expectedWins + expectedLosses, maze.getTotalPlays());
         // valid maze check
-        assertFalse(maze.isMoveValid(new PositionModel(7,0), new PositionModel(0,0)));
-        assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(5, 1)));
-        assertTrue(maze.isMoveValid(new PositionModel(5, 1), new PositionModel(7,1)));
-        assertFalse(maze.isMoveValid(new PositionModel(7,6), new PositionModel(11, 6)));
+        assertFalse(maze.isMoveValid(new GridPosition(7,0), new GridPosition(0,0)));
+        assertTrue(maze.isMoveValid(new GridPosition(1, 1), new GridPosition(5, 1)));
+        assertTrue(maze.isMoveValid(new GridPosition(5, 1), new GridPosition(7,1)));
+        assertFalse(maze.isMoveValid(new GridPosition(7,6), new GridPosition(11, 6)));
         // valid display data check
-        GridArray<SquareDisplayData> oneDisplay = maze.displayMaze();
+        Grid<SquareDisplayData> oneDisplay = maze.displayMaze();
         assertEquals(oneSideLength, oneDisplay.getWidth());
         assertEquals(oneSideLength, oneDisplay.getHeight());
     }

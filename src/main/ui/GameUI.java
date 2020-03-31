@@ -4,11 +4,12 @@
 package ui;
 
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.Grid;
 import model.GameModel;
 import model.MazeModel;
-import model.PositionModel;
-import utils.GridArray;
+import grid.GridPosition;
+import grid.GridArray;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +31,7 @@ public class GameUI extends JPanel {
 
     // EFFECTS: creates the game's UI panel in app window with given maze
     public GameUI(Minoquar minoquarFrame, MazeModel mazeModel)
-            throws OutOfGridBoundsException, IncorrectGridIterationException {
+            throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         super(new BorderLayout());
         this.minoquarFrame = minoquarFrame;
         this.gameModel = new GameModel(mazeModel);
@@ -41,7 +42,7 @@ public class GameUI extends JPanel {
 
     // MODIFIES: this
     // EFFECTS: sets up game UI panels
-    public void createGameUI() throws OutOfGridBoundsException, IncorrectGridIterationException {
+    public void createGameUI() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         this.gameControlPanel = createControlPanel();
         this.mazeUIPanel = createMazePanel();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -53,14 +54,14 @@ public class GameUI extends JPanel {
         return new GameControlPanel(this);
     }
 
-    private MazeUIPanel createMazePanel() throws OutOfGridBoundsException, IncorrectGridIterationException {
-        GridArray<SquareDisplayData> displayData = gameModel.display();
+    private MazeUIPanel createMazePanel() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
+        Grid<SquareDisplayData> displayData = gameModel.display();
         mazeUIPanel = new MazeUIPanel(displayData, this);
         return mazeUIPanel;
     }
 
-    public void handleClickAt(PositionModel clickedPosition)
-            throws OutOfGridBoundsException, IncorrectGridIterationException {
+    public void handleClickAt(GridPosition clickedPosition)
+            throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         if (gameStatus == GameStatus.ONGOING && canHandleClick) {
             this.canHandleClick = false;  // keeps clicks from working while move is processed
             // TODO: test if this is actually needed
@@ -88,7 +89,7 @@ public class GameUI extends JPanel {
     // EFFECTS: processes game move
     //          returns true when move is completed
     //          returns false and prints message to bottom panel otherwise
-    private boolean getHeroMove(PositionModel end) throws OutOfGridBoundsException {
+    private boolean getHeroMove(GridPosition end) throws GridPositionOutOfBoundsException {
         if (gameModel.moveHero(end)) {
             return true;
         } else {
@@ -125,7 +126,7 @@ public class GameUI extends JPanel {
     }
 
     // EFFECTS: updates the maze panel display
-    private void updateDisplay() throws OutOfGridBoundsException, IncorrectGridIterationException {
+    private void updateDisplay() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         mazeUIPanel.updateDisplay(gameModel.display());
     }
 

@@ -1,6 +1,7 @@
 package model;
 
-import exceptions.OutOfGridBoundsException;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.GridPosition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Utilities;
@@ -45,10 +46,10 @@ public class MazeBoardModelTest {
     }
 
     @Test
-    public void testGetSquaresBetweenAllPassages() throws OutOfGridBoundsException {
-        PositionModel topLeft = new PositionModel(1, 1);
-        PositionModel topRight = new PositionModel(5, 1);
-        PositionModel bottomLeft = new PositionModel(1, 5);
+    public void testGetSquaresBetweenAllPassages() throws GridPositionOutOfBoundsException {
+        GridPosition topLeft = new GridPosition(1, 1);
+        GridPosition topRight = new GridPosition(5, 1);
+        GridPosition bottomLeft = new GridPosition(1, 5);
         List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(topRight, topLeft);
         List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
         List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
@@ -63,10 +64,10 @@ public class MazeBoardModelTest {
     }
 
     @Test
-    public void testGetSquaresBetweenAllWalls() throws OutOfGridBoundsException {
-        PositionModel topLeft = new PositionModel(0, 0);
-        PositionModel topRight = new PositionModel(6, 0);
-        PositionModel bottomLeft = new PositionModel(0, 6);
+    public void testGetSquaresBetweenAllWalls() throws GridPositionOutOfBoundsException {
+        GridPosition topLeft = new GridPosition(0, 0);
+        GridPosition topRight = new GridPosition(6, 0);
+        GridPosition bottomLeft = new GridPosition(0, 6);
         List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(topRight, topLeft);
         List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
         List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
@@ -81,11 +82,11 @@ public class MazeBoardModelTest {
     }
 
     @Test
-    public void testGetSquaresBetweenBothTypes() throws OutOfGridBoundsException {
-        PositionModel leftSide = new PositionModel(8, 6);
-        PositionModel rightSide = new PositionModel(11, 6);
-        PositionModel topSide = new PositionModel(6, 8);
-        PositionModel bottomSide = new PositionModel(6, 11);
+    public void testGetSquaresBetweenBothTypes() throws GridPositionOutOfBoundsException {
+        GridPosition leftSide = new GridPosition(8, 6);
+        GridPosition rightSide = new GridPosition(11, 6);
+        GridPosition topSide = new GridPosition(6, 8);
+        GridPosition bottomSide = new GridPosition(6, 11);
         List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(leftSide, rightSide);
         List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(rightSide, leftSide);
         List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomSide, topSide);
@@ -112,7 +113,7 @@ public class MazeBoardModelTest {
         Utilities.iterateSimultaneously(
                 sizes, boards,
                 (MazeSizeModel.MazeSize size, MazeBoardModel board) -> {
-                    PositionModel start = new PositionModel(1, 0);
+                    GridPosition start = new GridPosition(1, 0);
                     int sideLength = MazeSizeModel.getSideLength(size);
                     assertEquals(0, board.getSquaresInDirection(start, MazeModel.Direction.UP).size());
                     assertEquals(1, board.getSquaresInDirection(start, MazeModel.Direction.LEFT).size());

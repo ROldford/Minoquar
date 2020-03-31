@@ -1,12 +1,14 @@
 package model;
 
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.Grid;
+import grid.GridPosition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
 import ui.SquareDisplayData;
-import utils.GridArray;
+import grid.GridArray;
 import utils.Utilities;
 
 import java.io.File;
@@ -49,7 +51,7 @@ public class GameModelTest {
     }
 
     @Test
-    public void testDisplay() throws OutOfGridBoundsException, IncorrectGridIterationException {
+    public void testDisplay() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
         SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
         SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
@@ -64,16 +66,16 @@ public class GameModelTest {
                         wall, pass, wall, wall, wall, pass, wall, pass)));
         List<SquareDisplayData> expectedAlignment = new ArrayList<>(Arrays.asList(
                 wall, exit, pass, pass, wall));
-        GridArray<SquareDisplayData> display = game.display();
+        Grid<SquareDisplayData> display = game.display();
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 3; y++) {
-                assertEquals(expectedFinder.get(x, y), display.get(x, y));
+                assertEquals(expectedFinder.get(new GridPosition(x, y)), display.get(new GridPosition(x, y)));
             }
         }
-        assertNotEquals(empty, display.get(8, 0));
-        PositionModel alignCorner = MazeSizeModel.getAlignPatternPosition(MazeSizeModel.MazeSize.EXTRA_SMALL);
+        assertNotEquals(empty, display.get(new GridPosition(8, 0)));
+        GridPosition alignCorner = MazeSizeModel.getAlignPatternPosition(MazeSizeModel.MazeSize.EXTRA_SMALL);
         for (int i = 0; i < 4; i++) {
-            PositionModel checkPosition = alignCorner.add(new PositionModel(i, 1));
+            GridPosition checkPosition = alignCorner.add(new GridPosition(i, 1));
             assertEquals(expectedAlignment.get(i), display.get(checkPosition));
         }
     }
@@ -85,74 +87,74 @@ public class GameModelTest {
     }
 
     @Test
-    public void testMoveHeroValid() throws OutOfGridBoundsException {
+    public void testMoveHeroValid() throws GridPositionOutOfBoundsException {
         // one space passage move
-        assertTrue(game.moveHero(new PositionModel(7, 1)));
+        assertTrue(game.moveHero(new GridPosition(7, 1)));
         // one space tunnel move
-        assertTrue(game.moveHero(new PositionModel(5, 1)));
+        assertTrue(game.moveHero(new GridPosition(5, 1)));
         // many space passage move
-        assertTrue(game.moveHero(new PositionModel(1, 1)));
+        assertTrue(game.moveHero(new GridPosition(1, 1)));
         // one space down to set up for next move
         // not essential to test this, but why not?
-        assertTrue(game.moveHero(new PositionModel(1, 2)));
+        assertTrue(game.moveHero(new GridPosition(1, 2)));
         // many space tunnel move
-        assertTrue(game.moveHero(new PositionModel(5, 2)));
+        assertTrue(game.moveHero(new GridPosition(5, 2)));
     }
 
     @Test
-    public void testMoveHeroInvalid() throws OutOfGridBoundsException {
+    public void testMoveHeroInvalid() throws GridPositionOutOfBoundsException {
         // move west into wall
-        assertFalse(game.moveHero(new PositionModel(6, 0)));
+        assertFalse(game.moveHero(new GridPosition(6, 0)));
         // TODO: add test for out of bounds move when exceptions are implemented
         // move one down to set up for next move, no test needed since it's done in another test
-        game.moveHero(new PositionModel(7, 1));
+        game.moveHero(new GridPosition(7, 1));
         // tunnel move west, but over passage
-        assertFalse(game.moveHero(new PositionModel(4, 1)));
+        assertFalse(game.moveHero(new GridPosition(4, 1)));
     }
 
     @Test
     public void testStartMinotaur() {
-        List<PositionModel> expectedMinotaurStartPositions = new ArrayList<>(Arrays.asList(
-                new PositionModel(12, 12),
-                new PositionModel(12, 11),
-                new PositionModel(12, 13),
-                new PositionModel(11, 12),
-                new PositionModel(13, 12),
-                new PositionModel(12, 10),
-                new PositionModel(11, 11)
+        List<GridPosition> expectedMinotaurStartPositions = new ArrayList<>(Arrays.asList(
+                new GridPosition(12, 12),
+                new GridPosition(12, 11),
+                new GridPosition(12, 13),
+                new GridPosition(11, 12),
+                new GridPosition(13, 12),
+                new GridPosition(12, 10),
+                new GridPosition(11, 11)
         ));
         Utilities.iterateSimultaneously(
                 expectedMinotaurStartPositions, startTestGames,
-                (PositionModel expected, GameModel game) -> {
-                    PositionModel actual = game.getMinotaurPosition();
+                (GridPosition expected, GameModel game) -> {
+                    GridPosition actual = game.getMinotaurPosition();
                     assertEquals(expected.getX(), actual.getX());
                     assertEquals(expected.getY(), actual.getY());
                 });
         MazeModel maze = generateTestData(ALL_WALL_TEST_FILE);
         assertNotNull(maze);
-        assertEquals(new PositionModel(-1, -1), maze.getMinotaurStartPosition());
+        assertEquals(new GridPosition(-1, -1), maze.getMinotaurStartPosition());
     }
 
     @Test
     public void testDisplayMinotaur() {
         SquareDisplayData minotaur = new SquareDisplayData(Layout.MazeSquare.PASSAGE,
                 new ArrayList<>(Collections.singletonList(GameEntity.EntityType.MINOTAUR)));
-        List<PositionModel> expectedMinotaurStartPositions = new ArrayList<>(Arrays.asList(
-                new PositionModel(12, 12),
-                new PositionModel(12, 11),
-                new PositionModel(12, 13),
-                new PositionModel(11, 12),
-                new PositionModel(13, 12),
-                new PositionModel(12, 10),
-                new PositionModel(11, 11)));
+        List<GridPosition> expectedMinotaurStartPositions = new ArrayList<>(Arrays.asList(
+                new GridPosition(12, 12),
+                new GridPosition(12, 11),
+                new GridPosition(12, 13),
+                new GridPosition(11, 12),
+                new GridPosition(13, 12),
+                new GridPosition(12, 10),
+                new GridPosition(11, 11)));
         Utilities.iterateSimultaneously(
                 expectedMinotaurStartPositions, startTestGames,
-                (PositionModel expected, GameModel game) -> {
-                    GridArray<SquareDisplayData> display = null;
+                (GridPosition expected, GameModel game) -> {
+                    Grid<SquareDisplayData> display = null;
                     try {
                         display = game.display();
                         assertEquals(minotaur, display.get(expected));
-                    } catch (OutOfGridBoundsException | IncorrectGridIterationException e) {
+                    } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
                         e.printStackTrace();
                         fail("Out of bounds");
                     }
@@ -161,74 +163,74 @@ public class GameModelTest {
     }
 
     @Test
-    public void testMoveMinotaurOrthogonal() throws OutOfGridBoundsException {
+    public void testMoveMinotaurOrthogonal() throws GridPositionOutOfBoundsException {
         // orthogonal tests
         // hero is already on minotaur: minotaur doesn't move
-        testMoveMinotaurCase(new PositionModel(0, 0), new PositionModel(0, 0));
+        testMoveMinotaurCase(new GridPosition(0, 0), new GridPosition(0, 0));
         // hero above minotaur start, 1 square away: minotaur moves up one square, stops on hero
-        testMoveMinotaurCase(new PositionModel(0, -1), new PositionModel(0, -1));
+        testMoveMinotaurCase(new GridPosition(0, -1), new GridPosition(0, -1));
         // hero above minotaur start, 5 squares away: minotaur moves up five squares, stops on hero
-        testMoveMinotaurCase(new PositionModel(0, -5), new PositionModel(0, -5));
+        testMoveMinotaurCase(new GridPosition(0, -5), new GridPosition(0, -5));
         // hero right of minotaur start, behind wall: minotaur moves right, stops at wall
-        testMoveMinotaurCase(new PositionModel(11, 0), new PositionModel(9, 0));
+        testMoveMinotaurCase(new GridPosition(11, 0), new GridPosition(9, 0));
         // hero left of minotaur start, behind long wall: minotaur moves left through wall, stops on hero
-        testMoveMinotaurCase(new PositionModel(-4, 0), new PositionModel(-4, 0));
+        testMoveMinotaurCase(new GridPosition(-4, 0), new GridPosition(-4, 0));
         // hero below minotaur start, just behind wall: minotaur moves down through wall, stops on hero
-        testMoveMinotaurCase(new PositionModel(0, 2), new PositionModel(0, 2));
+        testMoveMinotaurCase(new GridPosition(0, 2), new GridPosition(0, 2));
         // hero below minotaur start, 3 squares past wall: minotaur moves down through wall, stops after wall
-        testMoveMinotaurCase(new PositionModel(0, 5), new PositionModel(0, 2));
+        testMoveMinotaurCase(new GridPosition(0, 5), new GridPosition(0, 2));
     }
 
     @Test
-    public void testMoveMinotaurDiagonal() throws OutOfGridBoundsException {
+    public void testMoveMinotaurDiagonal() throws GridPositionOutOfBoundsException {
         // diagonal tests
         // hero 1 square up, 3 squares right of minotaur: minotaur moves 1 square up
-        testMoveMinotaurCase(new PositionModel(3, -1), new PositionModel(0, -1));
+        testMoveMinotaurCase(new GridPosition(3, -1), new GridPosition(0, -1));
         // hero 3 squares up, 1 square right of minotaur: minotaur moves 1 square right
-        testMoveMinotaurCase(new PositionModel(1, -3), new PositionModel(1, 0));
+        testMoveMinotaurCase(new GridPosition(1, -3), new GridPosition(1, 0));
         // hero 1 square up, 1 square right of minotaur: minotaur randomly chooses direction
         testMoveMinotaurDiagonalCase(
-                new PositionModel(1, -1),
-                new PositionModel(0, -1),
-                new PositionModel(1, 0));
+                new GridPosition(1, -1),
+                new GridPosition(0, -1),
+                new GridPosition(1, 0));
         // hero 1 square down, 2 squares left of minotaur: minotaur moves down through wall (2 squares down)
-        testMoveMinotaurCase(new PositionModel(-2, 1), new PositionModel(0, 2));
+        testMoveMinotaurCase(new GridPosition(-2, 1), new GridPosition(0, 2));
         // hero 2 squares down, 1 square left of minotaur: minotaur moves left through wall (4 squares left)
-        testMoveMinotaurCase(new PositionModel(-1, 2), new PositionModel(-4, 0));
+        testMoveMinotaurCase(new GridPosition(-1, 2), new GridPosition(-4, 0));
         // hero 1 square down, 1 square left of minotaur: minotaur randomly chooses direction
         testMoveMinotaurDiagonalCase(
-                new PositionModel(-1, 1),
-                new PositionModel(0, 2),
-                new PositionModel(-4, 0));
+                new GridPosition(-1, 1),
+                new GridPosition(0, 2),
+                new GridPosition(-4, 0));
     }
 
     @Test
-    public void testMoveMinotaurInvalid() throws OutOfGridBoundsException {
+    public void testMoveMinotaurInvalid() throws GridPositionOutOfBoundsException {
         MazeModel maze = generateTestData(NO_VALID_MOVES_TEST_FILE);
         assertNotNull(maze);
-        assertEquals(new PositionModel(12, 12), maze.getMinotaurStartPosition());
-        GameModel testGame = new GameModel(maze, new PositionModel(7, 7));
+        assertEquals(new GridPosition(12, 12), maze.getMinotaurStartPosition());
+        GameModel testGame = new GameModel(maze, new GridPosition(7, 7));
         assertFalse(testGame.moveMinotaur(0.0));
     }
 
-    private void testMoveMinotaurCase(PositionModel heroStart,
-                                      PositionModel expectedDelta) throws OutOfGridBoundsException {
+    private void testMoveMinotaurCase(GridPosition heroStart,
+                                      GridPosition expectedDelta) throws GridPositionOutOfBoundsException {
         // moveMinotaur() used, because these moves use the non-random part of the minotaur move rules
         MazeModel maze = generateTestData(MOVE_TESTS_FILE);
         assertNotNull(maze);
-        PositionModel minotaurStart = maze.getMinotaurStartPosition();
+        GridPosition minotaurStart = maze.getMinotaurStartPosition();
         GameModel testGame = new GameModel(maze, minotaurStart.add(heroStart));
         assertTrue(testGame.moveMinotaur());
         assertEquals(testGame.getMinotaurPosition(), minotaurStart.add(expectedDelta));
     }
 
-    private void testMoveMinotaurDiagonalCase(PositionModel heroStart,
-                                              PositionModel expectedVertical,
-                                              PositionModel expectedHorizontal) throws OutOfGridBoundsException {
+    private void testMoveMinotaurDiagonalCase(GridPosition heroStart,
+                                              GridPosition expectedVertical,
+                                              GridPosition expectedHorizontal) throws GridPositionOutOfBoundsException {
         // moveMinotaur(double randomNumber) used, because perfectly diagonal moves depend on randomNumber
         MazeModel maze = generateTestData(MOVE_TESTS_FILE);
         assertNotNull(maze);
-        PositionModel minotaurStart = maze.getMinotaurStartPosition();
+        GridPosition minotaurStart = maze.getMinotaurStartPosition();
         GameModel testGameHorizontalMove = new GameModel(maze, minotaurStart.add(heroStart));
         testGameHorizontalMove.moveMinotaur(0.4);
         assertEquals(testGameHorizontalMove.getMinotaurPosition(), minotaurStart.add(expectedHorizontal));
@@ -252,9 +254,9 @@ public class GameModelTest {
     public void testCheckForWin() throws Exception {
         assertFalse(game.checkForWin());
         MazeSizeModel.MazeSize size = MazeSizeModel.MazeSize.EXTRA_SMALL;
-        PositionModel treasurePosition = MazeSizeModel.getTreasurePosition(size);
-        PositionModel belowTreasure = treasurePosition.add(new PositionModel(0, 2));
-        PositionModel rightOfTreasure = treasurePosition.add(new PositionModel(2, 0));
+        GridPosition treasurePosition = MazeSizeModel.getTreasurePosition(size);
+        GridPosition belowTreasure = treasurePosition.add(new GridPosition(0, 2));
+        GridPosition rightOfTreasure = treasurePosition.add(new GridPosition(2, 0));
         GameModel wonGame = new GameModel(new MazeModel("already won", size), treasurePosition);
         assertTrue(wonGame.checkForWin());
         GameModel sameX = new GameModel(new MazeModel("same x", size), belowTreasure);
@@ -266,9 +268,9 @@ public class GameModelTest {
     @Test
     public void testCheckForLoss() {
         assertFalse(game.checkForLoss());
-        PositionModel minotaurPosition = emptyMaze.getMinotaurStartPosition();
-        PositionModel belowMinotaur = minotaurPosition.add(new PositionModel(0, 2));
-        PositionModel rightOfMinotaur = minotaurPosition.add(new PositionModel(2, 0));
+        GridPosition minotaurPosition = emptyMaze.getMinotaurStartPosition();
+        GridPosition belowMinotaur = minotaurPosition.add(new GridPosition(0, 2));
+        GridPosition rightOfMinotaur = minotaurPosition.add(new GridPosition(2, 0));
         GameModel lostGame = new GameModel(emptyMaze, minotaurPosition);
         assertTrue(lostGame.checkForLoss());
         GameModel sameX = new GameModel(emptyMaze, belowMinotaur);

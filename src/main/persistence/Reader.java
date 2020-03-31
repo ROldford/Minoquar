@@ -3,7 +3,6 @@
 
 package persistence;
 
-import exceptions.OutOfGridBoundsException;
 import model.MazeModel;
 import model.MazeSizeModel;
 import utils.Utilities;
@@ -43,16 +42,14 @@ public class Reader {
         List<String> currentMazeData = new ArrayList<>();
         while (contentIterator.hasNext()) {
             String currentLine = contentIterator.next();
-            if (currentLine.equals(SEPARATOR_LINE)) {
-                if (currentMazeData.size() != 0) {
-                    // send data off to parse maze
+            if (currentLine.equals(SEPARATOR_LINE)) {  // current maze data is done, needs parsing, then add to list
+                if (currentMazeData.size() != 0) {  // corrects for first line of save file
                     MazeModel parsedMaze = parseMaze(currentMazeData);
-                    // add to parsed mazes
                     parsedMazes.add(parsedMaze);
-                    currentMazeData.clear();
+                    currentMazeData.clear();  // ready for next saved maze
                 }
             } else {
-                currentMazeData.add(currentLine);
+                currentMazeData.add(currentLine);  // current maze data continues, collect for eventual parsing
             }
         }
         return parsedMazes;
@@ -72,19 +69,19 @@ public class Reader {
         // name and size
         String name = iterator.next();
         String sizeCode = iterator.next();
-        MazeSizeModel.MazeSize size = MazeSizeModel.getSizeForSizeCode(sizeCode);
+        MazeSizeModel.MazeSize size = MazeSizeModel.getSizeForSizeCode(sizeCode);  // TODO: exception throw here
         // game history
         List<String> savedOutcomeHistory = new ArrayList<>();
-        int totalPlays = Integer.parseInt(iterator.next());
+        int totalPlays = Integer.parseInt(iterator.next());  // TODO: exception throw here
         int totalLines = Utilities.divideRoundUp(totalPlays, 100);
         for (int i = 0; i < totalLines; i++) {
-            savedOutcomeHistory.add(iterator.next());
+            savedOutcomeHistory.add(iterator.next());  // TODO: throw exception if lines don't start with W or L
         }
         // maze data
         List<String> savedLayout = new ArrayList<>();
         int sideLength = MazeSizeModel.getSideLength(size);
         for (int i = 0; i < sideLength; i++) {
-            savedLayout.add(iterator.next());
+            savedLayout.add(iterator.next());  // TODO: throw exception if any lines == separator line
         }
         // TODO: throw exception if there's more data (if hasNext() is true)
         try {

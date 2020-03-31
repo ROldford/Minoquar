@@ -1,7 +1,8 @@
 package model;
 
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.GridPosition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,13 +22,13 @@ public class MazeModelTest {
     }
 
     @Test
-    public void testInit() throws OutOfGridBoundsException {
+    public void testInit() throws GridPositionOutOfBoundsException {
         assertEquals(TEST_NAME, maze.getName());
         assertEquals(MazeSizeModel.getSizeName(TEST_SIZE), maze.getSizeName());
         assertEquals(MazeSizeModel.getSideLength(TEST_SIZE), maze.getSideLength());
         assertTrue(maze.isMoveValid(
-                new PositionModel(1, 1),
-                new PositionModel(1, 2)));
+                new GridPosition(1, 1),
+                new GridPosition(1, 2)));
         assertEquals(0, maze.getWins());
         assertEquals(0, maze.getLosses());
     }
@@ -63,40 +64,40 @@ public class MazeModelTest {
     }
 
     @Test
-    void testIsMoveValid() throws OutOfGridBoundsException {
+    void testIsMoveValid() throws GridPositionOutOfBoundsException {
         // corridor moves, all 4 directions: valid
-        assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(1, 5)));
-        assertTrue(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(5, 1)));
-        assertTrue(maze.isMoveValid(new PositionModel(5, 5), new PositionModel(1, 5)));
-        assertTrue(maze.isMoveValid(new PositionModel(5, 5), new PositionModel(5, 1)));
+        assertTrue(maze.isMoveValid(new GridPosition(1, 1), new GridPosition(1, 5)));
+        assertTrue(maze.isMoveValid(new GridPosition(1, 1), new GridPosition(5, 1)));
+        assertTrue(maze.isMoveValid(new GridPosition(5, 5), new GridPosition(1, 5)));
+        assertTrue(maze.isMoveValid(new GridPosition(5, 5), new GridPosition(5, 1)));
         // tunnel moves, all 4 directions: valid
-        assertTrue(maze.isMoveValid(new PositionModel(5, 5), new PositionModel(5, 7)));
-        assertTrue(maze.isMoveValid(new PositionModel(5, 5), new PositionModel(7, 5)));
-        assertTrue(maze.isMoveValid(new PositionModel(5, 7), new PositionModel(5, 5)));
-        assertTrue(maze.isMoveValid(new PositionModel(7, 5), new PositionModel(5, 5)));
+        assertTrue(maze.isMoveValid(new GridPosition(5, 5), new GridPosition(5, 7)));
+        assertTrue(maze.isMoveValid(new GridPosition(5, 5), new GridPosition(7, 5)));
+        assertTrue(maze.isMoveValid(new GridPosition(5, 7), new GridPosition(5, 5)));
+        assertTrue(maze.isMoveValid(new GridPosition(7, 5), new GridPosition(5, 5)));
         // invalid moves (same position, diagonal, ending on wall, tunnel and corridor in same move)
-        assertFalse(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(1, 1)));
-        assertFalse(maze.isMoveValid(new PositionModel(1, 5), new PositionModel(5, 1)));
-        assertFalse(maze.isMoveValid(new PositionModel(5, 1), new PositionModel(1, 5)));
-        assertFalse(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(1, 0)));
-        assertFalse(maze.isMoveValid(new PositionModel(1, 1), new PositionModel(7, 1)));
+        assertFalse(maze.isMoveValid(new GridPosition(1, 1), new GridPosition(1, 1)));
+        assertFalse(maze.isMoveValid(new GridPosition(1, 5), new GridPosition(5, 1)));
+        assertFalse(maze.isMoveValid(new GridPosition(5, 1), new GridPosition(1, 5)));
+        assertFalse(maze.isMoveValid(new GridPosition(1, 1), new GridPosition(1, 0)));
+        assertFalse(maze.isMoveValid(new GridPosition(1, 1), new GridPosition(7, 1)));
     }
 
     @Test
-    public void testGetValidMoves() throws OutOfGridBoundsException {
+    public void testGetValidMoves() throws GridPositionOutOfBoundsException {
         // corridors of top-left finder pattern: 4-size list
-        assertEquals(4, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.DOWN).size());
-        assertEquals(4, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.RIGHT).size());
-        assertEquals(4, maze.getValidMoves(new PositionModel(5,5), MazeModel.Direction.UP).size());
-        assertEquals(4, maze.getValidMoves(new PositionModel(5,5), MazeModel.Direction.LEFT).size());
+        assertEquals(4, maze.getValidMoves(new GridPosition(1,1), MazeModel.Direction.DOWN).size());
+        assertEquals(4, maze.getValidMoves(new GridPosition(1,1), MazeModel.Direction.RIGHT).size());
+        assertEquals(4, maze.getValidMoves(new GridPosition(5,5), MazeModel.Direction.UP).size());
+        assertEquals(4, maze.getValidMoves(new GridPosition(5,5), MazeModel.Direction.LEFT).size());
         // over wall, all directions: 1-size list
-        assertEquals(1, maze.getValidMoves(new PositionModel(5,5), MazeModel.Direction.RIGHT).size());
-        assertEquals(1, maze.getValidMoves(new PositionModel(5,5), MazeModel.Direction.DOWN).size());
-        assertEquals(1, maze.getValidMoves(new PositionModel(7,5), MazeModel.Direction.LEFT).size());
-        assertEquals(1, maze.getValidMoves(new PositionModel(5,7), MazeModel.Direction.UP).size());
+        assertEquals(1, maze.getValidMoves(new GridPosition(5,5), MazeModel.Direction.RIGHT).size());
+        assertEquals(1, maze.getValidMoves(new GridPosition(5,5), MazeModel.Direction.DOWN).size());
+        assertEquals(1, maze.getValidMoves(new GridPosition(7,5), MazeModel.Direction.LEFT).size());
+        assertEquals(1, maze.getValidMoves(new GridPosition(5,7), MazeModel.Direction.UP).size());
         // out of bounds (left and up): 0-size list
-        assertEquals(0, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.UP).size());
-        assertEquals(0, maze.getValidMoves(new PositionModel(1,1), MazeModel.Direction.LEFT).size());
+        assertEquals(0, maze.getValidMoves(new GridPosition(1,1), MazeModel.Direction.UP).size());
+        assertEquals(0, maze.getValidMoves(new GridPosition(1,1), MazeModel.Direction.LEFT).size());
     }
 
     @Test

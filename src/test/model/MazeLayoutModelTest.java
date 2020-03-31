@@ -1,11 +1,13 @@
 package model;
 
 import exceptions.*;
+import grid.Grid;
+import grid.GridPosition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
 import ui.SquareDisplayData;
-import utils.GridArray;
+import grid.GridArray;
 import utils.Utilities;
 
 import java.io.File;
@@ -35,7 +37,7 @@ public class MazeLayoutModelTest {
         } catch (IllegalGridDataSizeException e) {
             fail(String.format("%s, mazeLayout should always be constructed with correct number of squares",
                     FAIL_ON_EXCEPTION));
-        } catch (OutOfGridBoundsException | IncorrectGridIterationException e) {
+        } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
             fail(String.format("%s, mazeLayout should always have QR elements generated correctly",
                     FAIL_ON_EXCEPTION));
         } catch (IncompleteMazeException e) {
@@ -72,16 +74,16 @@ public class MazeLayoutModelTest {
             // I'm only testing the corner, one square diagonal inwards, and the margin. THIS IS INTENTIONAL.
             // I'm not going to test every damn square!
             try {
-                assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new PositionModel(0, 0)));
-                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(1, 1)));
-                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(7, 7)));
-                assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new PositionModel(corner, 0)));
-                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(corner - 1, 1)));
-                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(corner - 7, 7)));
-                assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new PositionModel(0, corner)));
-                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(1, corner - 1)));
-                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new PositionModel(7, corner - 7)));
-            } catch (OutOfGridBoundsException e) {
+                assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new GridPosition(0, 0)));
+                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new GridPosition(1, 1)));
+                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new GridPosition(7, 7)));
+                assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new GridPosition(corner, 0)));
+                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new GridPosition(corner - 1, 1)));
+                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new GridPosition(corner - 7, 7)));
+                assertEquals(MazeLayoutModel.MazeSquare.WALL, layout.getSquare(new GridPosition(0, corner)));
+                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new GridPosition(1, corner - 1)));
+                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, layout.getSquare(new GridPosition(7, corner - 7)));
+            } catch (GridPositionOutOfBoundsException e) {
                 fail(String.format("%s, test should be checking squares in bounds",
                         FAIL_ON_EXCEPTION));
             }
@@ -96,14 +98,14 @@ public class MazeLayoutModelTest {
             try {
                 assertEquals(
                         MazeLayoutModel.MazeSquare.WALL,
-                        layout.getSquare(new PositionModel(alignCorner, alignCorner)));
+                        layout.getSquare(new GridPosition(alignCorner, alignCorner)));
                 assertEquals(
                         MazeLayoutModel.MazeSquare.PASSAGE,
-                        layout.getSquare(new PositionModel(alignCorner + 1, alignCorner + 1)));
+                        layout.getSquare(new GridPosition(alignCorner + 1, alignCorner + 1)));
                 assertEquals(
                         MazeLayoutModel.MazeSquare.WALL,
-                        layout.getSquare(new PositionModel(alignCorner + 2, alignCorner + 2)));
-            } catch (OutOfGridBoundsException e) {
+                        layout.getSquare(new GridPosition(alignCorner + 2, alignCorner + 2)));
+            } catch (GridPositionOutOfBoundsException e) {
                 fail(String.format("%s, test should be checking squares in bounds",
                         FAIL_ON_EXCEPTION));
             }
@@ -128,12 +130,12 @@ public class MazeLayoutModelTest {
                     // check horizontal pattern
                     assertEquals(
                             expected,
-                            layout.getSquare(new PositionModel(i, timingPosition)));
+                            layout.getSquare(new GridPosition(i, timingPosition)));
                     // check vertical pattern
                     assertEquals(
                             expected,
-                            layout.getSquare(new PositionModel(timingPosition, i)));
-                } catch (OutOfGridBoundsException e) {
+                            layout.getSquare(new GridPosition(timingPosition, i)));
+                } catch (GridPositionOutOfBoundsException e) {
                     fail(String.format("%s, test should be checking squares in bounds",
                             FAIL_ON_EXCEPTION));
                 }
@@ -148,8 +150,8 @@ public class MazeLayoutModelTest {
             try {
                 assertEquals(
                         MazeLayoutModel.MazeSquare.WALL,
-                        layout.getSquare(new PositionModel(darkModX, MazeSizeModel.getSideLength(layout.getSize()) - 8)));
-            } catch (OutOfGridBoundsException e) {
+                        layout.getSquare(new GridPosition(darkModX, MazeSizeModel.getSideLength(layout.getSize()) - 8)));
+            } catch (GridPositionOutOfBoundsException e) {
                 fail(String.format("%s, test should be checking squares in bounds",
                         FAIL_ON_EXCEPTION));
             }
@@ -158,13 +160,13 @@ public class MazeLayoutModelTest {
 
     @Test
     public void testGetSquare() {
-        PositionModel position = new PositionModel(1, 1);
+        GridPosition position = new GridPosition(1, 1);
         for (MazeLayoutModel layout : layouts) {
             try {
                 assertEquals(
                         MazeLayoutModel.MazeSquare.PASSAGE,
                         layout.getSquare(position));
-            } catch (OutOfGridBoundsException e) {
+            } catch (GridPositionOutOfBoundsException e) {
                 fail(String.format("%s, test mazes should be large enough for position to be in bounds",
                         FAIL_ON_EXCEPTION));
             }
@@ -177,21 +179,21 @@ public class MazeLayoutModelTest {
             SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
             SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
             SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
-            GridArray<SquareDisplayData> expectedFinder = new GridArray<>(7, 3,
+            Grid<SquareDisplayData> expectedFinder = new GridArray<>(7, 3,
                     new ArrayList<>(Arrays.asList(
                             wall, wall, wall, wall, wall, wall, wall,
                             wall, pass, pass, pass, pass, pass, wall,
                             wall, pass, wall, wall, wall, pass, wall)));
             try {
-                GridArray<SquareDisplayData> display = layout.display();
+                Grid<SquareDisplayData> display = layout.display();
                 for (int x = 0; x < 7; x++) {
                     for (int y = 0; y < 3; y++) {
-                        assertEquals(expectedFinder.get(x, y), display.get(x, y));
+                        assertEquals(expectedFinder.get(new GridPosition(x, y)), display.get(new GridPosition(x, y)));
                     }
                 }
-                assertNotEquals(empty, display.get(8, 0));
-                assertNotEquals(empty, display.get(8, 2));
-            } catch (OutOfGridBoundsException | IncorrectGridIterationException e) {
+                assertNotEquals(empty, display.get(new GridPosition(8, 0)));
+                assertNotEquals(empty, display.get(new GridPosition(8, 2)));
+            } catch (GridPositionOutOfBoundsException e) {
                 fail(String.format("%s, test should always be operating in bounds",
                         FAIL_ON_EXCEPTION));
             }
@@ -245,7 +247,7 @@ public class MazeLayoutModelTest {
         try {
             testMazeLayout = MazeLayoutModel.createMazeFromMazeContent(
                     MazeSizeModel.MazeSize.EXTRA_SMALL, testData);
-        } catch (OutOfGridBoundsException | IncorrectGridIterationException e) {
+        } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
             fail(String.format("%s, overlay is in grid bounds",
                     FAIL_ON_EXCEPTION));
         } catch (IllegalArgumentException e) {
@@ -265,8 +267,8 @@ public class MazeLayoutModelTest {
                 char savedSquare = testData.get(y).charAt(x);
                 Layout.MazeSquare testSquare = null;
                 try {
-                    testSquare = testMazeLayout.getSquare(new PositionModel(x, y));
-                } catch (OutOfGridBoundsException e) {
+                    testSquare = testMazeLayout.getSquare(new GridPosition(x, y));
+                } catch (GridPositionOutOfBoundsException e) {
                     fail(String.format("%s, test should be checking squares in bounds",
                             FAIL_ON_EXCEPTION));
                 }

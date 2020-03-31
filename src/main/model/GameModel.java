@@ -1,9 +1,11 @@
 package model;
 
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.Grid;
+import grid.GridPosition;
 import ui.SquareDisplayData;
-import utils.GridArray;
+import grid.GridArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,36 +24,36 @@ public class GameModel {
         this.maze = maze;
         // TODO: implement start point choice
         // currently using fixed start
-        setupEntities(new PositionModel(7, 0));
+        setupEntities(new GridPosition(7, 0));
     }
 
     // REQUIRES: hero's start position must be valid for given maze (based on maze size)
     // EFFECTS: construct new game with given maze
-    // meant for testing
-    public GameModel(MazeModel maze, PositionModel start) {
+    public GameModel(MazeModel maze, GridPosition start) {
+        // is public to allow testing
         this.maze = maze;
         setupEntities(start);
     }
 
-    private void setupEntities(PositionModel heroStart) {
+    private void setupEntities(GridPosition heroStart) {
         this.hero = new GameEntity(GameEntity.EntityType.HERO, heroStart);
         this.minotaur = new GameEntity(GameEntity.EntityType.MINOTAUR, maze.getMinotaurStartPosition());
         this.treasure = new GameEntity(GameEntity.EntityType.TREASURE, maze.getTreasurePosition());
     }
 
     // EFFECTS: returns current position of hero in maze
-    public PositionModel getHeroPosition() {
+    public GridPosition getHeroPosition() {
         return hero.getPosition();
     }
 
     // EFFECTS: returns current position of minotaur in maze
-    public PositionModel getMinotaurPosition() {
+    public GridPosition getMinotaurPosition() {
         return minotaur.getPosition();
     }
 
     // EFFECTS: if move is valid, move hero to end location and return true
     //          return false if move is not valid
-    public boolean moveHero(PositionModel end) throws OutOfGridBoundsException {
+    public boolean moveHero(GridPosition end) throws GridPositionOutOfBoundsException {
         if (maze.isMoveValid(hero.getPosition(), end)) {
             hero.setPosition(end);
             return true;
@@ -69,7 +71,7 @@ public class GameModel {
     //              will end move so it is orthogonal to hero if possible
     //              if both directions are equal, decides randomly
     //                  chooses horizontal when randomNumber is < 0.5
-    public boolean moveMinotaur() throws OutOfGridBoundsException {
+    public boolean moveMinotaur() throws GridPositionOutOfBoundsException {
         return moveMinotaur(random());
     }
 
@@ -78,16 +80,17 @@ public class GameModel {
     //          using given number to make diagonal movement decision instead of random
     //              horizontal if <0.5, vertical otherwise
     public boolean moveMinotaur(double randomNumber)
-            throws OutOfGridBoundsException { // TODO: needs proper handling
-        PositionModel minotaurPosition = minotaur.getPosition();
-        PositionModel heroPosition = hero.getPosition();
-        PositionModel delta = heroPosition.subtract(minotaurPosition);
-        if (delta.equals(new PositionModel(0, 0))) {
+            throws GridPositionOutOfBoundsException { // TODO: needs proper handling
+        GridPosition minotaurPosition = minotaur.getPosition();
+        GridPosition heroPosition = hero.getPosition();
+        GridPosition delta = heroPosition.subtract(minotaurPosition);
+        // TODO: replace this with handling of NONE direction
+        if (delta.equals(new GridPosition(0, 0))) {
             return true;
         }
         List<MazeModel.Direction> directions = decideDirection(delta, randomNumber);
         for (MazeModel.Direction direction : directions) {
-            List<PositionModel> possibleMoves = maze.getValidMoves(minotaurPosition, direction);
+            List<GridPosition> possibleMoves = maze.getValidMoves(minotaurPosition, direction);
             if (possibleMoves.size() > 0) {
                 minotaur.setPosition(getBestMinotaurMove(possibleMoves, direction, heroPosition));
                 return true;
@@ -98,16 +101,16 @@ public class GameModel {
 
     // EFFECTS: returns best minotaur move out of list of possible moves
     //          best = puts minotaur on hero, else puts minotaur orthogonal to hero, else greatest distance
-    private PositionModel getBestMinotaurMove(
-            List<PositionModel> possibleMoves, MazeModel.Direction direction, PositionModel heroPosition) {
+    private GridPosition getBestMinotaurMove(
+            List<GridPosition> possibleMoves, MazeModel.Direction direction, GridPosition heroPosition) {
         if (direction == MazeModel.Direction.LEFT || direction == MazeModel.Direction.RIGHT) {
-            for (PositionModel possibleMove : possibleMoves) {
+            for (GridPosition possibleMove : possibleMoves) {
                 if (possibleMove.getX() == heroPosition.getX()) {
                     return possibleMove;
                 }
             }
         } else {
-            for (PositionModel possibleMove : possibleMoves) {
+            for (GridPosition possibleMove : possibleMoves) {
                 if (possibleMove.getY() == heroPosition.getY()) {
                     return possibleMove;
                 }
@@ -117,10 +120,11 @@ public class GameModel {
     }
 
     // REQUIRES: at least one of x, y in delta is non-zero
+    // TODO: add NONE direction when delta is 0
     // EFFECTS: returns list of correct directions for minotaur to move based on movement rules
     //          if orthogonal, move towards hero; list has only 1 element
     //          if diagonal, choose shorter move between x and y, or random if equal; list has 2 elements
-    private List<MazeModel.Direction> decideDirection(PositionModel delta, double random) {
+    private List<MazeModel.Direction> decideDirection(GridPosition delta, double random) {
         List<MazeModel.Direction> directions;
         if (delta.getX() != 0 && delta.getY() != 0) {
             directions = decideDirectionDiagonal(delta, random);
@@ -133,21 +137,22 @@ public class GameModel {
 
     // REQUIRES: both x and y in delta are non-zero
     // EFFECTS: returns list of correct directions for minotaur when diagonal to hero
-    private List<MazeModel.Direction> decideDirectionDiagonal(PositionModel delta, double random) {
+    //          list ordered based on minotaur movement rules (shortest orthagonal distance first)
+    private List<MazeModel.Direction> decideDirectionDiagonal(GridPosition delta, double random) {
         List<MazeModel.Direction> deltas = new ArrayList<>();
         if (abs(delta.getX()) < abs(delta.getY())) {
-            deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
-            deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
+            deltas.add(getDirectionFromDelta(new GridPosition(delta.getX(), 0)));
+            deltas.add(getDirectionFromDelta(new GridPosition(0, delta.getY())));
         } else if (abs(delta.getY()) < abs(delta.getX())) {
-            deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
-            deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
+            deltas.add(getDirectionFromDelta(new GridPosition(0, delta.getY())));
+            deltas.add(getDirectionFromDelta(new GridPosition(delta.getX(), 0)));
         } else {
             if (random < 0.5) {
-                deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
-                deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
+                deltas.add(getDirectionFromDelta(new GridPosition(delta.getX(), 0)));
+                deltas.add(getDirectionFromDelta(new GridPosition(0, delta.getY())));
             } else {
-                deltas.add(getDirectionFromDelta(new PositionModel(0, delta.getY())));
-                deltas.add(getDirectionFromDelta(new PositionModel(delta.getX(), 0)));
+                deltas.add(getDirectionFromDelta(new GridPosition(0, delta.getY())));
+                deltas.add(getDirectionFromDelta(new GridPosition(delta.getX(), 0)));
             }
         }
         return deltas;
@@ -155,7 +160,7 @@ public class GameModel {
 
     // REQUIRES: only one of x, y in delta is 0
     // EFFECTS: returns Direction corresponding to given delta
-    private MazeModel.Direction getDirectionFromDelta(PositionModel delta) {
+    private MazeModel.Direction getDirectionFromDelta(GridPosition delta) {
         if (delta.getX() != 0) {
             if (delta.getX() > 0) {
                 return MazeModel.Direction.RIGHT;
@@ -192,8 +197,8 @@ public class GameModel {
     }
 
     // EFFECTS: return list of SquareDisplayData instances to display the current game state
-    public GridArray<SquareDisplayData> display() throws OutOfGridBoundsException, IncorrectGridIterationException {
-        GridArray<SquareDisplayData> display = maze.displayMaze();
+    public Grid<SquareDisplayData> display() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
+        Grid<SquareDisplayData> display = maze.displayMaze();
         overlayGameElement(treasure, display);
         overlayGameElement(hero, display);
         overlayGameElement(minotaur, display);
@@ -202,9 +207,8 @@ public class GameModel {
 
     // MODIFIES: display
     // EFFECTS: return new list of display data with game element added at given position
-    private void overlayGameElement(GameEntity entity, GridArray<SquareDisplayData> display)
-            throws OutOfGridBoundsException {
-        PositionModel position = entity.getPosition();
+    private void overlayGameElement(GameEntity entity, Grid<SquareDisplayData> display) {
+        GridPosition position = entity.getPosition();
         SquareDisplayData squareDisplay = display.get(position);
         squareDisplay.addEntityType(entity.getEntityType());
         display.set(position, squareDisplay);

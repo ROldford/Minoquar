@@ -1,15 +1,17 @@
 package model;
 
-import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
+import grid.Grid;
+import grid.GridIterator;
+import grid.GridPosition;
 import ui.SquareDisplayData;
-import utils.GridArray;
+import grid.GridArray;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 // stores grid layout of given dimensions, can return state of square, and add other layouts on top of itself
-public class Layout {
+public class Layout implements Iterable<Layout.MazeSquare> {
 
     public enum MazeSquare {
         WALL,
@@ -23,7 +25,7 @@ public class Layout {
 
 //    int width;
 //    int height;
-    GridArray<MazeSquare> layout;
+    Grid<MazeSquare> grid;
 
     // EFFECTS: construct grid layout of given width and height with all squares empty
     //          TODO: document IllegalGridDataSizeException
@@ -34,7 +36,7 @@ public class Layout {
         for (int i = 0; i < (width * height); i++) {
             layoutEmpty.add(i, MazeSquare.EMPTY);
         }
-        this.layout = new GridArray<>(width, height, layoutEmpty);
+        this.grid = new GridArray<>(width, height, layoutEmpty);
     }
 
     // EFFECTS: construct grid layout of given width and height using squares from preset layout
@@ -42,74 +44,109 @@ public class Layout {
     public Layout(int width, int height, List<MazeSquare> presetLayout) {
 //        this.width = width;
 //        this.height = height;
-        this.layout = new GridArray<>(width, height, presetLayout);
+        this.grid = new GridArray<>(width, height, presetLayout);
     }
 
     // EFFECTS: returns status of square at given position
-    public MazeSquare getSquare(PositionModel position) throws OutOfGridBoundsException {
-        return layout.get(position);
+    // TODO: document exceptions from Grid
+    public MazeSquare getSquare(GridPosition position) {
+        return grid.get(position);
     }
 
     // EFFECTS: return width of maze
     public int getWidth() {
-        return layout.getWidth();
+        return grid.getWidth();
     }
 
     // EFFECTS: return width of maze
     public int getHeight() {
-        return layout.getHeight();
+        return grid.getHeight();
+    }
+
+    // EFFECTS: return true if position lies in bounds of layout
+    public boolean inBounds(GridPosition position) {
+        return grid.inBounds(position);
     }
 
     // EFFECTS: return GridArray of SquareDisplayData to display the current layout
-    public GridArray<SquareDisplayData> display() throws IncorrectGridIterationException {
-        GridArray<SquareDisplayData> displayData = new GridArray<>(getWidth(), getHeight());
-        for (int x = 0; x < getWidth(); x++) {
-            for (int y = 0; y < getHeight(); y++) {
-                PositionModel position = new PositionModel(x, y);
-                SquareDisplayData squareDisplay = null;
-                try {
-                    squareDisplay = new SquareDisplayData(layout.get(position), new ArrayList<>());
-                    displayData.set(x, y, squareDisplay);
-                } catch (OutOfGridBoundsException e) {
-                    throw new IncorrectGridIterationException(position);
-                }
-            }
+    public Grid<SquareDisplayData> display() {
+        Grid<SquareDisplayData> displayData = new GridArray<>(getWidth(), getHeight());
+        GridIterator<MazeSquare> gridIterator = grid.gridCellIterator();
+        GridIterator<SquareDisplayData> displayIterator = displayData.gridCellIterator();
+        while (gridIterator.hasNext()) {
+            MazeSquare gridSquare = gridIterator.next();
+//            SquareDisplayData displaySquare = displayIterator.next();
+//            displaySquare = new SquareDisplayData(gridSquare);
+            displayIterator.next();
+            displayIterator.set(new SquareDisplayData(gridSquare));
         }
+//        GridArray<SquareDisplayData> displayData = new GridArray<>(getWidth(), getHeight());
+//        for (int x = 0; x < getWidth(); x++) {
+//            for (int y = 0; y < getHeight(); y++) {
+//                GridPosition position = new GridPosition(x, y);
+//                SquareDisplayData squareDisplay = null;
+//                try {
+//                    squareDisplay = new SquareDisplayData(grid.get(position), new ArrayList<>());
+//                    displayData.set(x, y, squareDisplay);
+//                } catch (GridPositionOutOfBoundsException e) {
+//                    throw new IncorrectGridIterationException(position);
+//                }
+//            }
+//        }
         return displayData;
     }
 
     // MODIFIES: this
-    // EFFECTS: overwrites other layout on top of squares on this layout
-    public void overwrite(PositionModel overwriteStart, Layout other)
-            throws IncorrectGridIterationException, OutOfGridBoundsException {
-        PositionModel overwriteEnd = overwriteStart.add(
-                new PositionModel(other.getWidth() - 1, other.getHeight() - 1));
-        if (isInBounds(overwriteStart, overwriteEnd)) {
-            for (int x = 0; x < other.getWidth(); x++) {
-                for (int y = 0; y < other.getHeight(); y++) {
-                    try {
-                        layout.set(
-                                overwriteStart.add(new PositionModel(x, y)),
-                                other.getSquare(new PositionModel(x, y)));
-                    } catch (OutOfGridBoundsException e) {
-                        throw new IncorrectGridIterationException(x, y);
-                    }
-                }
-            }
-        } else {
-            throw new OutOfGridBoundsException(overwriteStart, overwriteEnd);
+    // EFFECTS: overwrites source layout on top of squares on this layout
+    // TODO: rewrite to use GridArray subGrid (like List's subList)
+    public void overwrite(GridPosition overwriteStart, Layout source) {
+        // subgrid setup
+        GridPosition overwriteEnd = overwriteStart.add(
+                new GridPosition(source.getWidth() - 1, source.getHeight() - 1));
+        Grid<MazeSquare> target = subLayout(overwriteStart, overwriteEnd);
+        // iteration over source and target
+        GridIterator<MazeSquare> targetIterator = target.gridCellIterator();
+        GridIterator<MazeSquare> sourceIterator = source.gridCellIterator();
+        while (sourceIterator.hasNext()) {
+            MazeSquare sourceSquare = sourceIterator.next();
+//            MazeSquare targetSquare = targetIterator.next();
+            targetIterator.next();
+            targetIterator.set(sourceSquare);
         }
 
+
+//        if (isInBounds(overwriteStart, overwriteEnd)) {
+//            for (int x = 0; x < other.getWidth(); x++) {
+//                for (int y = 0; y < other.getHeight(); y++) {
+//                    try {
+//                        grid.set(
+//                                overwriteStart.add(new GridPosition(x, y)),
+//                                other.getSquare(new GridPosition(x, y)));
+//                    } catch (GridPositionOutOfBoundsException e) {
+//                        throw new IncorrectGridIterationException(x, y);
+//                    }
+//                }
+//            }
+//        } else {
+//            throw new GridPositionOutOfBoundsException("out of bounds");
+//        }
     }
 
-    // EFFECTS: return true if position lies in bounds of layout
-    public boolean isInBounds(PositionModel position) {
-        return layout.isInBounds(position);
+    private Grid<MazeSquare> subLayout(GridPosition start, GridPosition end) {
+        return grid.subGrid(start, end);
     }
 
-    // EFFECTS: return true if area lies in bounds of layout
-    //          start = NW corner, end = SE corner
-    public boolean isInBounds(PositionModel start, PositionModel end) {
-        return layout.isInBounds(start, end);
+    public Iterator<MazeSquare> iterator() {
+        return grid.iterator();
     }
+
+    public GridIterator<MazeSquare> gridCellIterator() {
+        return grid.gridCellIterator();
+    }
+
+//    // EFFECTS: return true if area lies in bounds of layout
+//    //          start = NW corner, end = SE corner
+//    public boolean isInBounds(GridPosition start, GridPosition end) {
+//        return grid.isInBounds(start, end);
+//    }
 }

@@ -4,7 +4,6 @@
 package persistence;
 
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
 import model.MazeListModel;
 import model.MazeModel;
 import org.junit.jupiter.api.Assertions;

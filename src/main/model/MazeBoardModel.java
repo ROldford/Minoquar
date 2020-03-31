@@ -1,11 +1,10 @@
 package model;
 
-import exceptions.IncompleteMazeException;
 import exceptions.IncorrectGridIterationException;
-import exceptions.InvalidMazeSaveDataException;
-import exceptions.OutOfGridBoundsException;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.Grid;
+import grid.GridPosition;
 import ui.SquareDisplayData;
-import utils.GridArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class MazeBoardModel {
     }
 
     // EFFECTS: return state of board square at given position
-    public MazeLayoutModel.MazeSquare getSquare(PositionModel position) throws OutOfGridBoundsException {
+    public MazeLayoutModel.MazeSquare getSquare(GridPosition position) throws GridPositionOutOfBoundsException {
         return mazeLayout.getSquare(position);
     }
 
@@ -40,20 +39,20 @@ public class MazeBoardModel {
     //           start and end are on same orthogonal line
     //           start and end are not same position
     // EFFECTS: returns list of squares between start and end (exclusive)
-    public List<MazeLayoutModel.MazeSquare> getSquaresBetween(PositionModel start, PositionModel end)
-            throws OutOfGridBoundsException {
+    public List<MazeLayoutModel.MazeSquare> getSquaresBetween(GridPosition start, GridPosition end)
+            throws GridPositionOutOfBoundsException {
         List<MazeLayoutModel.MazeSquare> betweenList = new ArrayList<>();
         int deltaX = end.getX() - start.getX();
         int deltaY = end.getY() - start.getY();
         if (deltaX == 0) {
             int sign = Integer.signum(deltaY);
             for (int i = start.getY() + sign; Math.abs(i - end.getY()) > 0; i += sign) {
-                betweenList.add(getSquare(new PositionModel(start.getX(), i)));
+                betweenList.add(getSquare(new GridPosition(start.getX(), i)));
             }
         } else {
             int sign = Integer.signum(deltaX);
             for (int i = start.getX() + sign; Math.abs(i - end.getX()) > 0; i += sign) {
-                betweenList.add(getSquare(new PositionModel(i, start.getY())));
+                betweenList.add(getSquare(new GridPosition(i, start.getY())));
             }
         }
         return betweenList;
@@ -61,18 +60,18 @@ public class MazeBoardModel {
 
     // EFFECTS: returns position of treasure in maze layout
     //          located in top right corner passage of alignment pattern
-    public PositionModel getTreasurePosition() {
+    public GridPosition getTreasurePosition() {
         return mazeLayout.getTreasurePosition();
     }
 
     // EFFECTS: gets minotaur start position (PASSAGE square closest to center)
     //          uses breadth first search, starting from middle square
-    public PositionModel getMinotaurStartPosition() {
+    public GridPosition getMinotaurStartPosition() {
         return mazeLayout.getMinotaurStartPosition();
     }
 
     // EFFECTS: return list of strings to display the current maze board
-    public GridArray<SquareDisplayData> display() throws IncorrectGridIterationException {
+    public Grid<SquareDisplayData> display() throws IncorrectGridIterationException {
         return mazeLayout.display();
     }
 
@@ -82,20 +81,20 @@ public class MazeBoardModel {
     }
 
     // EFFECTS: returns squares from start to edge of board in given direction
-    public List<PositionModel> getSquaresInDirection(PositionModel start, MazeModel.Direction direction) {
-        PositionModel increment;
-        List<PositionModel> squares = new ArrayList<>();
+    public List<GridPosition> getSquaresInDirection(GridPosition start, MazeModel.Direction direction) {
+        GridPosition increment;
+        List<GridPosition> squares = new ArrayList<>();
         if (direction == MazeModel.Direction.UP) {
-            increment = new PositionModel(0, -1);
+            increment = new GridPosition(0, -1);
         } else if (direction == MazeModel.Direction.DOWN) {
-            increment = new PositionModel(0, 1);
+            increment = new GridPosition(0, 1);
         } else if (direction == MazeModel.Direction.LEFT) {
-            increment = new PositionModel(-1, 0);
+            increment = new GridPosition(-1, 0);
         } else {
-            increment = new PositionModel(1, 0);
+            increment = new GridPosition(1, 0);
         }
-        PositionModel possibleEnd = start.add(increment);
-        while (mazeLayout.isInBounds(possibleEnd)) {
+        GridPosition possibleEnd = start.add(increment);
+        while (mazeLayout.inBounds(possibleEnd)) {
             squares.add(possibleEnd);
             possibleEnd = possibleEnd.add(increment);
         }

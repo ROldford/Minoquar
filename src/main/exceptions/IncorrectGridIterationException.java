@@ -1,6 +1,6 @@
 package exceptions;
 
-import model.PositionModel;
+import grid.GridPosition;
 
 // Indicates that grid iteration has gone out of grid bounds
 // This is usually due to problems in iteration code, such as incorrect loop termination conditions
@@ -12,7 +12,7 @@ public class IncorrectGridIterationException extends Exception {
         super(DEFAULT_MESSAGE);
     }
 
-    public IncorrectGridIterationException(PositionModel position) {
+    public IncorrectGridIterationException(GridPosition position) {
         this(position.getX(), position.getY());
     }
 

@@ -1,9 +1,11 @@
 package ui;
 
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
-import model.PositionModel;
-import utils.GridArray;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.Grid;
+import grid.GridIterator;
+import grid.GridPosition;
+import grid.GridArray;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,52 +16,72 @@ public class MazeUIPanel extends JPanel {
     // need to fine tune, so mazes of all sizes start square
     private static final int SQUARE_SIZE = 15;
 
-    private GridArray<MazeSquarePanel> panelList;
+    private Grid<MazeSquarePanel> panelGrid;
     private GameUI gameUI;
 
     // TODO: use trick from https://stackoverflow.com/questions/21142686/making-a-robust-resizable-swing-chess-gui
     //       (override getPreferredSize, constrain in GridBagLayout) so mazePanel stays square
     // REQUIRES: displayData is square (width = height)
     // EFFECTS: creates new MazeUIPanel with grid of maze squares of given side length
-    public MazeUIPanel(GridArray<SquareDisplayData> displayData, GameUI gameUI)
-            throws OutOfGridBoundsException {  // TODO: replace throw with actual handling
+    public MazeUIPanel(Grid<SquareDisplayData> displayData, GameUI gameUI)
+            throws GridPositionOutOfBoundsException {  // TODO: replace throw with actual handling
         int sideLength = displayData.getWidth();
-        this.panelList = new GridArray<>(sideLength);
+        this.panelGrid = new GridArray<>(sideLength);
         this.gameUI = gameUI;
         setLayout(new GridLayout(sideLength, sideLength));
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         setPreferredSize(new Dimension(sideLength * SQUARE_SIZE, sideLength * SQUARE_SIZE));
         // TODO: iterateSimultaneously for GridArrays
-        for (int y = 0; y < sideLength; y++) {
-            for (int x = 0; x < sideLength; x++) {
-                MazeSquarePanel panel = new MazeSquarePanel(displayData.get(x, y), this);
-                panelList.set(x, y, panel);
-                add(panel);
-            }
+        GridIterator<SquareDisplayData> displayIterator = displayData.gridCellIterator();
+        GridIterator<MazeSquarePanel> panelIterator = panelGrid.gridCellIterator();
+        while (displayIterator.hasNext()) {
+            SquareDisplayData displaySquare = displayIterator.next();
+            MazeSquarePanel panel = new MazeSquarePanel(displaySquare, this);
+            panelIterator.next();
+            panelIterator.set(panel);
+            add(panel);
         }
+//        for (int y = 0; y < sideLength; y++) {
+//            for (int x = 0; x < sideLength; x++) {
+//                MazeSquarePanel panel = new MazeSquarePanel(displayData.get(x, y), this);
+//                panelGrid.set(x, y, panel);
+//                add(panel);
+//            }
+//        }
         setVisible(true);
     }
 
     public void handleClick(ActionEvent e) {
         try {
             MazeSquarePanel clickedPanel = (MazeSquarePanel) e.getSource();
-            PositionModel position = panelList.getPositionOfElement(clickedPanel);
+            GridPosition position = panelGrid.positionOf(clickedPanel);
             gameUI.handleClickAt(position);
         } catch (ClassCastException cce) {
             System.out.println("Click on maze panel could not be cast properly");
-        } catch (OutOfGridBoundsException | IncorrectGridIterationException ex) {
+        } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException ex) {
             ex.printStackTrace();  // TODO: properly catch this!
         }
     }
 
-    // REQUIRES: displayData has same dimensions as panelList
     // EFFECTS: updates maze display
-    public void updateDisplay(GridArray<SquareDisplayData> displayData)
-            throws OutOfGridBoundsException {  // TODO: any way to handle this properly?
-        for (int x = 0; x < displayData.getWidth(); x++) {
-            for (int y = 0; y < displayData.getHeight(); y++) {
-                panelList.get(x, y).updateDisplay(displayData.get(x, y));
-            }
+    public void updateDisplay(Grid<SquareDisplayData> displayData) throws IllegalArgumentException {
+        if (panelGrid.getWidth() != displayData.getWidth() || panelGrid.getHeight() != displayData.getHeight()) {
+            throw new IllegalArgumentException(String.format(
+                    "Display data: %d wide x %d high, Game panels: %d wide x %d high",
+                    displayData.getWidth(), displayData.getHeight(),
+                    panelGrid.getWidth(), panelGrid.getHeight()));
         }
+        GridIterator<MazeSquarePanel> panelIterator = panelGrid.gridCellIterator();
+        GridIterator<SquareDisplayData> displayIterator = displayData.gridCellIterator();
+        while (displayIterator.hasNext()) {
+            MazeSquarePanel panel = panelIterator.next();
+            SquareDisplayData displaySquare = displayIterator.next();
+            panel.updateDisplay(displaySquare);
+        }
+//        for (int x = 0; x < displayData.getWidth(); x++) {
+//            for (int y = 0; y < displayData.getHeight(); y++) {
+//                panelGrid.get(x, y).updateDisplay(displayData.get(x, y));
+//            }
+//        }
     }
 }

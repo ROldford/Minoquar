@@ -1,10 +1,11 @@
 package model;
 
-import exceptions.IncompleteMazeException;
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
+import exceptions.GridPositionOutOfBoundsException;
+import grid.Grid;
+import grid.GridPosition;
 import ui.SquareDisplayData;
-import utils.GridArray;
+import grid.GridArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,19 +85,19 @@ public class MazeModel {
 
     // EFFECTS: returns position of treasure in maze layout
     //          located in top right corner passage of alignment pattern
-    public PositionModel getTreasurePosition() {
+    public GridPosition getTreasurePosition() {
         return mazeBoard.getTreasurePosition();
     }
 
     // EFFECTS: gets minotaur start position (PASSAGE square closest to center)
     //          uses breadth first search, starting from middle square
-    public PositionModel getMinotaurStartPosition() {
+    public GridPosition getMinotaurStartPosition() {
         return mazeBoard.getMinotaurStartPosition();
     }
 
     // REQUIRES: start and end are within maze bounds
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
-    public boolean isMoveValid(PositionModel start, PositionModel end) throws OutOfGridBoundsException {
+    public boolean isMoveValid(GridPosition start, GridPosition end) throws GridPositionOutOfBoundsException {
         boolean samePosition = start.equals(end);
         boolean orthogonal = areSquaresOrthogonal(start, end);
         boolean endOnWall = mazeBoard.getSquare(end) == Layout.MazeSquare.WALL;
@@ -108,11 +109,11 @@ public class MazeModel {
     }
 
     // EFFECTS: returns list of valid move endpoints from given start position in given direction
-    public List<PositionModel> getValidMoves(PositionModel start, Direction direction)
-            throws OutOfGridBoundsException {
-        List<PositionModel> squaresInDirection = mazeBoard.getSquaresInDirection(start, direction);
-        List<PositionModel> validMoves = new ArrayList<>();
-        for (PositionModel possibleEnd : squaresInDirection) {
+    public List<GridPosition> getValidMoves(GridPosition start, Direction direction)
+            throws GridPositionOutOfBoundsException {
+        List<GridPosition> squaresInDirection = mazeBoard.getSquaresInDirection(start, direction);
+        List<GridPosition> validMoves = new ArrayList<>();
+        for (GridPosition possibleEnd : squaresInDirection) {
             if (isMoveValid(start, possibleEnd)) {
                 validMoves.add(possibleEnd);
             }
@@ -141,7 +142,7 @@ public class MazeModel {
     }
 
     // EFFECTS: return list of strings to display the current maze
-    public GridArray<SquareDisplayData> displayMaze() throws IncorrectGridIterationException {
+    public Grid<SquareDisplayData> displayMaze() throws IncorrectGridIterationException {
         return mazeBoard.display();
     }
 
@@ -159,7 +160,7 @@ public class MazeModel {
         return saveData;
     }
 
-    private boolean areSquaresOrthogonal(PositionModel start, PositionModel end) {
+    private boolean areSquaresOrthogonal(GridPosition start, GridPosition end) {
         return start.getX() == end.getX() || start.getY() == end.getY();
     }
 

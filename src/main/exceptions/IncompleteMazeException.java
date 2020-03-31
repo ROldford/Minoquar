@@ -1,9 +1,10 @@
 package exceptions;
 
-public class IncompleteMazeException extends Exception {
-    public static final String DEFAULT_MESSAGE = "Maze has EMPTY squares";
+// TODO: document
+public class IncompleteMazeException extends RuntimeException {
 
-    public IncompleteMazeException() {
-        super(DEFAULT_MESSAGE);
+    // TODO: document
+    public IncompleteMazeException(String message) {
+        super(message);
     }
 }

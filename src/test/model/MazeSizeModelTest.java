@@ -1,5 +1,6 @@
 package model;
 
+import grid.GridPosition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Utilities;
@@ -83,7 +84,7 @@ class MazeSizeModelTest {
         Utilities.iterateSimultaneously(
                 expectedNonZeroPositions, sizes,
                 (Integer expected, MazeSizeModel.MazeSize size) -> {
-                    List<PositionModel> positions = MazeSizeModel.getFinderPatternPositions(size);
+                    List<GridPosition> positions = MazeSizeModel.getFinderPatternPositions(size);
                     assertEquals(0, positions.get(0).getX());
                     assertEquals(0, positions.get(0).getY());
                     assertEquals(expected, positions.get(1).getX());
@@ -95,24 +96,24 @@ class MazeSizeModelTest {
 
     @Test
     public void testGetFinderMarginPositions() {
-        List<List<PositionModel>> expectedAllSizes = new ArrayList<>();
+        List<List<GridPosition>> expectedAllSizes = new ArrayList<>();
         for (int i = 2; i <= 6; i++) {
-            List<PositionModel> expectedThisSize = new ArrayList<>();
-            expectedThisSize.add(new PositionModel(7, 0));
-            expectedThisSize.add(new PositionModel(0, 7));
-            expectedThisSize.add(new PositionModel(4 * i + 9, 0));
-            expectedThisSize.add(new PositionModel(4 * i + 10, 7));
-            expectedThisSize.add(new PositionModel(7, 4 * i + 9));
-            expectedThisSize.add(new PositionModel(0, 4 * i + 9));
+            List<GridPosition> expectedThisSize = new ArrayList<>();
+            expectedThisSize.add(new GridPosition(7, 0));
+            expectedThisSize.add(new GridPosition(0, 7));
+            expectedThisSize.add(new GridPosition(4 * i + 9, 0));
+            expectedThisSize.add(new GridPosition(4 * i + 10, 7));
+            expectedThisSize.add(new GridPosition(7, 4 * i + 9));
+            expectedThisSize.add(new GridPosition(0, 4 * i + 9));
             expectedAllSizes.add(expectedThisSize);
         }
         Utilities.iterateSimultaneously(
                 sizes, expectedAllSizes,
-                (MazeSizeModel.MazeSize size, List<PositionModel> expectedPositions) -> {
-                    List<PositionModel> actualPositions = MazeSizeModel.getFinderMarginPositions(size);
+                (MazeSizeModel.MazeSize size, List<GridPosition> expectedPositions) -> {
+                    List<GridPosition> actualPositions = MazeSizeModel.getFinderMarginPositions(size);
                     Utilities.iterateSimultaneously(
                             expectedPositions, actualPositions,
-                            (PositionModel expected, PositionModel actual) -> {
+                            (GridPosition expected, GridPosition actual) -> {
                                 assertEquals(expected.getX(), actual.getX());
                                 assertEquals(expected.getY(), actual.getY());
                             });
@@ -132,7 +133,7 @@ class MazeSizeModelTest {
 
     @Test
     public void testGetTimingPatternPositions() {
-        List<PositionModel> timingPositions = MazeSizeModel.getTimingPatternPositions();
+        List<GridPosition> timingPositions = MazeSizeModel.getTimingPatternPositions();
         assertEquals(2, timingPositions.size());
         assertEquals(6, timingPositions.get(0).getX());
         assertEquals(8, timingPositions.get(0).getY());
@@ -153,17 +154,17 @@ class MazeSizeModelTest {
 
     @Test
     public void testGetDarkModulePosition() {
-        List<PositionModel> expectedPositions = new ArrayList<>(Arrays.asList(
-                new PositionModel(8, 4*2+9),
-                new PositionModel(8, 4*3+9),
-                new PositionModel(8, 4*4+9),
-                new PositionModel(8, 4*5+9),
-                new PositionModel(8, 4*6+9)
+        List<GridPosition> expectedPositions = new ArrayList<>(Arrays.asList(
+                new GridPosition(8, 4*2+9),
+                new GridPosition(8, 4*3+9),
+                new GridPosition(8, 4*4+9),
+                new GridPosition(8, 4*5+9),
+                new GridPosition(8, 4*6+9)
         ));
         Utilities.iterateSimultaneously(
                 expectedPositions, sizes,
-                (PositionModel expected, MazeSizeModel.MazeSize size) -> {
-                    PositionModel actual = MazeSizeModel.getDarkModulePosition(size);
+                (GridPosition expected, MazeSizeModel.MazeSize size) -> {
+                    GridPosition actual = MazeSizeModel.getDarkModulePosition(size);
                     assertEquals(expected.getX(), actual.getX());
                     assertEquals(expected.getY(), actual.getY());
                 });

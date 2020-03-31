@@ -1,5 +1,7 @@
 package model;
 
+import grid.GridPosition;
+
 import java.util.*;
 
 // Gives details about each maze size, which correspond to QR Code Versions 2-6,
@@ -87,31 +89,31 @@ public final class MazeSizeModel {
 
     // EFFECTS: return positions of each recognition pattern's top left corner
     //          pattern order: top left, top right, bottom left
-    public static List<PositionModel> getFinderPatternPositions(MazeSize size) {
+    public static List<GridPosition> getFinderPatternPositions(MazeSize size) {
         return new ArrayList<>(Arrays.asList(
-                new PositionModel(0, 0),
-                new PositionModel(4 * getVersion(size) + 10, 0),
-                new PositionModel(0, 4 * getVersion(size) + 10)
+                new GridPosition(0, 0),
+                new GridPosition(4 * getVersion(size) + 10, 0),
+                new GridPosition(0, 4 * getVersion(size) + 10)
         ));
     }
 
     // EFFECTS: return positions of each finder pattern margin's top left corner
     //          each pattern has 2 margins, order given is vertical margin, horizontal margin
     //          pattern order: top left, top right, bottom left
-    public static List<PositionModel> getFinderMarginPositions(MazeSize size) {
+    public static List<GridPosition> getFinderMarginPositions(MazeSize size) {
         return new ArrayList<>(Arrays.asList(
-                new PositionModel(7, 0),
-                new PositionModel(0, 7),
-                new PositionModel(4 * getVersion(size) + 9, 0),
-                new PositionModel(4 * getVersion(size) + 10, 7),
-                new PositionModel(7, 4 * getVersion(size) + 9),
-                new PositionModel(0, 4 * getVersion(size) + 9)
+                new GridPosition(7, 0),
+                new GridPosition(0, 7),
+                new GridPosition(4 * getVersion(size) + 9, 0),
+                new GridPosition(4 * getVersion(size) + 10, 7),
+                new GridPosition(7, 4 * getVersion(size) + 9),
+                new GridPosition(0, 4 * getVersion(size) + 9)
         ));
     }
 
     // EFFECTS: return position of alignment pattern's top-left corner
-    public static PositionModel getAlignPatternPosition(MazeSize size) {
-        return new PositionModel(
+    public static GridPosition getAlignPatternPosition(MazeSize size) {
+        return new GridPosition(
                 4 * getVersion(size) + 8,
                 4 * getVersion(size) + 8);
     }
@@ -119,10 +121,10 @@ public final class MazeSizeModel {
     // EFFECTS: return positions of each timing pattern's top-left corner
     //          2 timing patterns, order given is vertical pattern, then horizontal pattern
     //          timing patterns start near top-left finding pattern, so their start positions are fixed for all sizes
-    public static List<PositionModel> getTimingPatternPositions() {
+    public static List<GridPosition> getTimingPatternPositions() {
         return new ArrayList<>(Arrays.asList(
-                new PositionModel(6, 8),
-                new PositionModel(8, 6)
+                new GridPosition(6, 8),
+                new GridPosition(8, 6)
         ));
     }
 
@@ -132,12 +134,12 @@ public final class MazeSizeModel {
     }
 
     // EFFECTS: return position of dark module
-    public static PositionModel getDarkModulePosition(MazeSize size) {
-        return new PositionModel(8, 4 * getVersion(size) + 9); //stub
+    public static GridPosition getDarkModulePosition(MazeSize size) {
+        return new GridPosition(8, 4 * getVersion(size) + 9); //stub
     }
 
-    public static PositionModel getTreasurePosition(MazeSize size) {
-        return getAlignPatternPosition(size).add(new PositionModel(1, 1));
+    public static GridPosition getTreasurePosition(MazeSize size) {
+        return getAlignPatternPosition(size).add(new GridPosition(1, 1));
     }
 
     // TODO: implement getStartPositions()

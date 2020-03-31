@@ -1,6 +1,8 @@
 package model;
 
 import exceptions.*;
+import grid.GridIterator;
+import grid.GridPosition;
 import persistence.Reader;
 import utils.Utilities;
 
@@ -44,14 +46,14 @@ public class MazeLayoutModel extends Layout {
     // EFFECTS: create random maze layout of given size
     // TODO: document exceptions (should not normally be thrown)
     public static MazeLayoutModel createRandomMaze(MazeSizeModel.MazeSize size)
-            throws OutOfGridBoundsException, IncorrectGridIterationException, IncompleteMazeException {
+            throws GridPositionOutOfBoundsException, IncorrectGridIterationException, IncompleteMazeException {
         MazeLayoutModel randomMaze = new MazeLayoutModel(size);
         randomMaze.addQRCodeElements();
         randomMaze.fillRemainingSquares();
         if (isMazeComplete(randomMaze)) {
             return randomMaze;
         } else {
-            throw new IncompleteMazeException();
+            throw new IncompleteMazeException("Maze has empty squares");
         }
     }
 
@@ -62,12 +64,12 @@ public class MazeLayoutModel extends Layout {
         } else {
             for (int x = 0; x < sideLength; x++) {
                 for (int y = 0; y < sideLength; y++) {
-                    PositionModel position = new PositionModel(x, y);
+                    GridPosition position = new GridPosition(x, y);
                     try {
                         if (randomMaze.getSquare(position) == MazeSquare.EMPTY) {
                             return false;  // EMPTY squares are illegal
                         }
-                    } catch (OutOfGridBoundsException e) {
+                    } catch (GridPositionOutOfBoundsException e) {
                         throw new IncorrectGridIterationException(position);
                     }
                 }
@@ -81,18 +83,18 @@ public class MazeLayoutModel extends Layout {
     //          TODO: document Exceptions
     public static MazeLayoutModel createMazeFromMazeContent(MazeSizeModel.MazeSize size, List<String> savedLayout)
             throws IncorrectGridIterationException,
-            OutOfGridBoundsException,
+            GridPositionOutOfBoundsException,
             IncompleteMazeException,
             InvalidMazeSaveDataException {
         int sideLength = MazeSizeModel.getSideLength(size);
         MazeLayoutModel newMaze = new MazeLayoutModel(size);
         List<MazeSquare> parsedLayoutData = parseSavedLayout(savedLayout);
         Layout mazeLayout = new Layout(sideLength, sideLength, parsedLayoutData);
-        newMaze.overwrite(new PositionModel(0, 0), mazeLayout);
+        newMaze.overwrite(new GridPosition(0, 0), mazeLayout);
         if (isMazeComplete(newMaze)) {
             return newMaze;
         } else {
-            throw new IncompleteMazeException();
+            throw new IncompleteMazeException("Maze has empty squares");
         }
     }
 
@@ -103,7 +105,7 @@ public class MazeLayoutModel extends Layout {
 
     // EFFECTS: returns position of treasure in maze layout
     //          located in top right corner passage of alignment pattern
-    public PositionModel getTreasurePosition() {
+    public GridPosition getTreasurePosition() {
         return MazeSizeModel.getTreasurePosition(size);
     }
 
@@ -111,44 +113,44 @@ public class MazeLayoutModel extends Layout {
     //          uses breadth first search, starting from middle square
     //          returns position of (-1, -1) if no valid start can be found
     //          (This should NEVER happen in a real maze!)
-    public PositionModel getMinotaurStartPosition() {
-        Queue<PositionModel> todo = new LinkedList<>();
-        todo.add(new PositionModel(MazeSizeModel.getSideLength(size) / 2, MazeSizeModel.getSideLength(size) / 2));
-        List<PositionModel> done = new ArrayList<>();
+    public GridPosition getMinotaurStartPosition() {
+        Queue<GridPosition> todo = new LinkedList<>();
+        todo.add(new GridPosition(MazeSizeModel.getSideLength(size) / 2, MazeSizeModel.getSideLength(size) / 2));
+        List<GridPosition> done = new ArrayList<>();
         while (todo.size() > 0) {
-            PositionModel checking = todo.remove();
+            GridPosition checking = todo.remove();
             try {  // shouldn't check out of bounds
                 if (getSquare(checking) == MazeSquare.PASSAGE) {
                     return checking;
                 } else {
                     done.add(checking);
                     // this should never return out of bounds
-                    List<PositionModel> neighbors = findNeighbourPositions(checking);
-                    for (PositionModel position : neighbors) {
+                    List<GridPosition> neighbors = findNeighbourPositions(checking);
+                    for (GridPosition position : neighbors) {
                         if (!todo.contains(position) && !done.contains(position)) {
                             todo.add(position);
                         }
                     }
                 }
-            } catch (OutOfGridBoundsException e) {  // skipping out of bounds should be safe, but log anyway
+            } catch (GridPositionOutOfBoundsException e) {  // skipping out of bounds should be safe, but log anyway
                 System.out.printf("Skipped out of bounds position: %d, %d", checking.getX(), checking.getY());
                 e.printStackTrace();
             }
         }
-        return new PositionModel(-1, -1);
+        return new GridPosition(-1, -1);
     }
 
     // EFFECTS: returns all valid orthogonal neighbors of the given position
-    private List<PositionModel> findNeighbourPositions(PositionModel center) {
-        List<PositionModel> neighbours = new ArrayList<>();
-        List<PositionModel> offsets = new ArrayList<>(Arrays.asList(
-                new PositionModel(0, -1),
-                new PositionModel(0, 1),
-                new PositionModel(-1, 0),
-                new PositionModel(1, 0)));
-        for (PositionModel offset : offsets) {
-            PositionModel neighbour = center.add(offset);
-            if (isInBounds(neighbour)) {
+    private List<GridPosition> findNeighbourPositions(GridPosition center) {
+        List<GridPosition> neighbours = new ArrayList<>();
+        List<GridPosition> offsets = new ArrayList<>(Arrays.asList(
+                new GridPosition(0, -1),
+                new GridPosition(0, 1),
+                new GridPosition(-1, 0),
+                new GridPosition(1, 0)));
+        for (GridPosition offset : offsets) {
+            GridPosition neighbour = center.add(offset);
+            if (inBounds(neighbour)) {
                 neighbours.add(neighbour);
             }
         }
@@ -164,8 +166,8 @@ public class MazeLayoutModel extends Layout {
             for (int x = 0; x < MazeSizeModel.getSideLength(size); x++) {
                 MazeSquare square = null;
                 try {
-                    square = getSquare(new PositionModel(x, y));
-                } catch (OutOfGridBoundsException e) {
+                    square = getSquare(new GridPosition(x, y));
+                } catch (GridPositionOutOfBoundsException e) {
                     throw new IncorrectGridIterationException(x, y);
                 }
                 if (square == MazeSquare.WALL) {
@@ -182,7 +184,7 @@ public class MazeLayoutModel extends Layout {
     // MODIFIES: this
     // EFFECTS: adds static QR code elements to maze layout (finder/alignment/timing patterns)
     // TODO: document exceptions
-    private void addQRCodeElements() throws OutOfGridBoundsException, IncorrectGridIterationException {
+    private void addQRCodeElements() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         addFinderPatterns();
         addFinderMargins();
         addAlignmentPattern();
@@ -193,25 +195,25 @@ public class MazeLayoutModel extends Layout {
     // MODIFIES: this
     // EFFECTS: adds finder patterns to maze layout at top-left, top-right, and bottom-left corners
     // TODO: document exceptions
-    private void addFinderPatterns() throws OutOfGridBoundsException, IncorrectGridIterationException {
-        List<PositionModel> finderStartPositions = MazeSizeModel.getFinderPatternPositions(size);
-        for (PositionModel position : finderStartPositions) {
+    private void addFinderPatterns() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
+        List<GridPosition> finderStartPositions = MazeSizeModel.getFinderPatternPositions(size);
+        for (GridPosition position : finderStartPositions) {
             addFinderPattern(position);
         }
     }
 
     // MODIFIES: this
     // EFFECTS: adds finder patterns to maze layout at given position (starting at top-left corner)
-    private void addFinderPattern(PositionModel corner)
-            throws OutOfGridBoundsException, IncorrectGridIterationException {
+    private void addFinderPattern(GridPosition corner)
+            throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         overwrite(corner, FINDER_PATTERN);
     }
 
     // MODIFIES: this
     // EFFECTS: adds margins around finder patterns in maze layout
     // TODO: document exceptions
-    private void addFinderMargins() throws OutOfGridBoundsException, IncorrectGridIterationException {
-        List<PositionModel> marginStartPositions = MazeSizeModel.getFinderMarginPositions(size);
+    private void addFinderMargins() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
+        List<GridPosition> marginStartPositions = MazeSizeModel.getFinderMarginPositions(size);
         for (int i = 0; i < marginStartPositions.size(); i++) {
             // even index is vertical margin, odd is horizontal margin
             if (Utilities.isEven(i)) {
@@ -225,16 +227,16 @@ public class MazeLayoutModel extends Layout {
     // MODIFIES: this
     // EFFECTS: adds alignment pattern to maze layout at appropriate location for maze size
     // TODO: document exceptions
-    private void addAlignmentPattern() throws OutOfGridBoundsException, IncorrectGridIterationException {
+    private void addAlignmentPattern() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         overwrite(MazeSizeModel.getAlignPatternPosition(size), ALIGNMENT_PATTERN);
     }
 
     // MODIFIES: this
     // EFFECTS: adds timing patterns to maze layout between finder patterns
     // TODO: document exceptions
-    private void addTimingPatterns() throws OutOfGridBoundsException, IncorrectGridIterationException {
+    private void addTimingPatterns() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         int length = MazeSizeModel.getTimingPatternLength(size);
-        List<PositionModel> positions = MazeSizeModel.getTimingPatternPositions();
+        List<GridPosition> positions = MazeSizeModel.getTimingPatternPositions();
         // build preset for timing pattern
         List<MazeSquare> pattern = buildTimingPattern(length);
         overwrite(positions.get(0), new Layout(1, length, pattern));
@@ -259,7 +261,7 @@ public class MazeLayoutModel extends Layout {
     // MODIFIES: this
     // EFFECTS: adds one "dark square" (WALL) to maze layout near bottom-left finder pattern
     // TODO: document exceptions
-    private void addDarkModule() throws OutOfGridBoundsException, IncorrectGridIterationException {
+    private void addDarkModule() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
         overwrite(MazeSizeModel.getDarkModulePosition(size), DARK_MODULE);
     }
 
@@ -267,18 +269,29 @@ public class MazeLayoutModel extends Layout {
     // EFFECTS: fills remaining EMPTY squares in maze layout with WALL or PASSAGE
     //          random chance of either, based on PERCENT_WALL
     // TODO: document exceptions
-    private void fillRemainingSquares() throws OutOfGridBoundsException {
-        for (int x = 0; x < layout.getWidth(); x++) {
-            for (int y = 0; y < layout.getHeight(); y++) {
-                if (layout.get(x, y) == MazeSquare.EMPTY) {
-                    if (Math.random() < PERCENT_WALL) {
-                        layout.set(x, y, MazeSquare.WALL);
-                    } else {
-                        layout.set(x, y, MazeSquare.PASSAGE);
-                    }
+    private void fillRemainingSquares() {
+        GridIterator<MazeSquare> gridIterator = grid.gridCellIterator();
+        while (gridIterator.hasNext()) {
+            MazeSquare mazeSquare = gridIterator.next();
+            if (mazeSquare == MazeSquare.EMPTY) {
+                if (Math.random() < PERCENT_WALL) {
+                    gridIterator.set(MazeSquare.WALL);
+                } else {
+                    gridIterator.set(MazeSquare.PASSAGE);
                 }
             }
         }
+//        for (int x = 0; x < grid.getWidth(); x++) {
+//            for (int y = 0; y < grid.getHeight(); y++) {
+//                if (grid.get(x, y) == MazeSquare.EMPTY) {
+//                    if (Math.random() < PERCENT_WALL) {
+//                        grid.set(x, y, MazeSquare.WALL);
+//                    } else {
+//                        grid.set(x, y, MazeSquare.PASSAGE);
+//                    }
+//                }
+//            }
+//        }
     }
 
     // REQUIRES: layout only consists of SAVE_FILE_WALL and SAVE_FILE_PASSAGE

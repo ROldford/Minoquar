@@ -1,7 +1,6 @@
 package model;
 
 import exceptions.IncorrectGridIterationException;
-import exceptions.OutOfGridBoundsException;
 import persistence.Reader;
 import persistence.Saveable;
 
