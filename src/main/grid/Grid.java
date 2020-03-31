@@ -1,7 +1,8 @@
 package grid;
 
+import exceptions.GridPositionOutOfBoundsException;
+
 import java.util.Iterator;
-import java.util.List;
 
 public interface Grid<T> extends Iterable<T> {
     // TODO: document all this!
@@ -38,9 +39,9 @@ public interface Grid<T> extends Iterable<T> {
 
     // Positional Access Operations
 
-    T get(GridPosition position);
+    T get(GridPosition position) throws GridPositionOutOfBoundsException;
 
-    void set(GridPosition position, T element);
+    void set(GridPosition position, T element) throws GridPositionOutOfBoundsException;
 
 
     // Search Operations
@@ -56,5 +57,6 @@ public interface Grid<T> extends Iterable<T> {
 
     // View
 
-    Grid<T> subGrid(GridPosition start, GridPosition end);
+    Grid<T> subGrid(GridPosition start, GridPosition end)
+            throws GridPositionOutOfBoundsException, IllegalArgumentException;
 }

@@ -4,7 +4,6 @@ import exceptions.GridPositionOutOfBoundsException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 // capable of storing data in 2D grid format
 // coordinate system has origin at top left
@@ -114,7 +113,7 @@ public class GridArray<T> extends AbstractGrid<T> {
         data.set(positionToListIndex(position), element);
     }
 
-    public List<T> getRow(int rowIndex) {
+    public List<T> getRow(int rowIndex) throws GridPositionOutOfBoundsException {
         int rowStart = positionToListIndex(new GridPosition(0, rowIndex));
         int rowEnd = positionToListIndex(new GridPosition(getWidth() - 1, rowIndex));
         List<T> rowView = data.subList(rowStart, rowEnd + 1);

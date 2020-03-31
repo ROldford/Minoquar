@@ -83,15 +83,16 @@ public abstract class AbstractGrid<T> implements Grid<T> {
 
     // Positional Access Operations
 
-    public abstract T get(GridPosition position);
+    public abstract T get(GridPosition position) throws GridPositionOutOfBoundsException;
 
-    public void set(GridPosition position, T element) {
+    public void set(GridPosition position, T element) throws GridPositionOutOfBoundsException {
         throw new UnsupportedOperationException();
     }
 
     // implementation must not allow manipulation of returned list to change size of grid row!
     // TODO: change this from abstract, move implementation out of SubGrid.getRow() to here
-    public abstract List<T> getRow(int rowIndex);  // future development: getColumn
+    public abstract List<T> getRow(int rowIndex) throws GridPositionOutOfBoundsException;
+    // future development: getColumn
 
 
     // Search Operations
@@ -140,7 +141,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
             return linearizedIndex < linearizedSize;
         }
 
-        public T next() {
+        public T next() throws NoSuchElementException {
             try {
                 GridPosition i = cursor;
                 T next = get(i);
@@ -156,7 +157,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
             }
         }
 
-        public void set(T element) {
+        public void set(T element) throws IllegalStateException {
             if (lastReturned.getX() < 0 && lastReturned.getY() < 0) {
                 throw new IllegalStateException();
             }
@@ -173,7 +174,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
             return cursor != getHeight();
         }
 
-        public List<T> next() {
+        public List<T> next() throws NoSuchElementException {
             try {
                 int i = cursor;
                 List<T> next = getRow(i);
@@ -199,16 +200,17 @@ public abstract class AbstractGrid<T> implements Grid<T> {
 
     // subGrid is area bounded by start and end inclusive
     public Grid<T> subGrid(GridPosition start, GridPosition end) {
-        return new SubGrid<>(this, start, end);
+        return new SubGrid(this, start, end);
     }
 
-    class SubGrid<S> extends AbstractGrid<T> {
+    class SubGrid extends AbstractGrid<T> {
         private final AbstractGrid<T> backingGrid;
         private final GridPosition offset;
         private final int width;
         private final int height;
 
-        SubGrid(AbstractGrid<T> grid, GridPosition start, GridPosition end) {
+        SubGrid(AbstractGrid<T> grid, GridPosition start, GridPosition end)
+                throws GridPositionOutOfBoundsException, IllegalArgumentException {
             if (start.getX() < 0 || start.getY() < 0) {
                 throw new GridPositionOutOfBoundsException(
                         String.format("start = %d, %d", start.getX(), start.getY()));
@@ -238,18 +240,18 @@ public abstract class AbstractGrid<T> implements Grid<T> {
             return height;
         }
 
-        public T get(GridPosition position) {
+        public T get(GridPosition position) throws GridPositionOutOfBoundsException {
             boundsCheck(position);
             return backingGrid.get(offset.add(position));
         }
 
         @Override
-        public void set(GridPosition position, T element) {
+        public void set(GridPosition position, T element) throws GridPositionOutOfBoundsException {
             boundsCheck(position);
             backingGrid.set(offset.add(position), element);
         }
 
-        public List<T> getRow(int rowIndex) {
+        public List<T> getRow(int rowIndex) throws GridPositionOutOfBoundsException {
             GridPosition rowStart = new GridPosition(0, rowIndex);
             GridPosition rowEnd = new GridPosition(getWidth() - 1, rowIndex);
             Grid<T> rowView = subGrid(rowStart, rowEnd);
@@ -257,9 +259,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
 //            for (T element : rowView) {
 //                rowList.add(element);
 //            }
-            Iterator<T> iterator = rowView.iterator();
-            while (iterator.hasNext()) {
-                T element = iterator.next();
+            for (T element : rowView) {
                 rowList.add(element);
             }
             return rowList;
@@ -287,7 +287,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
                 return linearizedIndex < linearizedSize;
             }
 
-            public T next() {
+            public T next() throws NoSuchElementException {
                 try {
                     GridPosition i = cursor;
 //                    T next = get(offset.add(i));
@@ -304,7 +304,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
                 }
             }
 
-            public void set(T element) {
+            public void set(T element) throws IllegalStateException {
                 if (lastReturned.getX() < 0 && lastReturned.getY() < 0) {
                     throw new IllegalStateException();
                 }
@@ -321,7 +321,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
                 return cursor != getHeight();
             }
 
-            public List<T> next() {
+            public List<T> next() throws NoSuchElementException {
                 try {
                     int i = cursor;
                     List<T> next = getRow(i);
@@ -342,8 +342,9 @@ public abstract class AbstractGrid<T> implements Grid<T> {
             }
         }
 
-        public Grid<T> subGrid(GridPosition start, GridPosition end) {
-            return new SubGrid<>(this, start, end);
+        public Grid<T> subGrid(GridPosition start, GridPosition end)
+                throws GridPositionOutOfBoundsException, IllegalStateException {
+            return new SubGrid(this, start, end);
         }
     }
 
@@ -351,7 +352,7 @@ public abstract class AbstractGrid<T> implements Grid<T> {
 
     // TODO: do I need to remove this here and just implement it in the concrete classes?
     // protected because child classes may need to use this when overriding methods or implementing abstracts
-    protected void boundsCheck(GridPosition position) {
+    protected void boundsCheck(GridPosition position) throws GridPositionOutOfBoundsException {
         if (!inBounds(position)) {
             throw new GridPositionOutOfBoundsException(outOfBoundsMessage(position));
         }
