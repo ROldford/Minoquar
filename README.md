@@ -90,6 +90,15 @@ Classes dealing with data will use checked exceptions, because these are issues 
 - [ ] MazeModel
 - [ ] Reader
 
+*Other Development*
+- [ ] Add subGrid() to GridArray
+    - [ ] Refactor other methods to use it
+- [ ] Implement GridArray iterators
+    - [ ] GridCellIterator
+    - [ ] GridRowIterator
+    - [ ] Make GridArray iterable using GridCellIterator
+    - [ ] Refactor other methods to use them
+
 **Phase 3 User Stories:**
 - [X] As a user, I want to interact with the game through a GUI.
     - [X] Maze List Panel

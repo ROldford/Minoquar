@@ -1,8 +1,8 @@
-package model;
+package grid;
 
 import java.util.Objects;
 
-public final class PositionModel {
+public final class GridPosition {
     private int posX;
     private int posY;
 
@@ -11,7 +11,7 @@ public final class PositionModel {
     //      origin is top left square of puzzle
     //      x coordinates increase going to the right
     //      y coordinates increase going down
-    public PositionModel(int x, int y) {
+    public GridPosition(int x, int y) {
         this.posX = x;
         this.posY = y;
     }
@@ -27,13 +27,13 @@ public final class PositionModel {
     }
 
     // EFFECTS: return new PositionModel offset from this position by the x and y of delta
-    public PositionModel add(PositionModel delta) {
-        return new PositionModel(posX + delta.getX(), posY + delta.getY());
+    public GridPosition add(GridPosition delta) {
+        return new GridPosition(posX + delta.getX(), posY + delta.getY());
     }
 
     // EFFECTS: return new PositionModel representing difference between this position and other
-    public PositionModel subtract(PositionModel other) {
-        return new PositionModel(posX - other.getX(), posY - other.getY());
+    public GridPosition subtract(GridPosition other) {
+        return new GridPosition(posX - other.getX(), posY - other.getY());
     }
 
     @Override
@@ -44,7 +44,7 @@ public final class PositionModel {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PositionModel that = (PositionModel) o;
+        GridPosition that = (GridPosition) o;
         return posX == that.posX && posY == that.posY;
     }
 
