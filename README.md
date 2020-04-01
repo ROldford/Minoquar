@@ -65,14 +65,9 @@ implement the more difficult parts of a digital game, such as physics, collision
 **Requirements For This Deliverable:**
 *Phase 4: Task 2 - Test and design a class that is robust*
 
-Several classes will throw unchecked exceptions to represent more fundamental code issues that can't be fixed at runtime. UI can handle them more gracefully than just crashing, but they have more severe consequences.
-
-- OutOfGridBoundsException: indicates that a method tried to access a position outside of a grid-like data structures (i.e. maze board)
-    - Consequences: quit current game to menu, maybe close app (gracefully, i.e. with data save)
-- IllegalArgumentException: indicates that an argument is illegal for that method (ex. incorrectly sized data list used to create a maze instance)
-    - Consequences: quit current game to menu, possibly remove maze entirely, may have to close app (gracefully)
-- IncompleteMazeException: indicates that a maze layout was created with empty squares (i.e. not walls or passages), and is unusable
-    - Consequences: maze will not be added to list, close app (gracefully)
+Several classes will throw unchecked exceptions to represent more fundamental code issues that can't be fixed at runtime. 
+UI will handle them by saving current mazes, printing a crash log string to console, and closing the app.
+(Future development will add a Logger class that can add this crash log to a log file for analysis.)
     
 Temporary checklist    
 - [X] Grid package
@@ -87,6 +82,9 @@ Temporary checklist
 - [X] MazeListModel
 - [X] GameModel
 - [ ] UI classes
+    - [X] Minoquar (added crashProcedure method to log issue to console and close with maze save)
+    - [ ] MenuUI (IllegalArgumentException)
+    - [ ] GameUI (IllegalArgumentException, GridPositionOutOfBoundsException)
         
 Classes dealing with data will use checked exceptions, because these are issues with outside save files, not internal code. Bad save data can be stored in a separate file for later analysis or manual save recovery.
 

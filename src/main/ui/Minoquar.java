@@ -38,10 +38,23 @@ public class Minoquar extends JFrame {
         System.exit(0);
     }
 
+    public void crashProcedure(RuntimeException e) {
+        // logging
+        System.out.println("Runtime exception encountered, safe quitting app");
+        if (e.getMessage() != null) {
+            System.out.printf("Exception message: %s\n", e.getMessage());
+        } else {
+            System.out.println("No exception message given");
+        }
+        System.out.println("Stack trace follows:");
+        e.printStackTrace();
+        // app quit (with save)
+        exitProcedure();
+    }
+
     // MODIFIES: this
     // EFFECTS: swaps UI to game mode, created with given maze model
-    public void swapToGameUI(MazeModel mazeModel)
-            throws GridPositionOutOfBoundsException {  // TODO: needs proper catching
+    public void swapToGameUI(MazeModel mazeModel) {
         gameUI = new GameUI(this, mazeModel);
         remove(menuUI);
         add(gameUI);
