@@ -81,10 +81,11 @@ Temporary checklist
 - [X] MazeModel
 - [X] MazeListModel
 - [X] GameModel
-- [ ] UI classes
+- [X] UI classes
     - [X] Minoquar (added crashProcedure method to log issue to console and close with maze save)
     - [X] MenuUI (IllegalArgumentException)
-    - [ ] GameUI (IllegalArgumentException, GridPositionOutOfBoundsException)
+    - [X] GameUI (IllegalArgumentException, GridPositionOutOfBoundsException)
+        - [X] MazeUIPanel
         
 Classes dealing with data will use checked exceptions, because these are issues with outside save files, not internal code. Bad save data can be stored in a separate file for later analysis or manual save recovery.
 
@@ -94,15 +95,15 @@ Classes dealing with data will use checked exceptions, because these are issues 
     - Reader handles InvalidMazeSaveDataException by storing maze in trash file
 
 *Other Development*
-- [ ] Develop grid package
-    - [ ] subGrid()
+- [X] Develop grid package
+    - [X] subGrid()
         - [X] Add subGrid() to GridArray
-        - [ ] Refactor other methods to use it
-    - [ ] iterators
+        - [X] Refactor other methods to use it
+    - [X] iterators
         - [X] GridIterator for cell by cell iteration
         - [X] GridSeriesIterator for row by row iteration (with column iteration as future development)
         - [X] Make GridArray iterable using GridIterator
-        - [ ] Refactor other methods to use them
+        - [X] Refactor other methods to use them
 
 **Phase 3 User Stories:**
 - [X] As a user, I want to interact with the game through a GUI.

@@ -22,23 +22,25 @@ public class MazeUIPanel extends JPanel {
     //       (override getPreferredSize, constrain in GridBagLayout) so mazePanel stays square
     // REQUIRES: displayData is square (width = height)
     // EFFECTS: creates new MazeUIPanel with grid of maze squares of given side length
-    public MazeUIPanel(Grid<SquareDisplayData> displayData, GameUI gameUI)
-            throws GridPositionOutOfBoundsException {  // TODO: replace throw with actual handling
+    public MazeUIPanel(Grid<SquareDisplayData> displayData, GameUI gameUI) {
         int sideLength = displayData.getWidth();
         this.panelGrid = new GridArray<>(sideLength);
         this.gameUI = gameUI;
         setLayout(new GridLayout(sideLength, sideLength));
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         setPreferredSize(new Dimension(sideLength * SQUARE_SIZE, sideLength * SQUARE_SIZE));
-        // TODO: iterateSimultaneously for GridArrays
         GridIterator<SquareDisplayData> displayIterator = displayData.gridCellIterator();
         GridIterator<MazeSquarePanel> panelIterator = panelGrid.gridCellIterator();
-        while (displayIterator.hasNext()) {
-            SquareDisplayData displaySquare = displayIterator.next();
-            MazeSquarePanel panel = new MazeSquarePanel(displaySquare, this);
-            panelIterator.next();
-            panelIterator.set(panel);
-            add(panel);
+        try {
+            while (displayIterator.hasNext()) {
+                SquareDisplayData displaySquare = displayIterator.next();
+                MazeSquarePanel panel = new MazeSquarePanel(displaySquare, this);
+                panelIterator.next();
+                panelIterator.set(panel);
+                add(panel);
+            }
+        } catch (RuntimeException e) {
+            crashProcedure(e);
         }
 //        for (int y = 0; y < sideLength; y++) {
 //            for (int x = 0; x < sideLength; x++) {
@@ -57,30 +59,38 @@ public class MazeUIPanel extends JPanel {
             gameUI.handleClickAt(position);
         } catch (ClassCastException cce) {
             System.out.println("Click on maze panel could not be cast properly");
-        } catch (GridPositionOutOfBoundsException ex) {
-            ex.printStackTrace();  // TODO: properly catch this!
+            crashProcedure(cce);
+        } catch (RuntimeException ex) {
+            crashProcedure(ex);
         }
     }
 
     // EFFECTS: updates maze display
-    public void updateDisplay(Grid<SquareDisplayData> displayData) throws IllegalArgumentException {
+    public void updateDisplay(Grid<SquareDisplayData> displayData) {
         if (panelGrid.getWidth() != displayData.getWidth() || panelGrid.getHeight() != displayData.getHeight()) {
-            throw new IllegalArgumentException(String.format(
+            crashProcedure(new IllegalArgumentException(String.format(
                     "Display data: %d wide x %d high, Game panels: %d wide x %d high",
-                    displayData.getWidth(), displayData.getHeight(),
-                    panelGrid.getWidth(), panelGrid.getHeight()));
+                    displayData.getWidth(), displayData.getHeight(), panelGrid.getWidth(), panelGrid.getHeight())));
         }
-        GridIterator<MazeSquarePanel> panelIterator = panelGrid.gridCellIterator();
-        GridIterator<SquareDisplayData> displayIterator = displayData.gridCellIterator();
-        while (displayIterator.hasNext()) {
-            MazeSquarePanel panel = panelIterator.next();
-            SquareDisplayData displaySquare = displayIterator.next();
-            panel.updateDisplay(displaySquare);
+        try {
+            GridIterator<MazeSquarePanel> panelIterator = panelGrid.gridCellIterator();
+            GridIterator<SquareDisplayData> displayIterator = displayData.gridCellIterator();
+            while (displayIterator.hasNext()) {
+                MazeSquarePanel panel = panelIterator.next();
+                SquareDisplayData displaySquare = displayIterator.next();
+                panel.updateDisplay(displaySquare);
+            }
+        } catch (RuntimeException e) {
+            crashProcedure(e);
         }
 //        for (int x = 0; x < displayData.getWidth(); x++) {
 //            for (int y = 0; y < displayData.getHeight(); y++) {
 //                panelGrid.get(x, y).updateDisplay(displayData.get(x, y));
 //            }
 //        }
+    }
+
+    private void crashProcedure(RuntimeException e) {
+        gameUI.crashProcedure(e);
     }
 }

@@ -32,7 +32,11 @@ public class GameUI extends JPanel {
             throws GridPositionOutOfBoundsException {
         super(new BorderLayout());
         this.minoquarFrame = minoquarFrame;
-        this.gameModel = new GameModel(mazeModel);
+        try {
+            this.gameModel = new GameModel(mazeModel);
+        } catch (RuntimeException e) {
+            crashProcedure(e);
+        }
         this.canHandleClick = true;
         this.gameStatus = GameStatus.ONGOING;
         createGameUI();
@@ -40,7 +44,7 @@ public class GameUI extends JPanel {
 
     // MODIFIES: this
     // EFFECTS: sets up game UI panels
-    public void createGameUI() throws GridPositionOutOfBoundsException {
+    public void createGameUI() {
         this.gameControlPanel = createControlPanel();
         this.mazeUIPanel = createMazePanel();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -52,14 +56,19 @@ public class GameUI extends JPanel {
         return new GameControlPanel(this);
     }
 
-    private MazeUIPanel createMazePanel() throws GridPositionOutOfBoundsException {
-        Grid<SquareDisplayData> displayData = gameModel.display();
+    private MazeUIPanel createMazePanel() {
+        Grid<SquareDisplayData> displayData = null;
+        try {
+            displayData = gameModel.display();
+        } catch (RuntimeException e) {
+            crashProcedure(e);
+        }
+        assert displayData != null;
         mazeUIPanel = new MazeUIPanel(displayData, this);
         return mazeUIPanel;
     }
 
-    public void handleClickAt(GridPosition clickedPosition)
-            throws GridPositionOutOfBoundsException {
+    public void handleClickAt(GridPosition clickedPosition) {
         if (gameStatus == GameStatus.ONGOING && canHandleClick) {
             this.canHandleClick = false;  // keeps clicks from working while move is processed
             // TODO: test if this is actually needed
@@ -71,7 +80,7 @@ public class GameUI extends JPanel {
                 keepGoing = !checkForWin();
             }
             if (keepGoing) {
-                keepGoing = gameModel.moveMinotaur();
+                keepGoing = minotaurMove();
             }
             if (keepGoing) {
                 checkForLoss();
@@ -87,45 +96,69 @@ public class GameUI extends JPanel {
     // EFFECTS: processes game move
     //          returns true when move is completed
     //          returns false and prints message to bottom panel otherwise
-    private boolean getHeroMove(GridPosition end) throws GridPositionOutOfBoundsException {
-        if (gameModel.moveHero(end)) {
-            return true;
-        } else {
-            Toolkit.getDefaultToolkit().beep();
-            gameControlPanel.updateMessageLabel(GameControlPanel.BAD_MOVE_MESSAGE_LABEL);
-            return false;
+    private boolean getHeroMove(GridPosition end) {
+        try {
+            if (gameModel.moveHero(end)) {
+                return true;
+            } else {
+                Toolkit.getDefaultToolkit().beep();
+                gameControlPanel.updateMessageLabel(GameControlPanel.BAD_MOVE_MESSAGE_LABEL);
+                return false;
+            }
+        } catch (RuntimeException e) {
+            crashProcedure(e);
         }
+        return false;
+    }
+
+    private boolean minotaurMove() {
+        try {
+            return gameModel.moveMinotaur();
+        } catch (RuntimeException e) {
+            crashProcedure(e);
+        }
+        return false;
     }
 
     // EFFECTS: checks if game has been won
     //          if so, displays win message
     //          also returns true if hero wins, false if not
     private boolean checkForWin() {
-        if (gameModel.checkForWin()) {
-            gameControlPanel.updateMessageLabel(GameControlPanel.GAME_WIN_MESSAGE_LABEL);
-            gameStatus = GameStatus.WIN;
-            return true;
-        } else {
-            return false;
+        try {
+            if (gameModel.checkForWin()) {
+                gameControlPanel.updateMessageLabel(GameControlPanel.GAME_WIN_MESSAGE_LABEL);
+                gameStatus = GameStatus.WIN;
+                return true;
+            } else {
+                return false;
+            }
+        } catch (RuntimeException e) {
+            crashProcedure(e);
         }
+        return false;
     }
 
     // EFFECTS: checks if game has been lost
     //          if so, displays loss message
     //          also returns true if hero loses, false if not
-    private boolean checkForLoss() {
-        if (gameModel.checkForLoss()) {
-            gameControlPanel.updateMessageLabel(GameControlPanel.GAME_LOSS_MESSAGE_LABEL);
-            gameStatus = GameStatus.LOSS;
-            return true;
-        } else {
-            return false;
+    private void checkForLoss() {
+        try {
+            if (gameModel.checkForLoss()) {
+                gameControlPanel.updateMessageLabel(GameControlPanel.GAME_LOSS_MESSAGE_LABEL);
+                gameStatus = GameStatus.LOSS;
+            }
+        } catch (RuntimeException e) {
+            crashProcedure(e);
         }
     }
 
     // EFFECTS: updates the maze panel display
-    private void updateDisplay() throws GridPositionOutOfBoundsException {
-        mazeUIPanel.updateDisplay(gameModel.display());
+    private void updateDisplay() {
+        try {
+            mazeUIPanel.updateDisplay(gameModel.display());
+        } catch (RuntimeException e) {
+            crashProcedure(e);
+        }
     }
 
     public void handleGameQuit() {
@@ -135,6 +168,10 @@ public class GameUI extends JPanel {
             gameModel.registerOutcome(MazeModel.Outcome.LOSS);
         }
         minoquarFrame.swapToMenuUI();
+    }
+
+    public void crashProcedure(RuntimeException e) {
+        minoquarFrame.crashProcedure(e);
     }
 }
 

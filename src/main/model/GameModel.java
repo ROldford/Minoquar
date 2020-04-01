@@ -200,7 +200,7 @@ public class GameModel {
 
     // EFFECTS: return grid of SquareDisplayData instances to display the current game state
     //          throws GridPositionOutOfBoundsException if entity is out of bounds
-    public Grid<SquareDisplayData> display() throws GridPositionOutOfBoundsException {
+    public Grid<SquareDisplayData> display() {
         Grid<SquareDisplayData> display = maze.displayMaze();
         overlayGameElement(treasure, display);
         overlayGameElement(hero, display);
