@@ -106,89 +106,89 @@ public class MazeBoardModelTest {
         }
     }
 
-    @Test
-    public void testGetSquaresBetweenAllPassages() {
-        GridPosition topLeft = new GridPosition(1, 1);
-        GridPosition topRight = new GridPosition(5, 1);
-        GridPosition bottomLeft = new GridPosition(1, 5);
-        List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(topRight, topLeft);
-        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
-        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
-        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topLeft, bottomLeft);
-        List<List<MazeLayoutModel.MazeSquare>> testLists = new ArrayList<>(Arrays.asList(right, left, up, down));
-        for (List<MazeLayoutModel.MazeSquare> testList: testLists) {
-            assertEquals(3, testList.size());
-            for (MazeLayoutModel.MazeSquare square: testList) {
-                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, square);
-            }
-        }
-    }
-
-    @Test
-    public void testGetSquaresBetweenAllWalls() {
-        GridPosition topLeft = new GridPosition(0, 0);
-        GridPosition topRight = new GridPosition(6, 0);
-        GridPosition bottomLeft = new GridPosition(0, 6);
-        List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(topRight, topLeft);
-        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
-        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
-        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topLeft, bottomLeft);
-        List<List<MazeLayoutModel.MazeSquare>> testLists = new ArrayList<>(Arrays.asList(right, left, up, down));
-        for (List<MazeLayoutModel.MazeSquare> testList: testLists) {
-            assertEquals(5, testList.size());
-            for (MazeLayoutModel.MazeSquare square: testList) {
-                assertEquals(MazeLayoutModel.MazeSquare.WALL, square);
-            }
-        }
-    }
-
-    @Test
-    public void testGetSquaresBetweenBothTypes() {
-        GridPosition leftSide = new GridPosition(8, 6);
-        GridPosition rightSide = new GridPosition(11, 6);
-        GridPosition topSide = new GridPosition(6, 8);
-        GridPosition bottomSide = new GridPosition(6, 11);
-        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(leftSide, rightSide);
-        List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(rightSide, leftSide);
-        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomSide, topSide);
-        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topSide, bottomSide);
-        List<Layout.MazeSquare> passageFirst = new ArrayList<>(Arrays.asList(
-                Layout.MazeSquare.PASSAGE, Layout.MazeSquare.WALL));
-        List<Layout.MazeSquare> wallFirst = new ArrayList<>(Arrays.asList(
-                Layout.MazeSquare.WALL, Layout.MazeSquare.PASSAGE));
-        assertEquals(passageFirst, right);
-        assertEquals(wallFirst, left);
-        assertEquals(passageFirst, down);
-        assertEquals(wallFirst, up);
-    }
-
-    @Test
-    public void testGetSquaresBetweenExceptions() {
-        MazeBoardModel board = boards.get(0);
-        // out of bounds
-        try {
-            board.getSquaresBetween(new GridPosition(-1, 0), new GridPosition(5, 0));
-        } catch (GridPositionOutOfBoundsException e) {
-            assertNotNull(e.getMessage());
-        }
-        try {
-            board.getSquaresBetween(new GridPosition(0, 20), new GridPosition(0, 25));
-        } catch (GridPositionOutOfBoundsException e) {
-            assertNotNull(e.getMessage());
-        }
-        // not in line
-        try {
-            board.getSquaresBetween(new GridPosition(0, 0), new GridPosition(4, 4));
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e.getMessage());
-        }
-        // same position
-        try {
-            board.getSquaresBetween(new GridPosition(10, 15), new GridPosition(10, 15));
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e.getMessage());
-        }
-    }
+//    @Test
+//    public void testGetSquaresBetweenAllPassages() {
+//        GridPosition topLeft = new GridPosition(1, 1);
+//        GridPosition topRight = new GridPosition(5, 1);
+//        GridPosition bottomLeft = new GridPosition(1, 5);
+//        List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(topRight, topLeft);
+//        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
+//        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
+//        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topLeft, bottomLeft);
+//        List<List<MazeLayoutModel.MazeSquare>> testLists = new ArrayList<>(Arrays.asList(right, left, up, down));
+//        for (List<MazeLayoutModel.MazeSquare> testList: testLists) {
+//            assertEquals(3, testList.size());
+//            for (MazeLayoutModel.MazeSquare square: testList) {
+//                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, square);
+//            }
+//        }
+//    }
+//
+//    @Test
+//    public void testGetSquaresBetweenAllWalls() {
+//        GridPosition topLeft = new GridPosition(0, 0);
+//        GridPosition topRight = new GridPosition(6, 0);
+//        GridPosition bottomLeft = new GridPosition(0, 6);
+//        List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(topRight, topLeft);
+//        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(topLeft, topRight);
+//        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomLeft, topLeft);
+//        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topLeft, bottomLeft);
+//        List<List<MazeLayoutModel.MazeSquare>> testLists = new ArrayList<>(Arrays.asList(right, left, up, down));
+//        for (List<MazeLayoutModel.MazeSquare> testList: testLists) {
+//            assertEquals(5, testList.size());
+//            for (MazeLayoutModel.MazeSquare square: testList) {
+//                assertEquals(MazeLayoutModel.MazeSquare.WALL, square);
+//            }
+//        }
+//    }
+//
+//    @Test
+//    public void testGetSquaresBetweenBothTypes() {
+//        GridPosition leftSide = new GridPosition(8, 6);
+//        GridPosition rightSide = new GridPosition(11, 6);
+//        GridPosition topSide = new GridPosition(6, 8);
+//        GridPosition bottomSide = new GridPosition(6, 11);
+//        List<MazeLayoutModel.MazeSquare> right = boards.get(0).getSquaresBetween(leftSide, rightSide);
+//        List<MazeLayoutModel.MazeSquare> left = boards.get(0).getSquaresBetween(rightSide, leftSide);
+//        List<MazeLayoutModel.MazeSquare> up = boards.get(0).getSquaresBetween(bottomSide, topSide);
+//        List<MazeLayoutModel.MazeSquare> down = boards.get(0).getSquaresBetween(topSide, bottomSide);
+//        List<Layout.MazeSquare> passageFirst = new ArrayList<>(Arrays.asList(
+//                Layout.MazeSquare.PASSAGE, Layout.MazeSquare.WALL));
+//        List<Layout.MazeSquare> wallFirst = new ArrayList<>(Arrays.asList(
+//                Layout.MazeSquare.WALL, Layout.MazeSquare.PASSAGE));
+//        assertEquals(passageFirst, right);
+//        assertEquals(wallFirst, left);
+//        assertEquals(passageFirst, down);
+//        assertEquals(wallFirst, up);
+//    }
+//
+//    @Test
+//    public void testGetSquaresBetweenExceptions() {
+//        MazeBoardModel board = boards.get(0);
+//        // out of bounds
+//        try {
+//            board.getSquaresBetween(new GridPosition(-1, 0), new GridPosition(5, 0));
+//        } catch (GridPositionOutOfBoundsException e) {
+//            assertNotNull(e.getMessage());
+//        }
+//        try {
+//            board.getSquaresBetween(new GridPosition(0, 20), new GridPosition(0, 25));
+//        } catch (GridPositionOutOfBoundsException e) {
+//            assertNotNull(e.getMessage());
+//        }
+//        // not in line
+//        try {
+//            board.getSquaresBetween(new GridPosition(0, 0), new GridPosition(4, 4));
+//        } catch (IllegalArgumentException e) {
+//            assertNotNull(e.getMessage());
+//        }
+//        // same position
+//        try {
+//            board.getSquaresBetween(new GridPosition(10, 15), new GridPosition(10, 15));
+//        } catch (IllegalArgumentException e) {
+//            assertNotNull(e.getMessage());
+//        }
+//    }
 
     @Test
     public void testGetSquaresInDirection() {

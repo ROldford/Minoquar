@@ -37,67 +37,75 @@ public class MazeBoardModel {
         return mazeLayout.getSquare(position);
     }
 
-    // EFFECTS: returns list of squares between start and end (exclusive)
-    // TODO: document exceptions
-    public List<MazeLayoutModel.MazeSquare> getSquaresBetween(GridPosition start, GridPosition end)
-            throws GridPositionOutOfBoundsException, IllegalArgumentException {
-        // TODO: refactor to use MazeLayout subGrid and iteration
-        List<MazeLayoutModel.MazeSquare> betweenList = new ArrayList<>();
-        validateGetSquaresBetweenParams(start, end);
+    public Layout getArea(GridPosition start, GridPosition end) {
+        return mazeLayout.getArea(start, end);
+    }
 
-        // test if start > end, if so, output needs reversing
-        if (end.getX() > start.getX() || end.getY() > start.getY()) { // no reverse needed
-            Layout area = mazeLayout.getArea(start, end);
-            for (Layout.MazeSquare square : area) {
-                betweenList.add(square);
-            }
-            betweenList.remove(betweenList.size() - 1);
-            betweenList.remove(0);
-        } else {
-            Layout area = mazeLayout.getArea(end, start);
-            for (Layout.MazeSquare square : area) {
-                betweenList.add(square);
-            }
-            Collections.reverse(betweenList);
-            betweenList.remove(betweenList.size() - 1);
-            betweenList.remove(0);
-        }
+    public boolean inBounds(GridPosition position) {
+        return mazeLayout.inBounds(position);
+    }
 
-//        int deltaX = end.getX() - start.getX();
-//        int deltaY = end.getY() - start.getY();
-//        if (deltaX == 0) {
-//            int sign = Integer.signum(deltaY);
-//            for (int i = start.getY() + sign; Math.abs(i - end.getY()) > 0; i += sign) {
-//                betweenList.add(getSquare(new GridPosition(start.getX(), i)));
+//    // EFFECTS: returns list of squares between start and end (exclusive)
+//    // TODO: document exceptions
+//    public List<MazeLayoutModel.MazeSquare> getSquaresBetween(GridPosition start, GridPosition end)
+//            throws GridPositionOutOfBoundsException, IllegalArgumentException {
+//        // TODO: refactor to use MazeLayout subGrid and iteration
+//        List<MazeLayoutModel.MazeSquare> betweenList = new ArrayList<>();
+//        validateGetSquaresBetweenParams(start, end);
+//
+//        // test if start > end, if so, output needs reversing
+//        if (end.getX() > start.getX() || end.getY() > start.getY()) { // no reverse needed
+//            Layout area = mazeLayout.getArea(start, end);
+//            for (Layout.MazeSquare square : area) {
+//                betweenList.add(square);
 //            }
+//            betweenList.remove(betweenList.size() - 1);
+//            betweenList.remove(0);
 //        } else {
-//            int sign = Integer.signum(deltaX);
-//            for (int i = start.getX() + sign; Math.abs(i - end.getX()) > 0; i += sign) {
-//                betweenList.add(getSquare(new GridPosition(i, start.getY())));
+//            Layout area = mazeLayout.getArea(end, start);
+//            for (Layout.MazeSquare square : area) {
+//                betweenList.add(square);
 //            }
+//            Collections.reverse(betweenList);
+//            betweenList.remove(betweenList.size() - 1);
+//            betweenList.remove(0);
 //        }
-
-        return betweenList;
-    }
-
-    private void validateGetSquaresBetweenParams(GridPosition start, GridPosition end)
-            throws GridPositionOutOfBoundsException, IllegalArgumentException {
-        if (!(mazeLayout.inBounds(start) && mazeLayout.inBounds(end))) {
-            throw new GridPositionOutOfBoundsException(
-                    String.format("Start: %d, %d, End: %d, %d",
-                            start.getX(), start.getY(), end.getX(), end.getY()));
-        }
-        if (start.equals(end)) {
-            throw new IllegalArgumentException(
-                    String.format("Start and end are same position: %d, %d",
-                            start.getX(), start.getY()));
-        }
-        if (!(start.getX() == end.getX() || start.getY() == end.getY())) {
-            throw new IllegalArgumentException(
-                    String.format("Start %d, %d > End: %d, %d",
-                            start.getX(), start.getY(), end.getX(), end.getY()));
-        }
-    }
+//
+////        int deltaX = end.getX() - start.getX();
+////        int deltaY = end.getY() - start.getY();
+////        if (deltaX == 0) {
+////            int sign = Integer.signum(deltaY);
+////            for (int i = start.getY() + sign; Math.abs(i - end.getY()) > 0; i += sign) {
+////                betweenList.add(getSquare(new GridPosition(start.getX(), i)));
+////            }
+////        } else {
+////            int sign = Integer.signum(deltaX);
+////            for (int i = start.getX() + sign; Math.abs(i - end.getX()) > 0; i += sign) {
+////                betweenList.add(getSquare(new GridPosition(i, start.getY())));
+////            }
+////        }
+//
+//        return betweenList;
+//    }
+//
+//    private void validateGetSquaresBetweenParams(GridPosition start, GridPosition end)
+//            throws GridPositionOutOfBoundsException, IllegalArgumentException {
+//        if (!(mazeLayout.inBounds(start) && mazeLayout.inBounds(end))) {
+//            throw new GridPositionOutOfBoundsException(
+//                    String.format("Start: %d, %d, End: %d, %d",
+//                            start.getX(), start.getY(), end.getX(), end.getY()));
+//        }
+//        if (start.equals(end)) {
+//            throw new IllegalArgumentException(
+//                    String.format("Start and end are same position: %d, %d",
+//                            start.getX(), start.getY()));
+//        }
+//        if (!(start.getX() == end.getX() || start.getY() == end.getY())) {
+//            throw new IllegalArgumentException(
+//                    String.format("Start %d, %d > End: %d, %d",
+//                            start.getX(), start.getY(), end.getX(), end.getY()));
+//        }
+//    }
 
     // EFFECTS: returns position of treasure in maze layout
     //          located in top right corner passage of alignment pattern
