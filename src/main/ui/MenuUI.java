@@ -51,7 +51,11 @@ public class MenuUI extends JPanel implements ListSelectionListener {
     public MenuUI(Minoquar minoquarFrame) {
         super(new BorderLayout());
         this.minoquarFrame = minoquarFrame;
-        this.mazeList = new MazeListModel(loadMazes());
+        try {
+            this.mazeList = new MazeListModel(loadMazes());
+        } catch (IllegalArgumentException e) {
+            minoquarFrame.crashProcedure(e);
+        }
         createListUI();
 //        runApp();
     }
@@ -206,8 +210,8 @@ public class MenuUI extends JPanel implements ListSelectionListener {
 
             try {
                 mazeList.createRandomMaze(index, name, MazeSizeModel.MazeSize.EXTRA_SMALL);
-            } catch (Exception ex) {
-                ex.printStackTrace(); // TODO: properly catch this!
+            } catch (IllegalArgumentException ex) {
+                minoquarFrame.crashProcedure(ex);
             }
 
             // Reset text field
@@ -271,7 +275,12 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int index = list.getSelectedIndex();
-            mazeList.deleteMaze(index);
+            try {
+                mazeList.deleteMaze(index);
+            } catch (IndexOutOfBoundsException ex) {
+                System.out.printf("Index %d out of maze list bounds\n", index);
+                ex.printStackTrace();
+            }
 
             int size = mazeList.getSize();
             if (size == 0) {
@@ -291,10 +300,12 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         // EFFECTS: processes button press, starts new game with selected maze
         @Override
         public void actionPerformed(ActionEvent e) {
+            int index = list.getSelectedIndex();
             try {
-                minoquarFrame.swapToGameUI(mazeList.getElementAt(list.getSelectedIndex()));
-            } catch (GridPositionOutOfBoundsException ex) {
-                ex.printStackTrace(); // TODO: properly catch this!
+                minoquarFrame.swapToGameUI(mazeList.getElementAt(index));
+            } catch (IndexOutOfBoundsException ex) {
+                System.out.printf("Index %d out of maze list bounds\n", index);
+                ex.printStackTrace();
             }
         }
     }

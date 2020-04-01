@@ -83,7 +83,7 @@ Temporary checklist
 - [X] GameModel
 - [ ] UI classes
     - [X] Minoquar (added crashProcedure method to log issue to console and close with maze save)
-    - [ ] MenuUI (IllegalArgumentException)
+    - [X] MenuUI (IllegalArgumentException)
     - [ ] GameUI (IllegalArgumentException, GridPositionOutOfBoundsException)
         
 Classes dealing with data will use checked exceptions, because these are issues with outside save files, not internal code. Bad save data can be stored in a separate file for later analysis or manual save recovery.
