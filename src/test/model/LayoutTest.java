@@ -9,10 +9,7 @@ import org.junit.jupiter.api.Test;
 import ui.SquareDisplayData;
 import utils.Utilities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -163,6 +160,79 @@ public class LayoutTest {
             fail(failIfNoException);
         } catch (GridPositionOutOfBoundsException e) {
             assertNotNull(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetArea() {
+        GridPosition start = new GridPosition(0, 0);
+        GridPosition end = new GridPosition(2,2);
+        List<Layout.MazeSquare> expected = new ArrayList<>(Arrays.asList(
+                w, w, w,
+                w, p, p,
+                w, p, w));
+        getAreaCase(finderPattern, start, end, expected);
+        start = new GridPosition(2, 0);
+        end = new GridPosition(3, 2);
+        expected = new ArrayList<>(Arrays.asList(
+                w, w,
+                p, p,
+                w, w));
+        getAreaCase(fiveByThreeRectangle, start, end, expected);
+    }
+
+    private void getAreaCase(
+            Layout layout,
+            GridPosition start,
+            GridPosition end,
+            List<Layout.MazeSquare> expected) {
+        Layout area = null;
+        try {
+            area = layout.getArea(start, end);
+        } catch (GridPositionOutOfBoundsException e) {
+            fail(generateFailMessage(true, "input positions should be in bounds"));
+        } catch (IllegalArgumentException e) {
+            fail(generateFailMessage(true, "input positions should be in correct order"));
+        }
+        assertEquals(expected.size(), area.getWidth() * area.getHeight());  // sanity check for expected
+        Iterator<Layout.MazeSquare> areaIterator = area.iterator();
+        Iterator<Layout.MazeSquare> expectedIterator = expected.iterator();
+        while (areaIterator.hasNext()) {
+            Layout.MazeSquare actualSquare = areaIterator.next();
+            Layout.MazeSquare expectedSquare = expectedIterator.next();
+            assertEquals(expectedSquare, actualSquare);
+        }
+    }
+
+    @Test
+    public void testGetAreaException() {
+        getAreaExceptionCase(finderPattern);
+        getAreaExceptionCase(fiveByThreeRectangle);
+    }
+
+    private void getAreaExceptionCase(Layout layout) {
+        int width = layout.getWidth();
+        int height = layout.getHeight();
+        // out of bounds, start @ -1, -1
+        // out of bounds, end @ width, height
+        // illegal argument, end before start
+        try {
+            layout.getArea(new GridPosition(-1, -1), new GridPosition(0, 0));
+            fail(generateFailMessage(false, "start is out of bounds"));
+        } catch (GridPositionOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            layout.getArea(new GridPosition(width - 1, height - 1), new GridPosition(width, height));
+            fail(generateFailMessage(false, "start is out of bounds"));
+        } catch (GridPositionOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            layout.getArea(new GridPosition(1, 1), new GridPosition(0, 0));
+            fail(generateFailMessage(false, "start is out of bounds"));
+        } catch (IllegalArgumentException e) {
+            // expected
         }
     }
 

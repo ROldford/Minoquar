@@ -318,9 +318,9 @@ public class MazeLayoutModelTest {
     // TODO: refactor all tests to just use this
     private String generateFailMessage(boolean failOnException, String reason) {
         if (failOnException) {
-            return String.format("%s, %s", FAIL_ON_EXCEPTION, reason);
+            return String.format("%s, %s", "Exception not expected", reason);
         } else {
-            return String.format("%s, %s", FAIL_IF_NO_EXCEPTION, reason);
+            return String.format("%s, %s", "Exception expected but not received", reason);
         }
     }
 }

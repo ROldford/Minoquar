@@ -59,6 +59,17 @@ public class Layout implements Iterable<Layout.MazeSquare> {
         return grid.get(position);
     }
 
+    // TODO: document exceptions
+    public Layout getArea(GridPosition start, GridPosition end) {
+        Grid<MazeSquare> subGrid = getSubGrid(start, end);
+        // not sharing subGrid directly to limit access to underlying implementation
+        List<MazeSquare> subGridList = new ArrayList<>();
+        for (MazeSquare square : subGrid) {
+            subGridList.add(square);
+        }
+        return new Layout(subGrid.getWidth(), subGrid.getHeight(), subGridList);
+    }
+
     // EFFECTS: return width of maze
     public int getWidth() {
         return grid.getWidth();

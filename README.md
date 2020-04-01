@@ -82,7 +82,7 @@ Temporary checklist
 - [X] MazeSizeModel
 - [X] Layout
 - [X] MazeLayoutModel
-- [ ] MazeBoardModel
+- [X] MazeBoardModel
 - [ ] MazeModel
 - [ ] MazeListModel
 - [ ] GameModel
