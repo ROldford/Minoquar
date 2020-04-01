@@ -25,6 +25,19 @@ public class MazeListModelTest {
     }
 
     @Test
+    public void testInitWithMazeList() {
+        MazeListModel nullMazes = new MazeListModel(null);
+        assertEquals(0, mazeList.getSize());
+        List<MazeModel> mazes = new ArrayList<>();
+        mazes.add(new MazeModel("zero", MazeSizeModel.MazeSize.EXTRA_SMALL));
+        mazes.add(new MazeModel("one", MazeSizeModel.MazeSize.SMALL));
+        mazes.add(new MazeModel("two", MazeSizeModel.MazeSize.MEDIUM));
+        MazeListModel threeMazes = new MazeListModel(mazes);
+        assertEquals(3, threeMazes.getSize());
+        assertEquals("one", threeMazes.getElementAt(1).getName());
+    }
+
+    @Test
     public void testCreateRandomMaze() throws Exception {
         String testSizeName = MazeSizeModel.getSizeName(TEST_SIZE);
         mazeList.createRandomMaze(TEST_NAME, TEST_SIZE);

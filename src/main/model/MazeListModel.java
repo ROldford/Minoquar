@@ -17,7 +17,11 @@ public class MazeListModel extends AbstractListModel implements Saveable {
     }
 
     // EFFECTS: construct new MazeListModel from given list of mazes
+    //          constructs empty list if given maze list is null
     public MazeListModel(List<MazeModel> mazeModels) {
+        if (mazeModels == null) {
+            this.mazes = new ArrayList<>();
+        }
         this.mazes = mazeModels;
     }
 
@@ -29,14 +33,13 @@ public class MazeListModel extends AbstractListModel implements Saveable {
 
     // MODIFIES: this
     // EFFECTS: creates a new random maze with given name and size and adds it to end of list
-    public void createRandomMaze(String name, MazeSizeModel.MazeSize size) throws Exception {
+    public void createRandomMaze(String name, MazeSizeModel.MazeSize size) {
         createRandomMaze(getSize(), name, size);
     }
 
     // MODIFIES: this
     // EFFECTS: creates a new random maze with given name and size and adds it at given index
-    public void createRandomMaze(int index, String name, MazeSizeModel.MazeSize size)
-            throws Exception {
+    public void createRandomMaze(int index, String name, MazeSizeModel.MazeSize size) {
         mazes.add(index, new MazeModel(name, size));
         fireIntervalAdded(this, index, index);
     }
