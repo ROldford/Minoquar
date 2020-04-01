@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 // represents game as maze level, stores layout and other maze data
 // allows verification of legal moves
 public class MazeModel {
-    private MazeBoardModel mazeBoard;
+    private MazeLayoutModel mazeLayout;
     private String name;
     // using a list to allow other ways of parsing history (i.e. last 5 games, win streak, etc.)
     private List<Outcome> pastGameOutcomes;
@@ -38,7 +38,7 @@ public class MazeModel {
     // EFFECTS: Constructs random maze with given name and size
     public MazeModel(String name, MazeSizeModel.MazeSize size) {
         this.name = name;
-        this.mazeBoard = new MazeBoardModel(size);
+        this.mazeLayout = MazeLayoutModel.createRandomMaze(size);
         this.pastGameOutcomes = new ArrayList<>();
     }
 
@@ -48,7 +48,7 @@ public class MazeModel {
                      List<String> savedOutcomeHistory,
                      List<String> savedLayout) throws InvalidMazeSaveDataException {
         this.name = name;
-        this.mazeBoard = new MazeBoardModel(size, savedLayout);
+        this.mazeLayout = MazeLayoutModel.createMazeFromMazeContent(size, savedLayout);
         this.pastGameOutcomes = parseSavedOutcomes(savedOutcomeHistory);
     }
 
@@ -59,12 +59,12 @@ public class MazeModel {
 
     // EFFECTS: returns name of maze's size
     public String getSizeName() {
-        return MazeSizeModel.getSizeName(mazeBoard.getSize());
+        return MazeSizeModel.getSizeName(mazeLayout.getSize());
     }
 
     // EFFECTS: returns length of maze's sides
     public int getSideLength() {
-        return MazeSizeModel.getSideLength(mazeBoard.getSize());
+        return MazeSizeModel.getSideLength(mazeLayout.getSize());
     }
 
     // EFFECTS: returns number of wins on this maze
@@ -85,18 +85,18 @@ public class MazeModel {
     // EFFECTS: returns position of treasure in maze layout
     //          located in top right corner passage of alignment pattern
     public GridPosition getTreasurePosition() {
-        return mazeBoard.getTreasurePosition();
+        return mazeLayout.getTreasurePosition();
     }
 
     // EFFECTS: gets minotaur start position (PASSAGE square closest to center)
     //          uses breadth first search, starting from middle square
     public GridPosition getMinotaurStartPosition() {
-        return mazeBoard.getMinotaurStartPosition();
+        return mazeLayout.getMinotaurStartPosition();
     }
 
     // valid = entity can be there = is PASSAGE
     public boolean isPositionValid(GridPosition position) {
-        return mazeBoard.getSquare(position) == Layout.MazeSquare.PASSAGE;
+        return mazeLayout.getSquare(position) == Layout.MazeSquare.PASSAGE;
     }
 
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
@@ -104,7 +104,7 @@ public class MazeModel {
     public boolean isMoveValid(GridPosition start, GridPosition end) throws GridPositionOutOfBoundsException {
         boolean samePosition = start.equals(end);
         boolean orthogonal = areSquaresOrthogonal(start, end);
-        boolean endOnWall = mazeBoard.getSquare(end) == Layout.MazeSquare.WALL;
+        boolean endOnWall = mazeLayout.getSquare(end) == Layout.MazeSquare.WALL;
         if (samePosition || !orthogonal || endOnWall) {
             return false;
         } else {
@@ -122,14 +122,14 @@ public class MazeModel {
 
         // test if start > end, if so, output needs reversing
         if (end.getX() > start.getX() || end.getY() > start.getY()) { // no reverse needed
-            Layout area = mazeBoard.getArea(start, end);
+            Layout area = mazeLayout.getArea(start, end);
             for (Layout.MazeSquare square : area) {
                 betweenList.add(square);
             }
             betweenList.remove(betweenList.size() - 1);
             betweenList.remove(0);
         } else {
-            Layout area = mazeBoard.getArea(end, start);
+            Layout area = mazeLayout.getArea(end, start);
             for (Layout.MazeSquare square : area) {
                 betweenList.add(square);
             }
@@ -157,7 +157,7 @@ public class MazeModel {
 
     private void validateGetSquaresBetweenParams(GridPosition start, GridPosition end)
             throws GridPositionOutOfBoundsException, IllegalArgumentException {
-        if (!(mazeBoard.inBounds(start) && mazeBoard.inBounds(end))) {
+        if (!(mazeLayout.inBounds(start) && mazeLayout.inBounds(end))) {
             throw new GridPositionOutOfBoundsException(
                     String.format("Start: %d, %d, End: %d, %d",
                             start.getX(), start.getY(), end.getX(), end.getY()));
@@ -190,7 +190,7 @@ public class MazeModel {
     // EFFECTS: returns grid positions from start to edge of board in given direction
     private List<GridPosition> getPositionsInDirection(GridPosition start, MazeModel.Direction direction)
             throws GridPositionOutOfBoundsException {
-        if (!mazeBoard.inBounds(start)) {
+        if (!mazeLayout.inBounds(start)) {
             throw new GridPositionOutOfBoundsException(
                     String.format("Start position: %d, %d", start.getX(), start.getY()));
         }
@@ -206,7 +206,7 @@ public class MazeModel {
             increment = new GridPosition(1, 0);
         }
         GridPosition possibleEnd = start.add(increment);
-        while (mazeBoard.inBounds(possibleEnd)) {
+        while (mazeLayout.inBounds(possibleEnd)) {
             squares.add(possibleEnd);
             possibleEnd = possibleEnd.add(increment);
         }
@@ -237,7 +237,7 @@ public class MazeModel {
 
     // EFFECTS: return list of strings to display the current maze
     public Grid<SquareDisplayData> displayMaze() {
-        return mazeBoard.display();
+        return mazeLayout.display();
     }
 
     // EFFECTS: returns maze's data in save file format (see Reader)
@@ -250,7 +250,7 @@ public class MazeModel {
         for (int i = 0; i * 100 < totalGameOnThisMaze; i++) {
             saveData.add(getPastGameOutcomeSaveData(i));
         }
-        saveData.addAll(mazeBoard.getSaveData());
+        saveData.addAll(mazeLayout.getSaveData());
         return saveData;
     }
 
@@ -265,7 +265,7 @@ public class MazeModel {
 
     // EFFECTS: returns maze's size code
     private String getSizeCode() {
-        return MazeSizeModel.getSizeCode(mazeBoard.getSize());
+        return MazeSizeModel.getSizeCode(mazeLayout.getSize());
     }
 
     // EFFECTS: returns a line of past game outcome history using given index
