@@ -81,7 +81,7 @@ Temporary checklist
     - [X] GridArray
 - [X] MazeSizeModel
 - [X] Layout
-- [ ] MazeLayoutModel
+- [X] MazeLayoutModel
 - [ ] MazeBoardModel
 - [ ] MazeModel
 - [ ] MazeListModel
@@ -90,7 +90,7 @@ Temporary checklist
         
 Classes dealing with data will use checked exceptions, because these are issues with outside save files, not internal code. Bad save data can be stored in a separate file for later analysis or manual save recovery.
 
-- [ ] MazeLayoutModel
+- [X] MazeLayoutModel
 - [ ] MazeModel
 - [ ] Reader
 

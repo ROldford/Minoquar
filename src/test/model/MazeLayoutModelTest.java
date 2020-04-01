@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,23 +29,11 @@ public class MazeLayoutModelTest {
     @BeforeEach
     public void beforeEach() {
         layouts = new ArrayList<>();
-        try {
-            layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_SMALL));
-            layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.SMALL));
-            layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.MEDIUM));
-            layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.LARGE));
-            layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_LARGE));
-        } catch (IllegalGridDataSizeException e) {
-            fail(String.format("%s, mazeLayout should always be constructed with correct number of squares",
-                    FAIL_ON_EXCEPTION));
-        } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
-            fail(String.format("%s, mazeLayout should always have QR elements generated correctly",
-                    FAIL_ON_EXCEPTION));
-        } catch (IncompleteMazeException e) {
-            fail(String.format("%s, maze should be constructed without empty squares",
-                    FAIL_ON_EXCEPTION));
-        }
-
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_SMALL));
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.SMALL));
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.MEDIUM));
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.LARGE));
+        layouts.add(MazeLayoutModel.createRandomMaze(MazeSizeModel.MazeSize.EXTRA_LARGE));
     }
 
     @Test
@@ -65,6 +54,12 @@ public class MazeLayoutModelTest {
                 expectedSizeNames, layouts,
                 (String sizeName, MazeLayoutModel layout) ->
                         assertEquals(sizeName, MazeSizeModel.getSizeName(layout.getSize())));
+        for ( MazeLayoutModel mazeLayout : layouts ) {
+            for (Layout.MazeSquare mazeSquare : mazeLayout ) {
+                assertNotEquals(Layout.MazeSquare.EMPTY, mazeSquare);
+            }
+        }
+
     }
 
     @Test
@@ -226,13 +221,7 @@ public class MazeLayoutModelTest {
         Utilities.iterateSimultaneously(
                 expectedSideLengths, layouts,
                 (Integer expected, MazeLayoutModel layout) -> {
-                    List<String> saveData = null;
-                    try {
-                        saveData = layout.getSaveData();
-                    } catch (IncorrectGridIterationException e) {
-                        fail(String.format("%s, method should always be operating in bounds",
-                                FAIL_ON_EXCEPTION));
-                    }
+                    List<String> saveData = layout.getSaveData();
                     assertEquals(expected, saveData.size());
                     for (String row : saveData) {
                         assertEquals(expected, row.length());
@@ -242,54 +231,81 @@ public class MazeLayoutModelTest {
 
     @Test
     public void testInitFromSavedData() {
-        List<String> testData = generateTestData();
+        List<String> testData = generateTestData("./data/test/testMazeLayout.txt");
         MazeLayoutModel testMazeLayout = null;
         try {
             testMazeLayout = MazeLayoutModel.createMazeFromMazeContent(
                     MazeSizeModel.MazeSize.EXTRA_SMALL, testData);
-        } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
-            fail(String.format("%s, overlay is in grid bounds",
-                    FAIL_ON_EXCEPTION));
-        } catch (IllegalArgumentException e) {
-            fail(String.format("%s, saved data should match maze dimensions",
-                    FAIL_ON_EXCEPTION));
-        } catch (IncompleteMazeException e) {
-            fail(String.format("%s, maze should be constructed without empty squares",
-                    FAIL_ON_EXCEPTION));
         } catch (InvalidMazeSaveDataException e) {
-            fail(String.format("%s, maze data should be correct",
-                    FAIL_ON_EXCEPTION));
+            fail(generateFailMessage(true, "maze data should be correct"));
         }
         assertEquals(25, MazeSizeModel.getSideLength(testMazeLayout.getSize()));
         assertEquals(MazeSizeModel.NAME_XS, MazeSizeModel.getSizeName(testMazeLayout.getSize()));
-        for (int x = 0; x < 25; x++) {
-            for (int y = 0; y < 25; y++) {
-                char savedSquare = testData.get(y).charAt(x);
-                Layout.MazeSquare testSquare = null;
-                try {
-                    testSquare = testMazeLayout.getSquare(new GridPosition(x, y));
-                } catch (GridPositionOutOfBoundsException e) {
-                    fail(String.format("%s, test should be checking squares in bounds",
-                            FAIL_ON_EXCEPTION));
-                }
-                if (savedSquare == Reader.SAVE_FILE_WALL) {
-                    assertEquals(Layout.MazeSquare.WALL, testSquare);
-                } else if (savedSquare == Reader.SAVE_FILE_PASSAGE) {
-                    assertEquals(Layout.MazeSquare.PASSAGE, testSquare);
-                } else {
-                    fail("There's a saved square that's not a valid character");
-                }
+        List<Character> testDataAsList = new ArrayList<>();
+        for ( char c : String.join("", testData).toCharArray() ) {
+            testDataAsList.add(c);
+        }
+        // making sure test data splits into list of 1 char strings
+        assertEquals(25 * 25, testDataAsList.size());
+        Iterator<Layout.MazeSquare> mazeLayoutIterator = testMazeLayout.iterator();
+        Iterator<Character> testDataIterator = testDataAsList.iterator();
+        while (testDataIterator.hasNext()) {
+            // check that each character in test data matches actual square in maze layout
+            Layout.MazeSquare mazeSquare = mazeLayoutIterator.next();
+            Character testDataChar = testDataIterator.next();
+            if (testDataChar.equals(Reader.SAVE_FILE_WALL)) {
+                assertEquals(Layout.MazeSquare.WALL, mazeSquare);
+            } else if (testDataChar.equals(Reader.SAVE_FILE_PASSAGE)) {
+                assertEquals(Layout.MazeSquare.PASSAGE, mazeSquare);
+            } else {
+                fail("There's a saved square that's not a valid character");
             }
         }
+//        for (int x = 0; x < 25; x++) {
+//            for (int y = 0; y < 25; y++) {
+//                char savedSquare = testData.get(y).charAt(x);
+//                Layout.MazeSquare testSquare = null;
+//                try {
+//                    testSquare = testMazeLayout.getSquare(new GridPosition(x, y));
+//                } catch (GridPositionOutOfBoundsException e) {
+//                    fail(String.format("%s, test should be checking squares in bounds",
+//                            FAIL_ON_EXCEPTION));
+//                }
+//                if (savedSquare == Reader.SAVE_FILE_WALL) {
+//                    assertEquals(Layout.MazeSquare.WALL, testSquare);
+//                } else if (savedSquare == Reader.SAVE_FILE_PASSAGE) {
+//                    assertEquals(Layout.MazeSquare.PASSAGE, testSquare);
+//                } else {
+//                    fail("There's a saved square that's not a valid character");
+//                }
+//            }
+//        }
     }
 
     @Test
     public void testInitFromSavedThrowException() {
-        // TODO: implement this!
+        // size mismatch
+        List<String> testData = generateTestData("./data/test/testMazeLayout.txt");
+        try {
+            MazeLayoutModel.createMazeFromMazeContent(
+                    MazeSizeModel.MazeSize.EXTRA_LARGE, testData);
+            fail(generateFailMessage(false, "maze data is wrong size"));
+        } catch (InvalidMazeSaveDataException e) {
+            assertNotNull(e.getMessage());
+        }
+        // illegal characters
+        testData = generateTestData("./data/test/testMazeLayoutIllegalChars.txt");
+        try {
+            MazeLayoutModel.createMazeFromMazeContent(
+                    MazeSizeModel.MazeSize.EXTRA_SMALL, testData);
+            fail(generateFailMessage(false, "maze data has illegal characters"));
+        } catch (InvalidMazeSaveDataException e) {
+            assertNotNull(e.getMessage());
+        }
     }
 
-    private List<String> generateTestData() {
-        File file = new File("./data/test/testMazeLayout.txt");
+    private List<String> generateTestData(String pathName) {
+        File file = new File(pathName);
         List<String> testData = new ArrayList<>();
         try {
             testData = Files.readAllLines(file.toPath());
@@ -299,4 +315,12 @@ public class MazeLayoutModelTest {
         return testData;
     }
 
+    // TODO: refactor all tests to just use this
+    private String generateFailMessage(boolean failOnException, String reason) {
+        if (failOnException) {
+            return String.format("%s, %s", FAIL_ON_EXCEPTION, reason);
+        } else {
+            return String.format("%s, %s", FAIL_IF_NO_EXCEPTION, reason);
+        }
+    }
 }
