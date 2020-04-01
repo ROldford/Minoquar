@@ -86,6 +86,19 @@ Classes dealing with data will use checked exceptions, because these are issues 
     - tests proper handling in `ReaderTest.testParseCorruptedSaves()`
 - Exception is also thrown onwards by MazeBoardModel
 
+*Phase 4: Task 3 - Design Analysis*
+
+- MazeBoardModel has no real purpose. Most of its methods just pass on results from MazeLayoutModel. The two exceptions to this could be added to MazeModel or MazeLayoutModel.
+    - [ ] re-implement getSquaresBetween in MazeModel as private method
+    - [ ] re-implement getSquaresInDirection in ?
+        - [ ] decide where to do this
+    - [ ] delete MazeBoardModel
+- Layout's role has been mostly made redundant with the development of the Grid package. MazeLayoutModel originally used Layout as part of overwriting QR code patterns onto a blank MazeLayoutModel, but these patterns can be stored as Grid instances, and overwrite() can be moved to MazeLayoutModel.
+    - [ ] re-implement overwrite to use Grid
+    - [ ] re-implement methods in MazeLayoutModel that use overwrite
+    - [ ] move other methods out of Layout into MazeLayoutModel
+    - [ ] delete Layout and remove "extends"
+
 *Other Development*
 - [X] Develop grid package
     - [X] subGrid()
