@@ -177,7 +177,7 @@ public class MazeModel {
     // EFFECTS: returns list of valid move endpoints from given start position in given direction
     public List<GridPosition> getValidMoves(GridPosition start, Direction direction)
             throws GridPositionOutOfBoundsException {
-        List<GridPosition> squaresInDirection = mazeBoard.getSquaresInDirection(start, direction);
+        List<GridPosition> squaresInDirection = getPositionsInDirection(start, direction);
         List<GridPosition> validMoves = new ArrayList<>();
         for (GridPosition possibleEnd : squaresInDirection) {
             if (isMoveValid(start, possibleEnd)) {
@@ -185,6 +185,32 @@ public class MazeModel {
             }
         }
         return validMoves;
+    }
+
+    // EFFECTS: returns grid positions from start to edge of board in given direction
+    private List<GridPosition> getPositionsInDirection(GridPosition start, MazeModel.Direction direction)
+            throws GridPositionOutOfBoundsException {
+        if (!mazeBoard.inBounds(start)) {
+            throw new GridPositionOutOfBoundsException(
+                    String.format("Start position: %d, %d", start.getX(), start.getY()));
+        }
+        GridPosition increment;
+        List<GridPosition> squares = new ArrayList<>();
+        if (direction == MazeModel.Direction.UP) {
+            increment = new GridPosition(0, -1);
+        } else if (direction == MazeModel.Direction.DOWN) {
+            increment = new GridPosition(0, 1);
+        } else if (direction == MazeModel.Direction.LEFT) {
+            increment = new GridPosition(-1, 0);
+        } else {
+            increment = new GridPosition(1, 0);
+        }
+        GridPosition possibleEnd = start.add(increment);
+        while (mazeBoard.inBounds(possibleEnd)) {
+            squares.add(possibleEnd);
+            possibleEnd = possibleEnd.add(increment);
+        }
+        return squares; //stub
     }
 
     // TODO: document this

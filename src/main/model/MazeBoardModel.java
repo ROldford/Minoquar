@@ -129,30 +129,29 @@ public class MazeBoardModel {
         return mazeLayout.getSaveData();
     }
 
-    // EFFECTS: returns grid positions from start to edge of board in given direction
-    // TODO: name change (getPositionsInDirection)
-    public List<GridPosition> getSquaresInDirection(GridPosition start, MazeModel.Direction direction)
-            throws GridPositionOutOfBoundsException {
-        if (!mazeLayout.inBounds(start)) {
-            throw new GridPositionOutOfBoundsException(
-                    String.format("Start position: %d, %d", start.getX(), start.getY()));
-        }
-        GridPosition increment;
-        List<GridPosition> squares = new ArrayList<>();
-        if (direction == MazeModel.Direction.UP) {
-            increment = new GridPosition(0, -1);
-        } else if (direction == MazeModel.Direction.DOWN) {
-            increment = new GridPosition(0, 1);
-        } else if (direction == MazeModel.Direction.LEFT) {
-            increment = new GridPosition(-1, 0);
-        } else {
-            increment = new GridPosition(1, 0);
-        }
-        GridPosition possibleEnd = start.add(increment);
-        while (mazeLayout.inBounds(possibleEnd)) {
-            squares.add(possibleEnd);
-            possibleEnd = possibleEnd.add(increment);
-        }
-        return squares; //stub
-    }
+//    // EFFECTS: returns grid positions from start to edge of board in given direction
+//    public List<GridPosition> getPositionsInDirection(GridPosition start, MazeModel.Direction direction)
+//            throws GridPositionOutOfBoundsException {
+//        if (!mazeLayout.inBounds(start)) {
+//            throw new GridPositionOutOfBoundsException(
+//                    String.format("Start position: %d, %d", start.getX(), start.getY()));
+//        }
+//        GridPosition increment;
+//        List<GridPosition> squares = new ArrayList<>();
+//        if (direction == MazeModel.Direction.UP) {
+//            increment = new GridPosition(0, -1);
+//        } else if (direction == MazeModel.Direction.DOWN) {
+//            increment = new GridPosition(0, 1);
+//        } else if (direction == MazeModel.Direction.LEFT) {
+//            increment = new GridPosition(-1, 0);
+//        } else {
+//            increment = new GridPosition(1, 0);
+//        }
+//        GridPosition possibleEnd = start.add(increment);
+//        while (mazeLayout.inBounds(possibleEnd)) {
+//            squares.add(possibleEnd);
+//            possibleEnd = possibleEnd.add(increment);
+//        }
+//        return squares; //stub
+//    }
 }

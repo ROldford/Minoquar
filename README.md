@@ -90,8 +90,8 @@ Classes dealing with data will use checked exceptions, because these are issues 
 
 - MazeBoardModel has no real purpose. Most of its methods just pass on results from MazeLayoutModel. The two exceptions to this could be added to MazeModel or MazeLayoutModel.
     - [X] re-implement getSquaresBetween in MazeModel as private method
-    - [ ] re-implement getSquaresInDirection in ?
-        - [ ] decide where to do this
+    - [X] re-implement getSquaresInDirection in MazeModel
+        - [X] decide where to do this
     - [ ] re-design MazeModel to use MazeLayoutModel, not MazeBoardModel
     - [ ] delete MazeBoardModel
 - Layout's role has been mostly made redundant with the development of the Grid package. MazeLayoutModel originally used Layout as part of overwriting QR code patterns onto a blank MazeLayoutModel, but these patterns can be stored as Grid instances, and overwrite() can be moved to MazeLayoutModel.
