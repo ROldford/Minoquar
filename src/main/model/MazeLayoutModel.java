@@ -1,6 +1,7 @@
 package model;
 
-import exceptions.*;
+import exceptions.GridPositionOutOfBoundsException;
+import exceptions.InvalidMazeSaveDataException;
 import grid.GridIterator;
 import grid.GridPosition;
 import grid.GridSeriesIterator;

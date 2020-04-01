@@ -283,7 +283,7 @@ public class MazeLayoutModelTest {
     }
 
     @Test
-    public void testInitFromSavedThrowException() {
+    public void testInitFromSavedExceptions() {
         // size mismatch
         List<String> testData = generateTestData("./data/test/testMazeLayout.txt");
         try {

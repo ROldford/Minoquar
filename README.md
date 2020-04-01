@@ -67,32 +67,24 @@ implement the more difficult parts of a digital game, such as physics, collision
 
 Several classes will throw unchecked exceptions to represent more fundamental code issues that can't be fixed at runtime. 
 UI will handle them by saving current mazes, printing a crash log string to console, and closing the app.
-(Future development will add a Logger class that can add this crash log to a log file for analysis.)
-    
-Temporary checklist    
-- [X] Grid package
-    - [X] Grid
-    - [X] AbstractGrid
-    - [X] GridArray
-- [X] MazeSizeModel
-- [X] Layout
-- [X] MazeLayoutModel
-- [X] MazeBoardModel
-- [X] MazeModel
-- [X] MazeListModel
-- [X] GameModel
-- [X] UI classes
-    - [X] Minoquar (added crashProcedure method to log issue to console and close with maze save)
-    - [X] MenuUI (IllegalArgumentException)
-    - [X] GameUI (IllegalArgumentException, GridPositionOutOfBoundsException)
-        - [X] MazeUIPanel
+(Future development would add a Logger class that can add this crash log to a log file for analysis.)
         
 Classes dealing with data will use checked exceptions, because these are issues with outside save files, not internal code. Bad save data can be stored in a separate file for later analysis or manual save recovery.
 
-- [X] MazeLayoutModel
-- [X] MazeModel
-- [X] Reader
-    - Reader handles InvalidMazeSaveDataException by storing maze in trash file
+- MazeLayoutModel
+    - method `createMazeFromMazeContent(MazeSizeModel.MazeSize size, List<String> savedLayout)`
+    - Tests:
+        - Not expected: `MazeLayoutModelTest.testInitFromSavedData()`
+        - Expected: `MazeLayoutModelTest.testInitFromSavedExceptions()`
+- MazeModel
+    - constructor `MazeModel(String name, MazeSizeModel.MazeSize size, List<String> savedOutcomeHistory, List<String> savedLayout)`
+    - Tests:
+        - Not expected: `MazeModelTest.testInitFromSavedData()`
+        - Expected: `MazeModelTest.testInitFromSavedExceptions()`
+- Reader
+    - handles InvalidMazeSaveDataException by storing invalid maze save data in trash file
+    - tests proper handling in `ReaderTest.testParseCorruptedSaves()`
+- Exception is also thrown onwards by MazeBoardModel
 
 *Other Development*
 - [X] Develop grid package
