@@ -274,7 +274,7 @@ public class LayoutTest {
                 startPosition.add(new GridPosition(0, 1)),
                 startPosition.add(new GridPosition(1, 1))
         ));
-        Layout twoByTwoPattern = new Layout(2, 2, patternList);
+        Grid<Layout.MazeSquare> twoByTwoPattern = new GridArray<>(2, 2, patternList);
         try {
             fiveByThreeEmpty.overwrite(startPosition, twoByTwoPattern);
         } catch (GridPositionOutOfBoundsException e) {
@@ -296,7 +296,7 @@ public class LayoutTest {
 
     @Test
     public void testOverwriteThrowException() {
-        Layout twoByTwoPattern = new Layout(2, 2, new ArrayList<>(Arrays.asList(
+        Grid<Layout.MazeSquare> twoByTwoPattern = new GridArray<>(2, 2, new ArrayList<>(Arrays.asList(
                 w, p,
                 p, w
         )));
@@ -306,7 +306,7 @@ public class LayoutTest {
         overwriteExceptionThrownCase(new GridPosition(4, 2), twoByTwoPattern, fiveByThreeEmpty);
     }
 
-    private void overwriteExceptionThrownCase(GridPosition cornerPosition, Layout overwriter, Layout overwritten) {
+    private void overwriteExceptionThrownCase(GridPosition cornerPosition, Grid<Layout.MazeSquare> overwriter, Layout overwritten) {
         String failIfNoException = String.format("%s, overlay region out of bounds", FAIL_IF_NO_EXCEPTION);
         String failOnGridIterException = String.format("%s, iteration should be correct", FAIL_ON_EXCEPTION);
         try {

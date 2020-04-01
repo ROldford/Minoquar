@@ -2,9 +2,7 @@ package model;
 
 import exceptions.GridPositionOutOfBoundsException;
 import exceptions.InvalidMazeSaveDataException;
-import grid.GridIterator;
-import grid.GridPosition;
-import grid.GridSeriesIterator;
+import grid.*;
 import persistence.Reader;
 import utils.Utilities;
 
@@ -14,7 +12,7 @@ import java.util.*;
 public class MazeLayoutModel extends Layout {
     private static final MazeSquare W = MazeSquare.WALL;
     private static final MazeSquare P = MazeSquare.PASSAGE;
-    public static final Layout FINDER_PATTERN = new Layout(7, 7, new ArrayList<>(Arrays.asList(
+    public static final Grid<MazeSquare> FINDER_PATTERN = new GridArray<>(7, 7, new ArrayList<>(Arrays.asList(
             W, W, W, W, W, W, W,
             W, P, P, P, P, P, W,
             W, P, W, W, W, P, W,
@@ -22,17 +20,17 @@ public class MazeLayoutModel extends Layout {
             W, P, W, W, W, P, W,
             W, P, P, P, P, P, W,
             W, W, W, W, W, W, W)));
-    public static final Layout FINDER_MARGIN_VERTICAL = new Layout(1, 8,
+    public static final Grid<MazeSquare> FINDER_MARGIN_VERTICAL = new GridArray<>(1, 8,
             new ArrayList<>(Arrays.asList(P, P, P, P, P, P, P, P)));
-    public static final Layout FINDER_MARGIN_HORIZONTAL = new Layout(7, 1,
+    public static final Grid<MazeSquare> FINDER_MARGIN_HORIZONTAL = new GridArray<>(7, 1,
             new ArrayList<>(Arrays.asList(P, P, P, P, P, P, P)));
-    public static final Layout ALIGNMENT_PATTERN = new Layout(5, 5, new ArrayList<>(Arrays.asList(
+    public static final Grid<MazeSquare> ALIGNMENT_PATTERN = new GridArray<>(5, 5, new ArrayList<>(Arrays.asList(
             W, W, W, W, W,
             W, P, P, P, W,
             W, P, W, P, W,
             W, P, P, P, W,
             W, W, W, W, W)));
-    public static final Layout DARK_MODULE = new Layout(1, 1,
+    public static final Grid<MazeSquare> DARK_MODULE = new GridArray<>(1, 1,
             new ArrayList<>(Collections.singletonList(W)));
     public static final double PERCENT_WALL = 0.4;
 
@@ -62,9 +60,9 @@ public class MazeLayoutModel extends Layout {
         int sideLength = MazeSizeModel.getSideLength(size);
         MazeLayoutModel newMaze = new MazeLayoutModel(size);
         List<MazeSquare> parsedLayoutData = parseSavedLayout(savedLayout);
-        Layout mazeLayout = null;
+        Grid<MazeSquare> mazeLayout = null;
         try {
-            mazeLayout = new Layout(sideLength, sideLength, parsedLayoutData);
+            mazeLayout = new GridArray<>(sideLength, sideLength, parsedLayoutData);
         } catch (IllegalArgumentException e) {
             throw new InvalidMazeSaveDataException(e.getMessage(), e);
         }
@@ -225,8 +223,8 @@ public class MazeLayoutModel extends Layout {
         List<GridPosition> positions = MazeSizeModel.getTimingPatternPositions();
         // build preset for timing pattern
         List<MazeSquare> pattern = buildTimingPattern(length);
-        overwrite(positions.get(0), new Layout(1, length, pattern));
-        overwrite(positions.get(1), new Layout(length, 1, pattern));
+        overwrite(positions.get(0), new GridArray<>(1, length, pattern));
+        overwrite(positions.get(1), new GridArray<>(length, 1, pattern));
     }
 
     // REQUIRES: length is odd

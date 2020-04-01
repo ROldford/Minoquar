@@ -116,7 +116,7 @@ public class Layout implements Iterable<Layout.MazeSquare> {
     // MODIFIES: this
     // EFFECTS: overwrites source layout on top of squares on this layout
     // TODO: document GridPositionOutOfBoundsException
-    public void overwrite(GridPosition overwriteStart, Layout source) {
+    public void overwrite(GridPosition overwriteStart, Grid<MazeSquare> source) {
         // subgrid setup
         GridPosition overwriteEnd = overwriteStart.add(
                 new GridPosition(source.getWidth() - 1, source.getHeight() - 1));

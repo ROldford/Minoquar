@@ -95,8 +95,8 @@ Classes dealing with data will use checked exceptions, because these are issues 
     - [X] re-design MazeModel to use MazeLayoutModel, not MazeBoardModel
     - [X] delete MazeBoardModel (and test)
 - Layout's role has been mostly made redundant with the development of the Grid package. MazeLayoutModel originally used Layout as part of overwriting QR code patterns onto a blank MazeLayoutModel, but these patterns can be stored as Grid instances, and overwrite() can be moved to MazeLayoutModel.
-    - [ ] re-implement overwrite to use Grid
-    - [ ] re-implement methods in MazeLayoutModel that use overwrite
+    - [X] re-implement overwrite to use Grid
+    - [X] re-implement methods in MazeLayoutModel that use overwrite
     - [ ] move other methods out of Layout into MazeLayoutModel
     - [ ] delete Layout and remove "extends"
 
