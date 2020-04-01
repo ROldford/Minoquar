@@ -47,7 +47,7 @@ public class Layout implements Iterable<Layout.MazeSquare> {
             this.grid = new GridArray<>(width, height, presetLayout);
         } else {
             throw new IllegalArgumentException(String.format(
-                    "presetLayout is wrong size (%d for %dx%d grid)",
+                    "Save data size: %d squares, Grid dimensions: %d wide x %d tall",
                     presetLayout.size(), width, height));
         }
 
