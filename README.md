@@ -92,7 +92,8 @@ Classes dealing with data will use checked exceptions, because these are issues 
 
 - [X] MazeLayoutModel
 - [X] MazeModel
-- [ ] Reader
+- [X] Reader
+    - Reader handles InvalidMazeSaveDataException by storing maze in trash file
 
 *Other Development*
 - [ ] Develop grid package
