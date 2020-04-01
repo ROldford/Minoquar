@@ -1,14 +1,12 @@
 package model;
 
-import exceptions.IllegalGridDataSizeException;
-import exceptions.IncorrectGridIterationException;
 import exceptions.GridPositionOutOfBoundsException;
 import grid.Grid;
+import grid.GridArray;
 import grid.GridPosition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ui.SquareDisplayData;
-import grid.GridArray;
 import utils.Utilities;
 
 import java.util.ArrayList;
@@ -261,5 +259,14 @@ public class LayoutTest {
         assertTrue(fiveByThreeEmpty.inBounds(end));
         assertFalse(fiveByThreeEmpty.inBounds(outsideStart));
         assertFalse(fiveByThreeEmpty.inBounds(outsideEnd));
+    }
+
+    // TODO: refactor all tests to use this
+    private String generateFailMessage(boolean failOnException, String reason) {
+        if (failOnException) {
+            return String.format("%s, %s", FAIL_ON_EXCEPTION, reason);
+        } else {
+            return String.format("%s, %s", FAIL_IF_NO_EXCEPTION, reason);
+        }
     }
 }

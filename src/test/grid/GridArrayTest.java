@@ -1,6 +1,5 @@
 package grid;
 
-import exceptions.IllegalGridDataSizeException;
 import exceptions.GridPositionOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,7 +88,7 @@ class GridArrayTest {
             } else {                // rectangle grid
                 new GridArray<>(width, height, data);
             }
-        } catch (IllegalGridDataSizeException e) {
+        } catch (IllegalArgumentException e) {
             fail(failOnException);
         }
     }
@@ -625,6 +624,7 @@ class GridArrayTest {
         assertEquals(origin, newStringGrid.positionOf("A"));
     }
 
+    // TODO: refactor all tests to use this
     private String generateFailMessage(boolean failOnException, String reason) {
         if (failOnException) {
             return String.format("%s, %s", FAIL_ON_EXCEPTION, reason);
