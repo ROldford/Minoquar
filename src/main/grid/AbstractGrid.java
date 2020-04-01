@@ -199,7 +199,8 @@ public abstract class AbstractGrid<T> implements Grid<T> {
     // View
 
     // subGrid is area bounded by start and end inclusive
-    public Grid<T> subGrid(GridPosition start, GridPosition end) {
+    public Grid<T> subGrid(GridPosition start, GridPosition end)
+            throws GridPositionOutOfBoundsException, IllegalArgumentException {
         return new SubGrid(this, start, end);
     }
 
