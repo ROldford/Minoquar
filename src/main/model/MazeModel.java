@@ -1,6 +1,7 @@
 package model;
 
 import exceptions.GridPositionOutOfBoundsException;
+import exceptions.InvalidMazeSaveDataException;
 import grid.Grid;
 import grid.GridPosition;
 import ui.SquareDisplayData;
@@ -35,7 +36,7 @@ public class MazeModel {
     private static final String LOSS_LETTER = "L";
 
     // EFFECTS: Constructs random maze with given name and size
-    public MazeModel(String name, MazeSizeModel.MazeSize size) throws Exception {
+    public MazeModel(String name, MazeSizeModel.MazeSize size) {
         this.name = name;
         this.mazeBoard = new MazeBoardModel(size);
         this.pastGameOutcomes = new ArrayList<>();
@@ -45,7 +46,7 @@ public class MazeModel {
     public MazeModel(String name,
                      MazeSizeModel.MazeSize size,
                      List<String> savedOutcomeHistory,
-                     List<String> savedLayout) throws Exception {
+                     List<String> savedLayout) throws InvalidMazeSaveDataException {
         this.name = name;
         this.mazeBoard = new MazeBoardModel(size, savedLayout);
         this.pastGameOutcomes = parseSavedOutcomes(savedOutcomeHistory);
@@ -93,8 +94,8 @@ public class MazeModel {
         return mazeBoard.getMinotaurStartPosition();
     }
 
-    // REQUIRES: start and end are within maze bounds
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
+    // TODO: document exceptions
     public boolean isMoveValid(GridPosition start, GridPosition end) throws GridPositionOutOfBoundsException {
         boolean samePosition = start.equals(end);
         boolean orthogonal = areSquaresOrthogonal(start, end);
@@ -102,7 +103,7 @@ public class MazeModel {
         if (samePosition || !orthogonal || endOnWall) {
             return false;
         } else {
-            return areTheseSquaresIdentical(mazeBoard.getSquaresBetween(start, end));
+            return areAllTheseSquaresTheSame(mazeBoard.getSquaresBetween(start, end));
         }
     }
 
@@ -119,15 +120,17 @@ public class MazeModel {
         return validMoves;
     }
 
-    // EFFECTS:
-    private List<Outcome> parseSavedOutcomes(List<String> savedOutcomeHistory) {
+    // TODO: document this
+    private List<Outcome> parseSavedOutcomes(List<String> savedOutcomeHistory) throws InvalidMazeSaveDataException {
         List<Outcome> outcomes = new ArrayList<>();
         for (String line : savedOutcomeHistory) {
             for (String letter : line.split("")) {
                 if (letter.equals(WIN_LETTER)) {
                     outcomes.add(Outcome.WIN);
-                } else {
+                } else if (letter.equals(LOSS_LETTER)) {
                     outcomes.add(Outcome.LOSS);
+                } else {
+                    throw new InvalidMazeSaveDataException("Saved game history has invalid letter");
                 }
             }
         }
@@ -163,8 +166,8 @@ public class MazeModel {
     }
 
     // EFFECTS: returns true if all squares in list are the same type
-    private boolean areTheseSquaresIdentical(List<MazeLayoutModel.MazeSquare> squares) {
-        return squares.isEmpty() || Collections.frequency(squares, squares.get(0)) == squares.size();  //stub
+    private boolean areAllTheseSquaresTheSame(List<MazeLayoutModel.MazeSquare> squares) {
+        return squares.isEmpty() || Collections.frequency(squares, squares.get(0)) == squares.size();
     }
 
     // EFFECTS: returns maze's size code

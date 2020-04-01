@@ -215,6 +215,21 @@ public class MazeBoardModelTest {
                 });
     }
 
+    @Test
+    public void testGetSquaresInDirectionExceptions() {
+        MazeBoardModel board = boards.get(0);
+        try {
+            board.getSquaresInDirection(new GridPosition(-1, -1), MazeModel.Direction.DOWN);
+        } catch (GridPositionOutOfBoundsException e) {
+            assertNotNull(e.getMessage());
+        }
+        try {
+            board.getSquaresInDirection(new GridPosition(33, 33), MazeModel.Direction.UP);
+        } catch (GridPositionOutOfBoundsException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
+
     private List<String> generateTestData(String pathName) {
         File file = new File(pathName);
         List<String> testData = new ArrayList<>();

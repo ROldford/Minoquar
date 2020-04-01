@@ -37,9 +37,6 @@ public class MazeBoardModel {
         return mazeLayout.getSquare(position);
     }
 
-    // REQUIRES: start and end are within maze size
-    //           start and end are on same orthogonal line
-    //           start and end are not same position
     // EFFECTS: returns list of squares between start and end (exclusive)
     // TODO: document exceptions
     public List<MazeLayoutModel.MazeSquare> getSquaresBetween(GridPosition start, GridPosition end)
@@ -126,7 +123,12 @@ public class MazeBoardModel {
 
     // EFFECTS: returns grid positions from start to edge of board in given direction
     // TODO: name change (getPositionsInDirection)
-    public List<GridPosition> getSquaresInDirection(GridPosition start, MazeModel.Direction direction) {
+    public List<GridPosition> getSquaresInDirection(GridPosition start, MazeModel.Direction direction)
+            throws GridPositionOutOfBoundsException {
+        if (!mazeLayout.inBounds(start)) {
+            throw new GridPositionOutOfBoundsException(
+                    String.format("Start position: %d, %d", start.getX(), start.getY()));
+        }
         GridPosition increment;
         List<GridPosition> squares = new ArrayList<>();
         if (direction == MazeModel.Direction.UP) {
