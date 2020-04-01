@@ -1,7 +1,7 @@
 package ui;
 
 import model.GameEntity;
-import model.Layout;
+import model.MazeLayoutModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,23 +9,23 @@ import java.util.Objects;
 
 // used to pass data about display of given maze square to UI objects
 public class SquareDisplayData {
-    private Layout.MazeSquare squareStatus;
+    private MazeLayoutModel.MazeSquare squareStatus;
     private List<GameEntity.EntityType> entityTypes;
 
     // EFFECTS: creates new display data object carrying square status and types of any entities present there
-    public SquareDisplayData(Layout.MazeSquare mazeSquare, List<GameEntity.EntityType> entityTypes) {
+    public SquareDisplayData(MazeLayoutModel.MazeSquare mazeSquare, List<GameEntity.EntityType> entityTypes) {
         this.squareStatus = mazeSquare;
         this.entityTypes = entityTypes;
     }
 
     // EFFECTS: creates new display data object carrying square status with no entities
-    public SquareDisplayData(Layout.MazeSquare mazeSquare) {
+    public SquareDisplayData(MazeLayoutModel.MazeSquare mazeSquare) {
         this.squareStatus = mazeSquare;
         this.entityTypes = new ArrayList<>();
     }
 
     // EFFECT: returns status of this square
-    public Layout.MazeSquare getSquareStatus() {
+    public MazeLayoutModel.MazeSquare getSquareStatus() {
         return squareStatus;
     }
 

@@ -4,12 +4,19 @@ import exceptions.GridPositionOutOfBoundsException;
 import exceptions.InvalidMazeSaveDataException;
 import grid.*;
 import persistence.Reader;
+import ui.SquareDisplayData;
 import utils.Utilities;
 
 import java.util.*;
 
 // responsible for creating maze-specific layout (i.e. with static QR elements)
-public class MazeLayoutModel extends Layout {
+public class MazeLayoutModel implements Iterable<MazeLayoutModel.MazeSquare> {
+    public enum MazeSquare {
+        WALL,
+        PASSAGE,
+        EMPTY
+    }
+
     private static final MazeSquare W = MazeSquare.WALL;
     private static final MazeSquare P = MazeSquare.PASSAGE;
     public static final Grid<MazeSquare> FINDER_PATTERN = new GridArray<>(7, 7, new ArrayList<>(Arrays.asList(
@@ -34,11 +41,18 @@ public class MazeLayoutModel extends Layout {
             new ArrayList<>(Collections.singletonList(W)));
     public static final double PERCENT_WALL = 0.4;
 
+    private Grid<MazeSquare> grid;
     private MazeSizeModel.MazeSize size;
 
     // EFFECTS: Construct empty maze layout (only EMPTY squares) of given size
     private MazeLayoutModel(MazeSizeModel.MazeSize mazeSize) {
-        super(MazeSizeModel.getSideLength(mazeSize), MazeSizeModel.getSideLength(mazeSize));
+//        super(MazeSizeModel.getSideLength(mazeSize), MazeSizeModel.getSideLength(mazeSize));
+        int sideLength = MazeSizeModel.getSideLength(mazeSize);
+        List<MazeSquare> layoutEmpty = new ArrayList<>();
+        for (int i = 0; i < (sideLength * sideLength); i++) {
+            layoutEmpty.add(i, MazeSquare.EMPTY);
+        }
+        this.grid = new GridArray<>(sideLength, sideLength, layoutEmpty);
         this.size = mazeSize;
     }
 
@@ -73,6 +87,10 @@ public class MazeLayoutModel extends Layout {
     // EFFECTS: returns this maze layout's size
     public MazeSizeModel.MazeSize getSize() {
         return size;
+    }
+
+    public int getSideLength() {
+        return MazeSizeModel.getSideLength(size);
     }
 
     // EFFECTS: returns position of treasure in maze layout
@@ -129,6 +147,28 @@ public class MazeLayoutModel extends Layout {
         return neighbours;
     }
 
+    // EFFECTS: return true if position lies in bounds of layout
+    public boolean inBounds(GridPosition position) {
+        return grid.inBounds(position);
+    }
+
+    // EFFECTS: returns status of square at given position
+    // TODO: document exceptions from Grid
+    public MazeSquare getSquare(GridPosition position) {
+        return grid.get(position);
+    }
+
+    // TODO: document exceptions
+    public Grid<MazeSquare> getArea(GridPosition start, GridPosition end) {
+        Grid<MazeSquare> subGrid = getSubGrid(start, end);
+        // not sharing subGrid directly to limit access to underlying implementation
+        List<MazeSquare> subGridList = new ArrayList<>();
+        for (MazeSquare square : subGrid) {
+            subGridList.add(square);
+        }
+        return new GridArray<>(subGrid.getWidth(), subGrid.getHeight(), subGridList);
+    }
+
     // EFFECTS: returns maze layout's data in save file format (see Reader)
     // TODO: document exceptions
     public List<String> getSaveData() {
@@ -164,6 +204,34 @@ public class MazeLayoutModel extends Layout {
 //            saveData.add(row.toString());
 //        }
         return saveData;
+    }
+
+    // EFFECTS: return GridArray of SquareDisplayData to display the current layout
+    public Grid<SquareDisplayData> display() {
+        Grid<SquareDisplayData> displayData = new GridArray<>(getSideLength(), getSideLength());
+        GridIterator<MazeSquare> gridIterator = grid.gridCellIterator();
+        GridIterator<SquareDisplayData> displayIterator = displayData.gridCellIterator();
+        while (gridIterator.hasNext()) {
+            MazeSquare gridSquare = gridIterator.next();
+//            SquareDisplayData displaySquare = displayIterator.next();
+//            displaySquare = new SquareDisplayData(gridSquare);
+            displayIterator.next();
+            displayIterator.set(new SquareDisplayData(gridSquare));
+        }
+//        GridArray<SquareDisplayData> displayData = new GridArray<>(getWidth(), getHeight());
+//        for (int x = 0; x < getWidth(); x++) {
+//            for (int y = 0; y < getHeight(); y++) {
+//                GridPosition position = new GridPosition(x, y);
+//                SquareDisplayData squareDisplay = null;
+//                try {
+//                    squareDisplay = new SquareDisplayData(grid.get(position), new ArrayList<>());
+//                    displayData.set(x, y, squareDisplay);
+//                } catch (GridPositionOutOfBoundsException e) {
+//                    throw new IncorrectGridIterationException(position);
+//                }
+//            }
+//        }
+        return displayData;
     }
 
     // MODIFIES: this
@@ -250,6 +318,46 @@ public class MazeLayoutModel extends Layout {
     }
 
     // MODIFIES: this
+    // EFFECTS: overwrites source layout on top of squares on this layout
+    // TODO: document GridPositionOutOfBoundsException
+    public void overwrite(GridPosition overwriteStart, Grid<MazeSquare> source) {
+        // subgrid setup
+        GridPosition overwriteEnd = overwriteStart.add(
+                new GridPosition(source.getWidth() - 1, source.getHeight() - 1));
+        Grid<MazeSquare> target = getSubGrid(overwriteStart, overwriteEnd);
+        // iteration over source and target
+        GridIterator<MazeSquare> targetIterator = target.gridCellIterator();
+        GridIterator<MazeSquare> sourceIterator = source.gridCellIterator();
+        while (sourceIterator.hasNext()) {
+            MazeSquare sourceSquare = sourceIterator.next();
+//            MazeSquare targetSquare = targetIterator.next();
+            targetIterator.next();
+            targetIterator.set(sourceSquare);
+        }
+
+
+//        if (isInBounds(overwriteStart, overwriteEnd)) {
+//            for (int x = 0; x < other.getWidth(); x++) {
+//                for (int y = 0; y < other.getHeight(); y++) {
+//                    try {
+//                        grid.set(
+//                                overwriteStart.add(new GridPosition(x, y)),
+//                                other.getSquare(new GridPosition(x, y)));
+//                    } catch (GridPositionOutOfBoundsException e) {
+//                        throw new IncorrectGridIterationException(x, y);
+//                    }
+//                }
+//            }
+//        } else {
+//            throw new GridPositionOutOfBoundsException("out of bounds");
+//        }
+    }
+
+    private Grid<MazeSquare> getSubGrid(GridPosition start, GridPosition end) {
+        return grid.subGrid(start, end);
+    }
+
+    // MODIFIES: this
     // EFFECTS: fills remaining EMPTY squares in maze layout with WALL or PASSAGE
     //          random chance of either, based on PERCENT_WALL
     // TODO: document exceptions
@@ -276,6 +384,14 @@ public class MazeLayoutModel extends Layout {
 //                }
 //            }
 //        }
+    }
+
+    public Iterator<MazeSquare> iterator() {
+        return grid.iterator();
+    }
+
+    public GridIterator<MazeSquare> gridCellIterator() {
+        return grid.gridCellIterator();
     }
 
     // REQUIRES: layout only consists of SAVE_FILE_WALL and SAVE_FILE_PASSAGE

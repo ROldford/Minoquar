@@ -1,7 +1,7 @@
 package ui;
 
 import model.GameEntity;
-import model.Layout;
+import model.MazeLayoutModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,20 +18,20 @@ class SquareDisplayDataTest {
 
     @BeforeEach
     void beforeEach() {
-        emptyWall = new SquareDisplayData(Layout.MazeSquare.WALL);
-        emptyPassage = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
+        emptyWall = new SquareDisplayData(MazeLayoutModel.MazeSquare.WALL);
+        emptyPassage = new SquareDisplayData(MazeLayoutModel.MazeSquare.PASSAGE);
         List<GameEntity.EntityType> entities = new ArrayList<>(Arrays.asList(
                 GameEntity.EntityType.HERO, GameEntity.EntityType.TREASURE));
-        passageWithEntities = new SquareDisplayData(Layout.MazeSquare.PASSAGE, entities);
+        passageWithEntities = new SquareDisplayData(MazeLayoutModel.MazeSquare.PASSAGE, entities);
     }
 
     @Test
     void testInit() {
-        assertEquals(Layout.MazeSquare.WALL, emptyWall.getSquareStatus());
+        assertEquals(MazeLayoutModel.MazeSquare.WALL, emptyWall.getSquareStatus());
         assertEquals(0, emptyWall.getEntityTypes().size());
-        assertEquals(Layout.MazeSquare.PASSAGE, emptyPassage.getSquareStatus());
+        assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, emptyPassage.getSquareStatus());
         assertEquals(0, emptyPassage.getEntityTypes().size());
-        assertEquals(Layout.MazeSquare.PASSAGE, passageWithEntities.getSquareStatus());
+        assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, passageWithEntities.getSquareStatus());
         assertEquals(2, passageWithEntities.getEntityTypes().size());
     }
 
@@ -64,10 +64,10 @@ class SquareDisplayDataTest {
 
     @Test
     void testEqualsAndHashCode() {
-        SquareDisplayData newEmptyWall = new SquareDisplayData(Layout.MazeSquare.WALL);
+        SquareDisplayData newEmptyWall = new SquareDisplayData(MazeLayoutModel.MazeSquare.WALL);
         List<GameEntity.EntityType> newEntities = new ArrayList<>(Arrays.asList(
                 GameEntity.EntityType.HERO, GameEntity.EntityType.TREASURE));
-        SquareDisplayData newPassageWithEntities = new SquareDisplayData(Layout.MazeSquare.PASSAGE, newEntities);
+        SquareDisplayData newPassageWithEntities = new SquareDisplayData(MazeLayoutModel.MazeSquare.PASSAGE, newEntities);
         String notDisplayData = "I'm not even the same object type!";
         assertEquals(emptyWall, emptyWall);
         assertEquals(emptyWall.hashCode(), emptyWall.hashCode());

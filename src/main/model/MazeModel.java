@@ -96,7 +96,7 @@ public class MazeModel {
 
     // valid = entity can be there = is PASSAGE
     public boolean isPositionValid(GridPosition position) {
-        return mazeLayout.getSquare(position) == Layout.MazeSquare.PASSAGE;
+        return mazeLayout.getSquare(position) == MazeLayoutModel.MazeSquare.PASSAGE;
     }
 
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
@@ -104,7 +104,7 @@ public class MazeModel {
     public boolean isMoveValid(GridPosition start, GridPosition end) throws GridPositionOutOfBoundsException {
         boolean samePosition = start.equals(end);
         boolean orthogonal = areSquaresOrthogonal(start, end);
-        boolean endOnWall = mazeLayout.getSquare(end) == Layout.MazeSquare.WALL;
+        boolean endOnWall = mazeLayout.getSquare(end) == MazeLayoutModel.MazeSquare.WALL;
         if (samePosition || !orthogonal || endOnWall) {
             return false;
         } else {
@@ -122,15 +122,15 @@ public class MazeModel {
 
         // test if start > end, if so, output needs reversing
         if (end.getX() > start.getX() || end.getY() > start.getY()) { // no reverse needed
-            Layout area = mazeLayout.getArea(start, end);
-            for (Layout.MazeSquare square : area) {
+            Grid<MazeLayoutModel.MazeSquare> area = mazeLayout.getArea(start, end);
+            for (MazeLayoutModel.MazeSquare square : area) {
                 betweenList.add(square);
             }
             betweenList.remove(betweenList.size() - 1);
             betweenList.remove(0);
         } else {
-            Layout area = mazeLayout.getArea(end, start);
-            for (Layout.MazeSquare square : area) {
+            Grid<MazeLayoutModel.MazeSquare> area = mazeLayout.getArea(end, start);
+            for (MazeLayoutModel.MazeSquare square : area) {
                 betweenList.add(square);
             }
             Collections.reverse(betweenList);

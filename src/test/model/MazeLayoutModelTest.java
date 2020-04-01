@@ -55,8 +55,8 @@ public class MazeLayoutModelTest {
                 (String sizeName, MazeLayoutModel layout) ->
                         assertEquals(sizeName, MazeSizeModel.getSizeName(layout.getSize())));
         for ( MazeLayoutModel mazeLayout : layouts ) {
-            for (Layout.MazeSquare mazeSquare : mazeLayout ) {
-                assertNotEquals(Layout.MazeSquare.EMPTY, mazeSquare);
+            for (MazeLayoutModel.MazeSquare mazeSquare : mazeLayout ) {
+                assertNotEquals(MazeLayoutModel.MazeSquare.EMPTY, mazeSquare);
             }
         }
 
@@ -171,9 +171,9 @@ public class MazeLayoutModelTest {
     @Test
     public void testDisplay() {
         for (MazeLayoutModel layout : layouts) {
-            SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
-            SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
-            SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
+            SquareDisplayData wall = new SquareDisplayData(MazeLayoutModel.MazeSquare.WALL);
+            SquareDisplayData pass = new SquareDisplayData(MazeLayoutModel.MazeSquare.PASSAGE);
+            SquareDisplayData empty = new SquareDisplayData(MazeLayoutModel.MazeSquare.EMPTY);
             Grid<SquareDisplayData> expectedFinder = new GridArray<>(7, 3,
                     new ArrayList<>(Arrays.asList(
                             wall, wall, wall, wall, wall, wall, wall,
@@ -247,16 +247,16 @@ public class MazeLayoutModelTest {
         }
         // making sure test data splits into list of 1 char strings
         assertEquals(25 * 25, testDataAsList.size());
-        Iterator<Layout.MazeSquare> mazeLayoutIterator = testMazeLayout.iterator();
+        Iterator<MazeLayoutModel.MazeSquare> mazeLayoutIterator = testMazeLayout.iterator();
         Iterator<Character> testDataIterator = testDataAsList.iterator();
         while (testDataIterator.hasNext()) {
             // check that each character in test data matches actual square in maze layout
-            Layout.MazeSquare mazeSquare = mazeLayoutIterator.next();
+            MazeLayoutModel.MazeSquare mazeSquare = mazeLayoutIterator.next();
             Character testDataChar = testDataIterator.next();
             if (testDataChar.equals(Reader.SAVE_FILE_WALL)) {
-                assertEquals(Layout.MazeSquare.WALL, mazeSquare);
+                assertEquals(MazeLayoutModel.MazeSquare.WALL, mazeSquare);
             } else if (testDataChar.equals(Reader.SAVE_FILE_PASSAGE)) {
-                assertEquals(Layout.MazeSquare.PASSAGE, mazeSquare);
+                assertEquals(MazeLayoutModel.MazeSquare.PASSAGE, mazeSquare);
             } else {
                 fail("There's a saved square that's not a valid character");
             }

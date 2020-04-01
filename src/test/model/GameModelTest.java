@@ -67,12 +67,12 @@ public class GameModelTest {
 
     @Test
     public void testDisplay() {
-        SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
-        SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
-        SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
-        SquareDisplayData hero = new SquareDisplayData(Layout.MazeSquare.PASSAGE,
+        SquareDisplayData wall = new SquareDisplayData(MazeLayoutModel.MazeSquare.WALL);
+        SquareDisplayData pass = new SquareDisplayData(MazeLayoutModel.MazeSquare.PASSAGE);
+        SquareDisplayData empty = new SquareDisplayData(MazeLayoutModel.MazeSquare.EMPTY);
+        SquareDisplayData hero = new SquareDisplayData(MazeLayoutModel.MazeSquare.PASSAGE,
                 new ArrayList<>(Collections.singletonList(GameEntity.EntityType.HERO)));
-        SquareDisplayData exit = new SquareDisplayData(Layout.MazeSquare.PASSAGE,
+        SquareDisplayData exit = new SquareDisplayData(MazeLayoutModel.MazeSquare.PASSAGE,
                 new ArrayList<>(Collections.singletonList(GameEntity.EntityType.TREASURE)));
         GridArray<SquareDisplayData> expectedFinder = new GridArray<>(8, 3,
                 new ArrayList<>(Arrays.asList(
@@ -158,7 +158,7 @@ public class GameModelTest {
 
     @Test
     public void testDisplayMinotaur() {
-        SquareDisplayData minotaur = new SquareDisplayData(Layout.MazeSquare.PASSAGE,
+        SquareDisplayData minotaur = new SquareDisplayData(MazeLayoutModel.MazeSquare.PASSAGE,
                 new ArrayList<>(Collections.singletonList(GameEntity.EntityType.MINOTAUR)));
         List<GridPosition> expectedMinotaurStartPositions = new ArrayList<>(Arrays.asList(
                 new GridPosition(12, 12),
