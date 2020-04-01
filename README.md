@@ -85,13 +85,13 @@ Temporary checklist
 - [X] MazeBoardModel
 - [X] MazeModel
 - [X] MazeListModel
-- [ ] GameModel
+- [X] GameModel
 - [ ] UI classes
         
 Classes dealing with data will use checked exceptions, because these are issues with outside save files, not internal code. Bad save data can be stored in a separate file for later analysis or manual save recovery.
 
 - [X] MazeLayoutModel
-- [ ] MazeModel
+- [X] MazeModel
 - [ ] Reader
 
 *Other Development*

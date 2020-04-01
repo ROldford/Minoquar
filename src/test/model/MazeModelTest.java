@@ -61,7 +61,6 @@ public class MazeModelTest {
         assertEquals(4, mazeModel.getLosses());
     }
 
-    // TODO: check for exceptions when given bad data on init
     @Test
     public void testInitFromSaveDataExceptions() {
         MazeSizeModel.MazeSize validSize = MazeSizeModel.MazeSize.EXTRA_SMALL;
@@ -128,6 +127,12 @@ public class MazeModelTest {
                 assertTrue(ch == "X".charAt(0) || ch == ".".charAt(0));
             }
         }
+    }
+
+    @Test
+    public void testIsPositionValid() {
+        assertTrue(maze.isPositionValid(new GridPosition(1, 1)));
+        assertFalse(maze.isPositionValid(new GridPosition(0, 0)));
     }
 
     @Test

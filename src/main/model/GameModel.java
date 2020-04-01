@@ -27,8 +27,12 @@ public class GameModel {
 
     // REQUIRES: hero's start position must be valid for given maze (based on maze size)
     // EFFECTS: construct new game with given maze
-    public GameModel(MazeModel maze, GridPosition start) {
+    public GameModel(MazeModel maze, GridPosition start) throws IllegalArgumentException {
         // is public to allow testing
+        if (!maze.isPositionValid(start)) {
+            throw new IllegalArgumentException(
+                    String.format("Hero start (%d, %d) is invalid", start.getX(), start.getY()));
+        }
         this.maze = maze;
         setupEntities(start);
     }
@@ -62,6 +66,7 @@ public class GameModel {
 
     // MODIFIES: this
     // EFFECTS: moves minotaur according to minotaur movement rules
+    //          returns true if move is successful, false if no possible moves
     //          can tunnel through many WALL squares
     //          must follow all other movement rules (ie. passage moves stops at wall, etc.)
     //          will move orthogonally towards hero
@@ -69,7 +74,7 @@ public class GameModel {
     //              will end move so it is orthogonal to hero if possible
     //              if both directions are equal, decides randomly
     //                  chooses horizontal when randomNumber is < 0.5
-    public boolean moveMinotaur() throws GridPositionOutOfBoundsException {
+    public boolean moveMinotaur() {
         return moveMinotaur(random());
     }
 
@@ -77,8 +82,7 @@ public class GameModel {
     // EFFECTS: moves minotaur according to minotaur movement rules,
     //          using given number to make diagonal movement decision instead of random
     //              horizontal if <0.5, vertical otherwise
-    public boolean moveMinotaur(double randomNumber)
-            throws GridPositionOutOfBoundsException { // TODO: needs proper handling
+    public boolean moveMinotaur(double randomNumber) {
         GridPosition minotaurPosition = minotaur.getPosition();
         GridPosition heroPosition = hero.getPosition();
         GridPosition delta = heroPosition.subtract(minotaurPosition);
@@ -194,7 +198,8 @@ public class GameModel {
         return maze.getTotalPlays();
     }
 
-    // EFFECTS: return list of SquareDisplayData instances to display the current game state
+    // EFFECTS: return grid of SquareDisplayData instances to display the current game state
+    //          throws GridPositionOutOfBoundsException if entity is out of bounds
     public Grid<SquareDisplayData> display() throws GridPositionOutOfBoundsException {
         Grid<SquareDisplayData> display = maze.displayMaze();
         overlayGameElement(treasure, display);
@@ -204,8 +209,10 @@ public class GameModel {
     }
 
     // MODIFIES: display
-    // EFFECTS: return new list of display data with game element added at given position
-    private void overlayGameElement(GameEntity entity, Grid<SquareDisplayData> display) {
+    // EFFECTS: return new grid of display data with game element added at given position
+    //          throws GridPositionOutOfBoundsException if entity is out of bounds
+    private void overlayGameElement(GameEntity entity, Grid<SquareDisplayData> display)
+            throws GridPositionOutOfBoundsException {
         GridPosition position = entity.getPosition();
         SquareDisplayData squareDisplay = display.get(position);
         squareDisplay.addEntityType(entity.getEntityType());

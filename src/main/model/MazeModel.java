@@ -94,6 +94,11 @@ public class MazeModel {
         return mazeBoard.getMinotaurStartPosition();
     }
 
+    // valid = entity can be there = is PASSAGE
+    public boolean isPositionValid(GridPosition position) {
+        return mazeBoard.getSquare(position) == Layout.MazeSquare.PASSAGE;
+    }
+
     // EFFECTS: returns true if move follows proper movement rules, false otherwise
     // TODO: document exceptions
     public boolean isMoveValid(GridPosition start, GridPosition end) throws GridPositionOutOfBoundsException {
