@@ -1,11 +1,9 @@
 package model;
 
-import exceptions.IncorrectGridIterationException;
 import exceptions.GridPositionOutOfBoundsException;
 import grid.Grid;
 import grid.GridPosition;
 import ui.SquareDisplayData;
-import grid.GridArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,7 +195,7 @@ public class GameModel {
     }
 
     // EFFECTS: return list of SquareDisplayData instances to display the current game state
-    public Grid<SquareDisplayData> display() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
+    public Grid<SquareDisplayData> display() throws GridPositionOutOfBoundsException {
         Grid<SquareDisplayData> display = maze.displayMaze();
         overlayGameElement(treasure, display);
         overlayGameElement(hero, display);

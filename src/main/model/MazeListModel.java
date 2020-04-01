@@ -1,6 +1,5 @@
 package model;
 
-import exceptions.IncorrectGridIterationException;
 import persistence.Reader;
 import persistence.Saveable;
 
@@ -78,11 +77,7 @@ public class MazeListModel extends AbstractListModel implements Saveable {
         for (MazeModel maze : mazes) {
             printWriter.println(Reader.SEPARATOR_LINE);
             List<String> mazeData = null;
-            try {
-                mazeData = maze.getSaveData();
-            } catch (IncorrectGridIterationException e) {
-                e.printStackTrace();  // TODO: properly catch this!
-            }
+            mazeData = maze.getSaveData();
             for (String line : mazeData) {
                 printWriter.println(line);
             }

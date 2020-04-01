@@ -3,7 +3,6 @@
 
 package persistence;
 
-import exceptions.IncorrectGridIterationException;
 import model.MazeListModel;
 import model.MazeModel;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class WriterTest {
     private static final String TEST_READ_FILE = "./data/test/testMazeListMultipleLists.txt";
@@ -38,13 +38,12 @@ public class WriterTest {
             MazeListModel writeResult = new MazeListModel(Reader.readMazeList(new File(TEST_WRITE_FILE)));
             testWriteResultMatchesTestData(testData.getElementAt(0), writeResult.getElementAt(0));
             testWriteResultMatchesTestData(testData.getElementAt(1), writeResult.getElementAt(1));
-        } catch (IOException | IncorrectGridIterationException e) {
+        } catch (IOException e) {
             fail("Should not throw Exception");
         }
     }
 
-    private void testWriteResultMatchesTestData(MazeModel expected, MazeModel actual)
-            throws IncorrectGridIterationException {
+    private void testWriteResultMatchesTestData(MazeModel expected, MazeModel actual) {
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getSizeName(), actual.getSizeName());
         List<String> expectedSaveData = expected.getSaveData();

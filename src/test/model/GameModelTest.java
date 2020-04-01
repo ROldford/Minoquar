@@ -1,19 +1,21 @@
 package model;
 
-import exceptions.IncorrectGridIterationException;
 import exceptions.GridPositionOutOfBoundsException;
 import grid.Grid;
+import grid.GridArray;
 import grid.GridPosition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
 import ui.SquareDisplayData;
-import grid.GridArray;
 import utils.Utilities;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,7 +53,7 @@ public class GameModelTest {
     }
 
     @Test
-    public void testDisplay() throws GridPositionOutOfBoundsException, IncorrectGridIterationException {
+    public void testDisplay() throws GridPositionOutOfBoundsException {
         SquareDisplayData wall = new SquareDisplayData(Layout.MazeSquare.WALL);
         SquareDisplayData pass = new SquareDisplayData(Layout.MazeSquare.PASSAGE);
         SquareDisplayData empty = new SquareDisplayData(Layout.MazeSquare.EMPTY);
@@ -154,7 +156,7 @@ public class GameModelTest {
                     try {
                         display = game.display();
                         assertEquals(minotaur, display.get(expected));
-                    } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException e) {
+                    } catch (GridPositionOutOfBoundsException e) {
                         e.printStackTrace();
                         fail("Out of bounds");
                     }

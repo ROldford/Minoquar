@@ -1,6 +1,5 @@
 package model;
 
-import exceptions.IncorrectGridIterationException;
 import exceptions.GridPositionOutOfBoundsException;
 import grid.GridPosition;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +33,7 @@ public class MazeModelTest {
     }
 
     @Test
-    public void testGetSaveData() throws IncorrectGridIterationException {
+    public void testGetSaveData() {
         addGameHistory();
         List<String> saveData = maze.getSaveData();
         // part 1: name and size (1 line each)

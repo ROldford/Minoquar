@@ -1,6 +1,5 @@
 package model;
 
-import exceptions.IncorrectGridIterationException;
 import exceptions.GridPositionOutOfBoundsException;
 import grid.Grid;
 import grid.GridPosition;
@@ -71,12 +70,12 @@ public class MazeBoardModel {
     }
 
     // EFFECTS: return list of strings to display the current maze board
-    public Grid<SquareDisplayData> display() throws IncorrectGridIterationException {
+    public Grid<SquareDisplayData> display() {
         return mazeLayout.display();
     }
 
     // EFFECTS: returns maze board's data in save file format (see Reader)
-    public List<String> getSaveData() throws IncorrectGridIterationException {
+    public List<String> getSaveData() {
         return mazeLayout.getSaveData();
     }
 

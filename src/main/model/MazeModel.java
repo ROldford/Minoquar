@@ -1,11 +1,9 @@
 package model;
 
-import exceptions.IncorrectGridIterationException;
 import exceptions.GridPositionOutOfBoundsException;
 import grid.Grid;
 import grid.GridPosition;
 import ui.SquareDisplayData;
-import grid.GridArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -142,12 +140,12 @@ public class MazeModel {
     }
 
     // EFFECTS: return list of strings to display the current maze
-    public Grid<SquareDisplayData> displayMaze() throws IncorrectGridIterationException {
+    public Grid<SquareDisplayData> displayMaze() {
         return mazeBoard.display();
     }
 
     // EFFECTS: returns maze's data in save file format (see Reader)
-    public List<String> getSaveData() throws IncorrectGridIterationException {
+    public List<String> getSaveData() {
         List<String> saveData = new ArrayList<>();
         saveData.add(name);
         saveData.add(getSizeCode());

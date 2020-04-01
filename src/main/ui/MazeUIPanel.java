@@ -1,11 +1,10 @@
 package ui;
 
-import exceptions.IncorrectGridIterationException;
 import exceptions.GridPositionOutOfBoundsException;
 import grid.Grid;
+import grid.GridArray;
 import grid.GridIterator;
 import grid.GridPosition;
-import grid.GridArray;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,7 +57,7 @@ public class MazeUIPanel extends JPanel {
             gameUI.handleClickAt(position);
         } catch (ClassCastException cce) {
             System.out.println("Click on maze panel could not be cast properly");
-        } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException ex) {
+        } catch (GridPositionOutOfBoundsException ex) {
             ex.printStackTrace();  // TODO: properly catch this!
         }
     }

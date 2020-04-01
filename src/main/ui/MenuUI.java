@@ -3,7 +3,6 @@
 
 package ui;
 
-import exceptions.IncorrectGridIterationException;
 import exceptions.GridPositionOutOfBoundsException;
 import model.MazeListModel;
 import model.MazeModel;
@@ -294,7 +293,7 @@ public class MenuUI extends JPanel implements ListSelectionListener {
         public void actionPerformed(ActionEvent e) {
             try {
                 minoquarFrame.swapToGameUI(mazeList.getElementAt(list.getSelectedIndex()));
-            } catch (GridPositionOutOfBoundsException | IncorrectGridIterationException ex) {
+            } catch (GridPositionOutOfBoundsException ex) {
                 ex.printStackTrace(); // TODO: properly catch this!
             }
         }
