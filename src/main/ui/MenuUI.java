@@ -3,7 +3,6 @@
 
 package ui;
 
-import exceptions.GridPositionOutOfBoundsException;
 import model.MazeListModel;
 import model.MazeModel;
 import model.MazeSizeModel;

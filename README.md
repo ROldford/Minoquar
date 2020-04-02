@@ -88,17 +88,19 @@ Classes dealing with data will use checked exceptions, because these are issues 
 
 *Phase 4: Task 3 - Design Analysis*
 
-- MazeBoardModel has no real purpose. Most of its methods just pass on results from MazeLayoutModel. The two exceptions to this could be added to MazeModel or MazeLayoutModel.
+- MazeBoardModel has no real purpose, and so lacks cohesion. Most of its methods just pass on results from MazeLayoutModel. The two exceptions to this could be added to MazeModel or MazeLayoutModel.
     - [X] re-implement getSquaresBetween in MazeModel as private method
     - [X] re-implement getSquaresInDirection in MazeModel
         - [X] decide where to do this
     - [X] re-design MazeModel to use MazeLayoutModel, not MazeBoardModel
     - [X] delete MazeBoardModel (and test)
-- Layout's role has been mostly made redundant with the development of the Grid package. MazeLayoutModel originally used Layout as part of overwriting QR code patterns onto a blank MazeLayoutModel, but these patterns can be stored as Grid instances, and overwrite() can be moved to MazeLayoutModel.
+- Layout's role has been mostly made redundant with the development of the Grid package, reducing cohesion of Layout and MazeLayoutModel. MazeLayoutModel originally used Layout as part of overwriting QR code patterns onto a blank MazeLayoutModel, but these patterns can be stored as Grid instances, and overwrite() can be moved to MazeLayoutModel.
     - [X] re-implement overwrite to use Grid
     - [X] re-implement methods in MazeLayoutModel that use overwrite
     - [X] move other methods out of Layout into MazeLayoutModel
     - [X] delete Layout and remove "extends"
+    
+Project UML diagram is available in project root as Project UML Diagram.jpg.
 
 *Other Development*
 - [X] Develop grid package
